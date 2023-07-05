@@ -6,6 +6,7 @@ use clap::Parser;
 #[clap(author, bin_name = "decasify")]
 pub struct Cli {
     /// Locale
+    #[clap(short, long)]
     pub locale: Option<String>,
 
     /// Input string
