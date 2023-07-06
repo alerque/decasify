@@ -20,9 +20,9 @@ BUILT_SOURCES = .version
 CLEANFILES = $(bin_PROGRAMS) $(dist_man_MANS) $(BUILT_SOURCES) .version-prev
 
 if DEBUG_RELEASE
-CARGO_RELEASE_ARGS = --all-features
+CARGO_RELEASE_ARGS = --features full
 else
-CARGO_RELEASE_ARGS = --release --locked --all-features
+CARGO_RELEASE_ARGS = --release --locked --features full
 endif
 
 CARGO_ENV = CARGO_TARGET_DIR=@abs_top_builddir@/target

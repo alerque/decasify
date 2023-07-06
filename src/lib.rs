@@ -1,3 +1,5 @@
+use mlua;
+
 use regex::Regex;
 use std::{error, result};
 use unicode_titlecase::StrTitleCase;
@@ -7,6 +9,28 @@ pub mod cli;
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
+/// Export a Lua function wrapper
+fn thing<'lua>(lua: &'lua mlua::Lua, _v: mlua::Value<'lua>) -> mlua::Result<mlua::Value<'lua>> {
+    let buf = Vec::new();
+    lua.create_string(&buf).map(mlua::Value::String)
+}
+
+fn make_exports<'lua>(
+    lua: &'lua mlua::Lua,
+    thing: mlua::Function<'lua>,
+) -> mlua::Result<mlua::Table<'lua>> {
+    let exports = lua.create_table().unwrap();
+    exports.set("thing", thing).unwrap();
+    Ok(exports)
+}
+
+#[mlua::lua_module]
+pub fn decasify(lua: &mlua::Lua) -> mlua::Result<mlua::Table> {
+    let thing = lua.create_function(thing)?;
+    make_exports(lua, thing)
+}
+
+/// Take in a string and a target locale and titlecase the whole string with locale specific rules
 pub fn to_titlecase(string: &str, locale: &str) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
