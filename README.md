@@ -1,5 +1,8 @@
 # decasify
 
+[![Rust Test Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/rust_test.yml?branch=master&label=Rust+Test&logo=Rust)](https://github.com/alerque/decasify/actions?workflow=Rust+Test)
+[![Rust Lint Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/rust_lint.yml?branch=master&label=Rust+Lint&logo=Rust)](https://github.com/alerque/decasify/actions?workflow=Rust+Lint)
+
 A CLI tool to convert strings to title-case or other less aggressive tones that supports Turkish input.
 
 It was born out of frustration that no tooling seemed to properly support title-casing strings, particularly coming from all-caps Turkish.
