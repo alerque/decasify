@@ -1,7 +1,7 @@
-use clap::CommandFactory;
-
 use decasify::cli::Cli;
 use decasify::to_titlecase;
+
+use clap::CommandFactory;
 use std::io;
 use std::io::BufRead;
 

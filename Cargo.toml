@@ -11,6 +11,10 @@ license = "GPL-3.0-only"
 build = "build.rs"
 include = ["*.rs"]
 
+[lib]
+name = "decasify"
+crate-type = ["cdylib"]
+
 [[bin]]
 name = "decasify"
 required-features = ["cli"]
@@ -26,6 +30,7 @@ unicode_titlecase = "2.1"
 
   [dependencies.mlua]
   version = "0.8"
+  optional = true
   features = [ "module", "send", "serialize" ]
 
 [build-dependencies]
@@ -48,26 +53,23 @@ unicode_titlecase = "2.1"
   default-features = false
   features = [ "build", "cargo", "git", "gitoxide" ]
 
-[lib]
-name = "decasify"
-crate-type = ["cdylib"]
-
 [features]
 default = []
 full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
 completions = ["cli", "clap_complete"]
 cli = ["clap"]
+luamodule = []
 bash = ["completions"]
 elvish = ["completions"]
 fish = ["completions"]
 manpage = ["clap_mangen"]
 powershell = ["completions"]
 zsh = ["completions"]
-lua54 = ["mlua/lua54"]
-lua53 = ["mlua/lua53"]
-lua52 = ["mlua/lua52"]
-lua51 = ["mlua/lua51"]
-luajit = ["mlua/luajit"]
+lua54 = ["luamodule", "mlua/lua54"]
+lua53 = ["luamodule", "mlua/lua53"]
+lua52 = ["luamodule", "mlua/lua52"]
+lua51 = ["luamodule", "mlua/lua51"]
+luajit = ["luamodule", "mlua/luajit"]
 vendored = ["mlua/vendored"]
 
 [profile.release]
