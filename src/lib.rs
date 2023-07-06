@@ -7,9 +7,9 @@ pub mod cli;
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
-pub fn to_titlecase(string: &String, locale: &String) -> String {
+pub fn to_titlecase(string: &str, locale: &str) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
-    match locale.as_str() {
+    match locale {
         "tr" => to_titlecase_tr(words),
         "tr_TR" => to_titlecase_tr(words),
         _ => to_titlecase_en(words),
@@ -51,11 +51,7 @@ pub fn to_titlecase_tr(words: Vec<&str>) -> String {
 pub fn is_reserved_en(word: String) -> bool {
     let word = word.to_lowercase();
     let congunction = Regex::new(r"^(and|or)$").unwrap();
-    if congunction.is_match(word.as_str()) {
-        true
-    } else {
-        false
-    }
+    congunction.is_match(word.as_str())
 }
 
 pub fn is_reserved_tr(word: String) -> bool {
@@ -65,11 +61,5 @@ pub fn is_reserved_tr(word: String) -> bool {
     .unwrap();
     let soruek = Regex::new(r"^([Mm][İiIıUuÜü])").unwrap();
     let word = word.as_str();
-    if baglac.is_match(word) {
-        true
-    } else if soruek.is_match(word) {
-        true
-    } else {
-        false
-    }
+    baglac.is_match(word) || soruek.is_match(word)
 }

@@ -29,7 +29,7 @@ fn main() -> decasify::Result<()> {
     Ok(())
 }
 
-fn process<I: IntoIterator<Item = String>>(strings: I, locale: &String) {
+fn process<I: IntoIterator<Item = String>>(strings: I, locale: &str) {
     for string in strings {
         let output = to_titlecase(&string, locale);
         println!("{output}");
