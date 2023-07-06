@@ -16,7 +16,7 @@ name = "decasify"
 required-features = ["cli"]
 
 [dependencies]
-unicode_titlecase = "2.1.0"
+unicode_titlecase = "2.1"
 
   [dependencies.clap]
   version = "4.0"
