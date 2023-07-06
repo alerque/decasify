@@ -13,10 +13,14 @@ fn main() -> decasify::Result<()> {
         String::from("en")
     };
     if matches.contains_id("input") {
-        let input: Vec<String> = matches.get_many::<String>("input").unwrap().cloned().collect();
+        let input: Vec<String> = matches
+            .get_many::<String>("input")
+            .unwrap()
+            .cloned()
+            .collect();
         let input = input.join(" ");
         let output = to_titlecase(&input, &locale);
-        eprintln!("{input} → {output}");
+        println!("{output}");
     }
     Ok(())
 }
