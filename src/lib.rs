@@ -1,4 +1,4 @@
-use mlua;
+use mlua::prelude::*;
 
 use regex::Regex;
 use std::{error, result};
@@ -9,28 +9,22 @@ pub mod cli;
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
-/// Export a Lua function wrapper
-fn thing<'lua>(lua: &'lua mlua::Lua, _v: mlua::Value<'lua>) -> mlua::Result<mlua::Value<'lua>> {
-    let buf = Vec::new();
-    lua.create_string(&buf).map(mlua::Value::String)
-}
-
-fn make_exports<'lua>(
-    lua: &'lua mlua::Lua,
-    thing: mlua::Function<'lua>,
-) -> mlua::Result<mlua::Table<'lua>> {
+#[mlua::lua_module]
+fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table().unwrap();
+    let thing = lua.create_function(thing)?;
     exports.set("thing", thing).unwrap();
     Ok(exports)
 }
 
-#[mlua::lua_module]
-pub fn decasify(lua: &mlua::Lua) -> mlua::Result<mlua::Table> {
-    let thing = lua.create_function(thing)?;
-    make_exports(lua, thing)
+fn thing<'a>(lua: &'a Lua, v: LuaString<'a>) -> LuaResult<LuaValue<'a>> {
+    let buf = Vec::new();
+    let v = v.to_string_lossy();
+    eprintln!("{:#?}", v);
+    lua.create_string(&buf).map(LuaValue::String)
 }
 
-/// Take in a string and a target locale and titlecase the whole string with locale specific rules
+/// Convert a string to title case following typestting conventions for a target locale
 pub fn to_titlecase(string: &str, locale: &str) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
@@ -40,7 +34,7 @@ pub fn to_titlecase(string: &str, locale: &str) -> String {
     }
 }
 
-pub fn to_titlecase_en(words: Vec<&str>) -> String {
+fn to_titlecase_en(words: Vec<&str>) -> String {
     let mut words = words.iter();
     let mut output: Vec<String> = Vec::new();
     let first = words.next().unwrap();
@@ -56,7 +50,7 @@ pub fn to_titlecase_en(words: Vec<&str>) -> String {
     output.join(" ")
 }
 
-pub fn to_titlecase_tr(words: Vec<&str>) -> String {
+fn to_titlecase_tr(words: Vec<&str>) -> String {
     let mut words = words.iter();
     let mut output: Vec<String> = Vec::new();
     let first = words.next().unwrap();
@@ -72,13 +66,13 @@ pub fn to_titlecase_tr(words: Vec<&str>) -> String {
     output.join(" ")
 }
 
-pub fn is_reserved_en(word: String) -> bool {
+fn is_reserved_en(word: String) -> bool {
     let word = word.to_lowercase();
     let congunction = Regex::new(r"^(and|or)$").unwrap();
     congunction.is_match(word.as_str())
 }
 
-pub fn is_reserved_tr(word: String) -> bool {
+fn is_reserved_tr(word: String) -> bool {
     let baglac = Regex::new(
         r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
     )
