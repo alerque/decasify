@@ -12,16 +12,19 @@ pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 #[mlua::lua_module]
 fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table().unwrap();
-    let thing = lua.create_function(thing)?;
-    exports.set("thing", thing).unwrap();
+    let titlecase = lua.create_function(titlecase)?;
+    exports.set("titlecase", titlecase).unwrap();
     Ok(exports)
 }
 
-fn thing<'a>(lua: &'a Lua, v: LuaString<'a>) -> LuaResult<LuaValue<'a>> {
-    let buf = Vec::new();
-    let v = v.to_string_lossy();
-    eprintln!("{:#?}", v);
-    lua.create_string(&buf).map(LuaValue::String)
+fn titlecase<'a>(
+    lua: &'a Lua,
+    (input, locale): (LuaString<'a>, LuaString<'a>),
+) -> LuaResult<LuaString<'a>> {
+    let input = input.to_string_lossy();
+    let locale = locale.to_string_lossy();
+    let output = to_titlecase(&input, &locale);
+    lua.create_string(&output)
 }
 
 /// Convert a string to title case following typestting conventions for a target locale
