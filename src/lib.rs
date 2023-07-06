@@ -1,3 +1,4 @@
+use regex::Regex;
 use std::{error, result};
 use unicode_titlecase::StrTitleCase;
 
@@ -15,9 +16,20 @@ pub fn to_titlecase(string: &String, locale: &String) -> String {
     }
 }
 
-pub fn to_titlecase_en(_words: Vec<&str>) -> String {
-    String::from("English")
-    // string.to_titlecase_lower_rest()
+pub fn to_titlecase_en(words: Vec<&str>) -> String {
+    let mut words = words.iter();
+    let mut output: Vec<String> = Vec::new();
+    let first = words.next().unwrap();
+    output.push(first.to_titlecase_lower_rest());
+    for word in words {
+        match is_reserved_en(word.to_string()) {
+            true => output.push(word.to_string().to_lowercase()),
+            false => {
+                output.push(word.to_titlecase_lower_rest());
+            }
+        }
+    }
+    output.join(" ")
 }
 
 pub fn to_titlecase_tr(words: Vec<&str>) -> String {
@@ -27,16 +39,37 @@ pub fn to_titlecase_tr(words: Vec<&str>) -> String {
     output.push(first.to_titlecase_tr_or_az_lower_rest());
     for word in words {
         match is_reserved_tr(word.to_string()) {
-            true => {
+            true => output.push(word.to_string().to_lowercase()),
+            false => {
                 output.push(word.to_titlecase_tr_or_az_lower_rest());
             }
-            false => output.push(word.to_string()),
         }
     }
     output.join(" ")
 }
 
-pub fn is_reserved_tr(_word: String) -> bool {
-    false
-    // “ve, ile, ya, veya, yahut, ki, da, de” sözleri ile “mı, mi, mu, mü” soru
+pub fn is_reserved_en(word: String) -> bool {
+    let word = word.to_lowercase();
+    let congunction = Regex::new(r"^(and|or)$").unwrap();
+    if congunction.is_match(word.as_str()) {
+        true
+    } else {
+        false
+    }
+}
+
+pub fn is_reserved_tr(word: String) -> bool {
+    let baglac = Regex::new(
+        r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
+    )
+    .unwrap();
+    let soruek = Regex::new(r"^([Mm][İiIıUuÜü])").unwrap();
+    let word = word.as_str();
+    if baglac.is_match(word) {
+        true
+    } else if soruek.is_match(word) {
+        true
+    } else {
+        false
+    }
 }

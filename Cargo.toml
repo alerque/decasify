@@ -16,6 +16,7 @@ name = "decasify"
 required-features = ["cli"]
 
 [dependencies]
+regex = "1.9"
 unicode_titlecase = "2.1"
 
   [dependencies.clap]
