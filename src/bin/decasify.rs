@@ -2,6 +2,8 @@ use clap::CommandFactory;
 
 use decasify::cli::Cli;
 use decasify::to_titlecase;
+use std::io;
+use std::io::BufRead;
 
 fn main() -> decasify::Result<()> {
     let version = option_env!("VERGEN_GIT_SEMVER").unwrap_or_else(|| env!("VERGEN_BUILD_SEMVER"));
@@ -12,15 +14,24 @@ fn main() -> decasify::Result<()> {
     } else {
         String::from("en")
     };
-    if matches.contains_id("input") {
-        let input: Vec<String> = matches
-            .get_many::<String>("input")
-            .unwrap()
-            .cloned()
-            .collect();
-        let input = input.join(" ");
-        let output = to_titlecase(&input, &locale);
-        println!("{output}");
+    match matches.contains_id("input") {
+        true => {
+            let input: Vec<String> = matches
+                .get_many::<String>("input")
+                .unwrap()
+                .cloned()
+                .collect();
+            let input: Vec<String> = vec![input.join(" ")];
+            process(input.iter().map(|ln| ln.to_string()), &locale);
+        }
+        false => process(io::stdin().lock().lines().map(|ln| ln.unwrap()), &locale),
     }
     Ok(())
+}
+
+fn process<I: IntoIterator<Item = String>>(strings: I, locale: &String) {
+    for string in strings {
+        let output = to_titlecase(&string, locale);
+        println!("{output}");
+    }
 }
