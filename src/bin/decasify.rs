@@ -6,7 +6,7 @@ use std::io;
 use std::io::BufRead;
 
 fn main() -> decasify::Result<()> {
-    let version = option_env!("VERGEN_GIT_SEMVER").unwrap_or_else(|| env!("VERGEN_BUILD_SEMVER"));
+    let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let app = Cli::command().version(version);
     let matches = app.get_matches();
     let locale: String = if matches.contains_id("locale") {
