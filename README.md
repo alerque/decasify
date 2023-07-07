@@ -21,6 +21,34 @@ $ echo ILIK SU VE İTEN RÜZGARLAR | decasify -l tr
 Ilık Su ve İten Rüzgarlar
 ```
 
+## Use as a binary
+
+First, check your distro for packages, e.g. for Arch Linux get it [from the AUR](https://aur.archlinux.org/packages/decasify).
+
+Otherwise for most *nix platforms you can run it directly or install it to a shell using Nix Flakes:
+
+``` console
+$ nix run github:alerque/decasify
+```
+
+To install from source, grab the tarball or Git clone:
+
+```console
+# If using a Git clone (not needed for tarball releases):
+$ ./bootstrap.sh
+$ ./configure
+$ make
+$ sudo make install
+```
+Of course all the usual autotools options apply such as setting a prefix to install to.
+Note the source installation will include a man page, and shell completions.
+
+Of course the bare binary can also be installed with Cargo:
+
+```console
+$ cargo install --features cli decasify
+```
+
 ## Use as Rust crate
 
 In your `Cargo.toml` file.
