@@ -41,15 +41,19 @@ pub fn to_titlecase(string: &str, locale: &str) -> String {
 }
 
 fn to_titlecase_en(words: Vec<&str>) -> String {
-    let mut words = words.iter();
+    let mut words = words.iter().peekable();
     let mut output: Vec<String> = Vec::new();
     let first = words.next().unwrap();
     output.push(first.to_titlecase_lower_rest());
-    for word in words {
-        match is_reserved_en(word.to_string()) {
-            true => output.push(word.to_string().to_lowercase()),
-            false => {
-                output.push(word.to_titlecase_lower_rest());
+    while let Some(word) = words.next() {
+        if words.peek().is_none() {
+            output.push(word.to_titlecase_lower_rest());
+        } else {
+            match is_reserved_en(word.to_string()) {
+                true => output.push(word.to_string().to_lowercase()),
+                false => {
+                    output.push(word.to_titlecase_lower_rest());
+                }
             }
         }
     }
@@ -74,8 +78,11 @@ fn to_titlecase_tr(words: Vec<&str>) -> String {
 
 fn is_reserved_en(word: String) -> bool {
     let word = word.to_lowercase();
-    let congunction = Regex::new(r"^(and|or)$").unwrap();
-    congunction.is_match(word.as_str())
+    let word = word.as_str();
+    let article = Regex::new(r"^(a|an|the)$").unwrap();
+    let congunction = Regex::new(r"^(for|and|nor|but|or|yet|so|both|either|neither|not only|whether|after|although|as|as if|as long as|as much as|as soon as|as though|because|before|by the time|even if|even though|if|in order that|in case|in the event that|lest|now that|once|only|only if|provided that|since|so|supposing|that|than|though|till|unless|until|when|whenever|where|whereas|wherever|whether or not|while)$").unwrap();
+    let preposition = Regex::new(r"^(about|above|across|after|against|along|among|around|at|before|behind|between|beyond|but|by|concerning|despite|down|during|except|following|for|from|in|including|into|like|near|of|off|on|onto|out|over|past|plus|since|throughout|to|towards|under|until|up|upon|up|to|with|within|without)$").unwrap();
+    article.is_match(word) || congunction.is_match(word) || preposition.is_match(word)
 }
 
 fn is_reserved_tr(word: String) -> bool {
