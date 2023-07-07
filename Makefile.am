@@ -136,9 +136,9 @@ clippy:
 	cd $(srcdir)
 	$(CARGO_ENV) $(CARGO) clippy -- -D warnings
 
-_SEMVER != tomlq -r .package.version Cargo.toml
+_SEMVER != tomlq -r .package.version lua-bindings/Cargo.toml
 SEMVER ?= $(_SEMVER)
-ROCKREV = 0
+ROCKREV = 1
 TAG ?= v$(SEMVER)
 
 LUAROCKS_ARGS ?= --local --tree ../lua_modules
@@ -179,7 +179,7 @@ rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
 	$(rockpec_template)
 	sed -i \
 		-e '/rockspec_format/s/3.0/1.0/' \
-		-e '/url = "git/a\   dir = "fluent-lua",' \
+		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
 		-e '/issues_url/d' \
 		-e '/maintainer/d' \
 		-e '/labels/d' \
