@@ -11,13 +11,30 @@ license = "GPL-3.0-only"
 build = "build.rs"
 include = ["*.rs"]
 
+[workspace]
+members = ["lua-bindings"]
+
 [lib]
 name = "decasify"
-crate-type = ["cdylib"]
 
 [[bin]]
 name = "decasify"
 required-features = ["cli"]
+
+[features]
+default = ["cli"]
+full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
+completions = ["cli", "clap_complete"]
+cli = ["clap"]
+bash = ["completions"]
+elvish = ["completions"]
+fish = ["completions"]
+manpage = ["clap_mangen"]
+powershell = ["completions"]
+zsh = ["completions"]
+
+[profile.release]
+lto = true
 
 [dependencies]
 regex = "1.9"
@@ -26,12 +43,7 @@ unicode_titlecase = "2.1"
   [dependencies.clap]
   version = "4.3"
   optional = true
-  features = [ "derive", "wrap_help" ]
-
-  [dependencies.mlua]
-  version = "0.8"
-  optional = true
-  features = [ "module", "send", "serialize" ]
+  features = ["derive", "wrap_help"]
 
 [build-dependencies]
 
@@ -46,31 +58,9 @@ unicode_titlecase = "2.1"
   [build-dependencies.clap]
   version = "4.3"
   optional = true
-  features = [ "derive" ]
+  features = ["derive"]
 
   [build-dependencies.vergen]
   version = "8.2"
   default-features = false
-  features = [ "build", "cargo", "git", "gitoxide" ]
-
-[features]
-default = []
-full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
-completions = ["cli", "clap_complete"]
-cli = ["clap"]
-luamodule = []
-bash = ["completions"]
-elvish = ["completions"]
-fish = ["completions"]
-manpage = ["clap_mangen"]
-powershell = ["completions"]
-zsh = ["completions"]
-lua54 = ["luamodule", "mlua/lua54"]
-lua53 = ["luamodule", "mlua/lua53"]
-lua52 = ["luamodule", "mlua/lua52"]
-lua51 = ["luamodule", "mlua/lua51"]
-luajit = ["luamodule", "mlua/luajit"]
-vendored = ["mlua/vendored"]
-
-[profile.release]
-lto = true
+  features = ["build", "cargo", "git", "gitoxide"]

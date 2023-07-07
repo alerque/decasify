@@ -1,0 +1,30 @@
+[package]
+workspace = "../"
+name = "lua-bindings"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "decasify"
+crate-type = ["cdylib"]
+
+[features]
+lua54 = ["mlua/lua54"]
+lua53 = ["mlua/lua53"]
+lua52 = ["mlua/lua52"]
+lua51 = ["mlua/lua51"]
+luajit = ["mlua/luajit"]
+vendored = ["mlua/vendored"]
+
+[profile.release]
+lto = true
+
+[dependencies]
+
+  [dependencies.decasify]
+  version = "0.1.0"
+  default-features = false
+
+  [dependencies.mlua]
+  version = "0.8"
+  features = [ "module", "send", "serialize" ]
