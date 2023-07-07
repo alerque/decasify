@@ -136,7 +136,7 @@ clippy:
 	cd $(srcdir)
 	$(CARGO_ENV) $(CARGO) clippy -- -D warnings
 
-SEMVER = $(shell tomlq -r .package.version Cargo.toml)
+SEMVER = $(shell $(AWK) -F\" '/^version/ { print $$2 }' Cargo.toml)
 ROCKREV = 1
 TAG ?= v$(SEMVER)
 
