@@ -136,8 +136,7 @@ clippy:
 	cd $(srcdir)
 	$(CARGO_ENV) $(CARGO) clippy -- -D warnings
 
-_SEMVER != tomlq -r .package.version Cargo.toml
-SEMVER ?= $(_SEMVER)
+SEMVER = $(shell tomlq -r .package.version Cargo.toml)
 ROCKREV = 1
 TAG ?= v$(SEMVER)
 
@@ -147,6 +146,8 @@ DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
 DEV_ROCK = $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock
 REL_SPEC = rockspecs/$(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).rockspec
 REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
+
+EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 
 .PHONY: rockspecs
 rockspecs: $(DEV_SPEC) $(REL_SPEC)
