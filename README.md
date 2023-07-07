@@ -3,7 +3,7 @@
 [![Rust Test Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/rust_test.yml?branch=master&label=Rust+Test&logo=Rust)](https://github.com/alerque/decasify/actions?workflow=Rust+Test)
 [![Rust Lint Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/rust_lint.yml?branch=master&label=Rust+Lint&logo=Rust)](https://github.com/alerque/decasify/actions?workflow=Rust+Lint)
 
-A CLI utility, Rust crate, and Lua module to cast strings to title-case according to locale specific style guides including Turkish support
+A CLI utility, Rust crate, and Lua module to cast strings to title-case according to locale specific style guides including Turkish support.
 
 This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-casing strings, particularly coming from Turkish.
 Many tools can handle casing single words, and many others can handle English strings, but nothing seemed to be out there for full Turkish strings.
