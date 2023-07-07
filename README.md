@@ -74,7 +74,7 @@ Depend on the LuaRock in your project or install with `luarocks install decasify
 
 ```lua
 dependencies = {
-    "decasify",
+   "decasify"
 }
 
 Then import ande use the provided function:

@@ -11,8 +11,9 @@ source = {
 
 description = {
    summary = "Lua wrapper around decasify string casing library",
-   detailed = [[A Lua wrapper around the Rust decasify library,
-      a tool to convert all-caps strings to title-case or other less aggressive tones that supports Turkish input.]],
+   detailed = [[A Lua c library buildt from the Rust decasify library,
+      provides casing functions for long strings (not just words) with
+      gramatical style guide support for Turkish input.]],
    license = "GPL-3.0-only",
    homepage = "https://github.com/alerque/decasify",
    issues_url = "https://github.com/alerque/decasify/issues",
