@@ -20,9 +20,9 @@ BUILT_SOURCES = .version
 CLEANFILES = $(bin_PROGRAMS) $(dist_man_MANS) $(BUILT_SOURCES) .version-prev
 
 if DEBUG_RELEASE
-CARGO_RELEASE_ARGS = --all-features
+CARGO_RELEASE_ARGS = --features full
 else
-CARGO_RELEASE_ARGS = --release --locked --all-features
+CARGO_RELEASE_ARGS = --release --locked --features full
 endif
 
 CARGO_ENV = CARGO_TARGET_DIR=@abs_top_builddir@/target
@@ -135,3 +135,57 @@ rustfmt:
 clippy:
 	cd $(srcdir)
 	$(CARGO_ENV) $(CARGO) clippy -- -D warnings
+
+_SEMVER != tomlq -r .package.version Cargo.toml
+SEMVER ?= $(_SEMVER)
+ROCKREV = 1
+TAG ?= v$(SEMVER)
+
+LUAROCKS_ARGS ?= --local --tree lua_modules
+
+DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
+DEV_ROCK = $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock
+REL_SPEC = rockspecs/$(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).rockspec
+REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
+
+.PHONY: rockspecs
+rockspecs: $(DEV_SPEC) $(REL_SPEC)
+
+.PHONY: install-luarock
+install-luarock: $(DEV_SPEC)
+	luarocks $(LUAROCKS_ARGS) make $<
+
+define rockpec_template =
+	sed -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
+		-e "s/@SEMVER@/$(SEMVER)/g" \
+		-e "s/@ROCKREV@/$(ROCKREV)/g" \
+		-e "s/@TAG@/$(TAG)/g" \
+		$< > $@
+endef
+
+$(DEV_SPEC): SEMVER = dev
+$(DEV_SPEC): TAG = master
+$(DEV_SPEC): $(PACKAGE_NAME).rockspec.in
+	$(rockpec_template)
+	sed -i \
+		-e '/tag =/s/tag/branch/' \
+		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
+		$@
+
+rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: SEMVER = $*
+rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: TAG = v$*
+rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
+	$(rockpec_template)
+	sed -i \
+		-e '/rockspec_format/s/3.0/1.0/' \
+		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
+		-e '/issues_url/d' \
+		-e '/maintainer/d' \
+		-e '/labels/d' \
+		$@
+
+$(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
+	luarocks $(LUAROCKS_ARGS) pack $<
+
+$(PACKAGE_NAME)-%.src.rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
+	luarocks $(LUAROCKS_ARGS) pack $<

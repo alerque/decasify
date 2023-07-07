@@ -15,6 +15,7 @@ naersk.lib."${targetPlatform.system}".buildPackage rec {
     cargo
     rustc
   ];
+  cargoBuildOptions = final: final ++ [ "--features cli" ];
   CARGO_BUILD_INCREMENTAL = "false";
   copyLibs = true;
   name = cargoToml.package.name;
