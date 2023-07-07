@@ -8,7 +8,7 @@ source = {
 }
 
 description = {
-   summary = "Lua wrapper around decasify string casing library",
+   summary = "Lua C module built from the Rust decasify crate to cast strings to title-case according to locale specific style guides including Turkish support",
    detailed = [[
       A Lua library exposed as a C module built from the Rust decasify crate.
       Provides casing functions for long strings (not just individual words)

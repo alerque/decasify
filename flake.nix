@@ -1,5 +1,5 @@
 {
-  description = "A CLI tool to convert all-caps strings to title-case or other less aggressive tones that supports Turkish input";
+  description = "A CLI utility to cast strings to title-case according to locale specific style guides including Turkish support";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     naersk.url = "github:nmattia/naersk";
