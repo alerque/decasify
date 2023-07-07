@@ -23,11 +23,11 @@ Ilık Su ve İten Rüzgarlar
 
 ## Use as Rust crate
 
-In your `Cargo.toml` file, be sure to disable default features since they include building the CLI binary:
+In your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-decasify = { version = "0.1", default-features = false }
+decasify = "0.1"
 ```
 
 ```rust

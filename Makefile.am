@@ -136,12 +136,12 @@ clippy:
 	cd $(srcdir)
 	$(CARGO_ENV) $(CARGO) clippy -- -D warnings
 
-_SEMVER != tomlq -r .package.version lua-bindings/Cargo.toml
+_SEMVER != tomlq -r .package.version Cargo.toml
 SEMVER ?= $(_SEMVER)
 ROCKREV = 1
 TAG ?= v$(SEMVER)
 
-LUAROCKS_ARGS ?= --local --tree ../lua_modules
+LUAROCKS_ARGS ?= --local --tree lua_modules
 
 DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
 DEV_ROCK = $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock
@@ -153,8 +153,7 @@ rockspecs: $(DEV_SPEC) $(REL_SPEC)
 
 .PHONY: install-luarock
 install-luarock: $(DEV_SPEC)
-	cd lua-bindings
-	luarocks $(LUAROCKS_ARGS) make ../$<
+	luarocks $(LUAROCKS_ARGS) make $<
 
 define rockpec_template =
 	sed -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
@@ -186,9 +185,7 @@ rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
 		$@
 
 $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
-	cd lua-bindings
-	luarocks $(LUAROCKS_ARGS) pack ../$<
+	luarocks $(LUAROCKS_ARGS) pack $<
 
 $(PACKAGE_NAME)-%.src.rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
-	cd lua-bindings
-	luarocks $(LUAROCKS_ARGS) pack ../$<
+	luarocks $(LUAROCKS_ARGS) pack $<

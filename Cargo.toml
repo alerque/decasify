@@ -11,18 +11,16 @@ license = "GPL-3.0-only"
 build = "build.rs"
 include = ["*.rs"]
 
-[workspace]
-members = ["lua-bindings"]
-
 [lib]
 name = "decasify"
+crate_type = ["rlib", "cdylib"]
 
 [[bin]]
 name = "decasify"
 required-features = ["cli"]
 
 [features]
-default = ["cli"]
+default = []
 full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
 completions = ["cli", "clap_complete"]
 cli = ["clap"]
@@ -32,6 +30,13 @@ fish = ["completions"]
 manpage = ["clap_mangen"]
 powershell = ["completions"]
 zsh = ["completions"]
+luamodule = []
+lua54 = ["luamodule", "mlua/lua54"]
+lua53 = ["luamodule", "mlua/lua53"]
+lua52 = ["luamodule", "mlua/lua52"]
+lua51 = ["luamodule", "mlua/lua51"]
+luajit = ["luamodule", "mlua/luajit"]
+vendored = ["luamodule", "mlua/vendored"]
 
 [profile.release]
 lto = true
@@ -44,6 +49,11 @@ unicode_titlecase = "2.1"
   version = "4.3"
   optional = true
   features = ["derive", "wrap_help"]
+
+  [dependencies.mlua]
+  version = "0.8"
+  optional = true
+  features = ["module"]
 
 [build-dependencies]
 

@@ -27,7 +27,6 @@ dependencies = {
 
 build = {
    type = "rust-mlua",
-   target_path = "../target",
    modules = {
       "decasify"
    }

@@ -238,17 +238,7 @@ dependencies = [
  "clap",
  "clap_complete",
  "clap_mangen",
- "regex",
- "unicode_titlecase",
- "vergen",
-]
-
-[[package]]
-name = "decasify"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "342fa5607514347c7b2e7431d3795ef265997608df9d3a7dc5d304d1d47eefab"
-dependencies = [
+ "mlua",
  "regex",
  "unicode_titlecase",
  "vergen",
@@ -259,15 +249,6 @@ name = "dunce"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56ce8c6da7551ec6c462cbaf3bfbc75131ebbfa1c944aeaa9dab51ca1c5f0c3b"
-
-[[package]]
-name = "erased-serde"
-version = "0.3.27"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f94c0e13118e7d7533271f754a168ae8400e6a1cc043f2bfd53cc7290f1a1de3"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "errno"
@@ -1106,14 +1087,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b06a4cde4c0f271a446782e3eff8de789548ce57dbc8eca9292c27f4a42004b4"
 
 [[package]]
-name = "lua-bindings"
-version = "0.1.0"
-dependencies = [
- "decasify 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "mlua",
-]
-
-[[package]]
 name = "lua-src"
 version = "546.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1169,7 +1142,6 @@ checksum = "07366ed2cd22a3b000aed076e2b68896fb46f06f1f5786c5962da73c0af01577"
 dependencies = [
  "bstr 0.2.17",
  "cc",
- "erased-serde",
  "lua-src",
  "luajit-src",
  "mlua_derive",
@@ -1177,7 +1149,6 @@ dependencies = [
  "once_cell",
  "pkg-config",
  "rustc-hash",
- "serde",
 ]
 
 [[package]]
