@@ -48,7 +48,7 @@ nodist_zshcompletion_DATA = $(COMPLETIONS_OUT_DIR)/_$(TRANSFORMED_PACKAGE_NAME)
 CLEANFILES += $(nodist_zshcompletion_DATA)
 endif
 
-export GWT_VERSION = v$(VERSION)
+export DECASIFY_VERSION = v$(VERSION)
 DECASIFY := $(PACKAGE_NAME)$(EXEEXT)
 
 # Leave some tips for cargo to use so CLI knows where it is
