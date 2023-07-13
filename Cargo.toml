@@ -44,6 +44,7 @@ lto = true
 [dependencies]
 regex = "1.9"
 unicode_titlecase = "2.1"
+titlecase = "2.2"
 
   [dependencies.clap]
   version = "4.3"
