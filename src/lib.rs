@@ -1,6 +1,42 @@
+use crate::cli::{InputLocale, StyleGuide};
 use regex::Regex;
 use std::{error, result};
 use unicode_titlecase::StrTitleCase;
+
+// TODO: We may have to handle our own FromStr so we can move the enum away from being dependent on
+// clap so this can be used as a library without so much overhead. Collecting code to that end...
+
+/*
+impl FromStr for StyleGuide {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_ascii_lowercase().as_str() {
+            "gruber" => Ok(StyleGuide::DaringFireball),
+            "fireball" => Ok(StyleGuide::DaringFireball),
+            "daringfireball" => Ok(StyleGuide::DaringFireball),
+            "associatedpress" => Ok(StyleGuide::AssociatedPress),
+            "ap" => Ok(StyleGuide::AssociatedPress),
+            "chicagoManualofstyle" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "chicago" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+        }
+    }
+}
+*/
+
+/*
+impl std::str::FromStr for Format {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use clap::ValueEnum;
+        for variant in Self::value_variants() {
+            if variant.to_possible_value().unwrap().matches(s, false) {
+                return Ok(*variant);
+            }
+        }
+        Err(format!("Invalid variant: {s}"))
+    }
+}
+*/
 
 #[cfg(feature = "luamodule")]
 use mlua::prelude::*;
@@ -17,11 +53,12 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
 #[cfg(feature = "luamodule")]
 fn titlecase<'a>(
     lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaString<'a>),
+    (input, locale, style): (LuaString<'a>, LuaString<'a>, LuaString<'a>),
 ) -> LuaResult<LuaString<'a>> {
     let input = input.to_string_lossy();
     let locale = locale.to_string_lossy();
-    let output = to_titlecase(&input, &locale);
+    let style = style.to_string_lossy();
+    let output = to_titlecase(&input, &locale, &style);
     lua.create_string(&output)
 }
 
@@ -31,16 +68,24 @@ pub mod cli;
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
 /// Convert a string to title case following typestting conventions for a target locale
-pub fn to_titlecase(string: &str, locale: &str) -> String {
+pub fn to_titlecase(string: &str, locale: &InputLocale, style: Option<&StyleGuide>) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
-        "tr" => to_titlecase_tr(words),
-        "tr_TR" => to_titlecase_tr(words),
-        _ => to_titlecase_en(words),
+        InputLocale::EN => to_titlecase_en(words, style),
+        InputLocale::TR => to_titlecase_tr(words, style),
     }
 }
 
-fn to_titlecase_en(words: Vec<&str>) -> String {
+fn to_titlecase_en(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
+    match style {
+        Some(StyleGuide::AP) => to_titlecase_ap(words),
+        Some(StyleGuide::CMOS) => to_titlecase_ap(words),
+        Some(StyleGuide::Gruber) => to_titlecase_ap(words),
+        None => to_titlecase_ap(words),
+    }
+}
+
+fn to_titlecase_ap(words: Vec<&str>) -> String {
     let mut words = words.iter().peekable();
     let mut output: Vec<String> = Vec::new();
     let first = words.next().unwrap();
@@ -60,20 +105,25 @@ fn to_titlecase_en(words: Vec<&str>) -> String {
     output.join(" ")
 }
 
-fn to_titlecase_tr(words: Vec<&str>) -> String {
-    let mut words = words.iter();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(first.to_titlecase_tr_or_az_lower_rest());
-    for word in words {
-        match is_reserved_tr(word.to_string()) {
-            true => output.push(word.to_string().to_lowercase()),
-            false => {
-                output.push(word.to_titlecase_tr_or_az_lower_rest());
+fn to_titlecase_tr(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
+    match style {
+        Some(_) => panic!("Turkish implementation doesn't support different style guides."),
+        None => {
+            let mut words = words.iter();
+            let mut output: Vec<String> = Vec::new();
+            let first = words.next().unwrap();
+            output.push(first.to_titlecase_tr_or_az_lower_rest());
+            for word in words {
+                match is_reserved_tr(word.to_string()) {
+                    true => output.push(word.to_string().to_lowercase()),
+                    false => {
+                        output.push(word.to_titlecase_tr_or_az_lower_rest());
+                    }
+                }
             }
+            output.join(" ")
         }
     }
-    output.join(" ")
 }
 
 fn is_reserved_en(word: String) -> bool {
