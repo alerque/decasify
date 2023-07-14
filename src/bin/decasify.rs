@@ -1,5 +1,6 @@
 use decasify::cli::Cli;
 use decasify::to_titlecase;
+use decasify::{InputLocale, StyleGuide};
 
 use clap::CommandFactory;
 use std::io;
@@ -9,11 +10,10 @@ fn main() -> decasify::Result<()> {
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let app = Cli::command().version(version);
     let matches = app.get_matches();
-    let locale: String = if matches.contains_id("locale") {
-        matches.get_one::<String>("locale").unwrap().to_string()
-    } else {
-        String::from("en")
-    };
+    let locale = matches.get_one::<InputLocale>("locale").unwrap().to_owned();
+    let style = matches
+        .get_one::<StyleGuide>("style")
+        .and_then(|s| Some(s.to_owned()));
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches
@@ -22,16 +22,24 @@ fn main() -> decasify::Result<()> {
                 .cloned()
                 .collect();
             let input: Vec<String> = vec![input.join(" ")];
-            process(input.iter().map(|ln| ln.to_string()), &locale);
+            process(input.iter().map(|ln| ln.to_string()), locale, style);
         }
-        false => process(io::stdin().lock().lines().map(|ln| ln.unwrap()), &locale),
+        false => process(
+            io::stdin().lock().lines().map(|ln| ln.unwrap()),
+            locale,
+            style,
+        ),
     }
     Ok(())
 }
 
-fn process<I: IntoIterator<Item = String>>(strings: I, locale: &str) {
+fn process<I: IntoIterator<Item = String>>(
+    strings: I,
+    locale: InputLocale,
+    style: Option<StyleGuide>,
+) {
     for string in strings {
-        let output = to_titlecase(&string, locale);
+        let output = to_titlecase(&string, locale.clone(), style.clone());
         println!("{output}");
     }
 }

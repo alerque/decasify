@@ -43,6 +43,7 @@ lto = true
 
 [dependencies]
 regex = "1.9"
+titlecase = "2.2"
 unicode_titlecase = "2.1"
 
   [dependencies.clap]
@@ -54,6 +55,10 @@ unicode_titlecase = "2.1"
   version = "0.8"
   optional = true
   features = ["module"]
+
+  [dependencies.strum]
+  version = "0.25"
+  features = [ "derive" ]
 
 [build-dependencies]
 

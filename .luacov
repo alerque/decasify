@@ -1,0 +1,9 @@
+exclude = {
+	".lua",
+	".luarocks",
+	"lua_modules",
+	"home/runner",
+	"usr/share",
+	".+_spec"
+}
+includeuntestedfiles = true
