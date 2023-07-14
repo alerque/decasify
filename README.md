@@ -86,16 +86,20 @@ In your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-decasify = "0.1"
+decasify = "0.3"
 ```
 
 ```rust
 use decasify::to_titlecase;
+use decasify::types::{InputLocale, StyleGuide};
 
 fn main() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
-    let output = to_titlecase(input, "tr");
-    eprintln!{"{output}"};
+    let output = to_titlecase(input, InputLocale::TR, None);
+    eprintln! {"{output}"};
+    let input = "title with a twist: a colon";
+    let output = to_titlecase(input, InputLocale::EN, Some(StyleGuide::DaringFireball));
+    eprintln! {"{output}"};
 }
 ```
 
@@ -114,5 +118,8 @@ Then import ande use the provided function:
 local decasify = require("decasify")
 local input = "ILIK SU VE İTEN RÜZGARLAR"
 local output = decasify.titlecase(input, "tr")
+print(output)
+input = "title with a twist: a colon"
+output  = decasify.titlecase(input, "en", "gruber")
 print(output)
 ```

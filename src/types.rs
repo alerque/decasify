@@ -14,6 +14,7 @@ impl fmt::Display for DecasifyError {
 
 impl error::Error for DecasifyError {}
 
+/// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
 pub enum InputLocale {
     #[default]
@@ -21,6 +22,7 @@ pub enum InputLocale {
     TR,
 }
 
+/// Style guide selector to change gramar and context rules used for title casing.
 #[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
