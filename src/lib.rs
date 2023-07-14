@@ -28,18 +28,15 @@ fn titlecase<'a>(
 ) -> LuaResult<LuaString<'a>> {
     let input = input.to_string_lossy();
     let locale: InputLocale = match locale {
-        LuaValue::String(s) => s
-            .to_string_lossy()
-            .parse()
-            .unwrap_or_else(|_| InputLocale::EN),
+        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(InputLocale::EN),
         _ => InputLocale::EN,
     };
     let style: Option<StyleGuide> = match style {
         LuaValue::String(s) => s
             .to_string_lossy()
             .parse::<StyleGuide>()
-            .and_then(|s| Ok(Some(s)))
-            .unwrap_or_else(|_| None),
+            .map(Some)
+            .unwrap_or(None),
         _ => None,
     };
     let output = to_titlecase(&input, locale, style);

@@ -11,9 +11,7 @@ fn main() -> Result<()> {
     let app = Cli::command().version(version);
     let matches = app.get_matches();
     let locale = matches.get_one::<InputLocale>("locale").unwrap().to_owned();
-    let style = matches
-        .get_one::<StyleGuide>("style")
-        .and_then(|s| Some(s.to_owned()));
+    let style = matches.get_one::<StyleGuide>("style").map(|s| s.to_owned());
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches
