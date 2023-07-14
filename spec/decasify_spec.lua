@@ -18,6 +18,16 @@ describe("decasify", function()
          assert.equals(grub, titlecase(text, "en", "gruber"))
       end)
 
+      it("should be at peace with Turkish characters", function()
+         local result = titlecase("İLKİ ILIK ÖĞLEN", "tr")
+         assert.equals("İlki Ilık Öğlen", result)
+      end)
+
+      it("should be nice about Turish words", function()
+         local result = titlecase("Sen VE ben ile o", "tr")
+         assert.equals("Sen ve Ben ile O", result)
+      end)
+
    end)
 
 end)

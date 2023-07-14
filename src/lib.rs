@@ -254,4 +254,20 @@ mod tests {
         "Q&A with Steve Jobs: 'That's what happens in technology'",
         "Q&A With Steve Jobs: 'That's What Happens in Technology'"
     );
+
+    testcase!(
+        turkish_chars,
+        &InputLocale::TR,
+        None,
+        "İLKİ ILIK ÖĞLEN",
+        "İlki Ilık Öğlen"
+    );
+
+    testcase!(
+        turkish_blockwords,
+        &InputLocale::TR,
+        None,
+        "Sen VE ben ile o",
+        "Sen ve Ben ile O"
+    );
 }
