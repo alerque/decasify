@@ -16,6 +16,8 @@ naersk.lib."${targetPlatform.system}".buildPackage rec {
     rustc
   ];
   cargoBuildOptions = final: final ++ [ "--features cli" ];
+  # Work around naersk not using build.rs, see https://github.com/nix-community/naersk/issues/301
+  RUSTFLAGS = "--cfg build";
   CARGO_BUILD_INCREMENTAL = "false";
   copyLibs = true;
   name = cargoToml.package.name;
