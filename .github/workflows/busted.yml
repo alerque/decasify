@@ -1,0 +1,45 @@
+name: Busted
+
+on: [ push, pull_request ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  busted:
+    strategy:
+      fail-fast: false
+      matrix:
+        luaVersion: [ "5.4", "5.3", "5.2", "5.1", "luajit", "luajit-openresty" ]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install lua
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: ${{ matrix.luaVersion }}
+      - name: Install luarocks
+        uses: leafo/gh-actions-luarocks@v4
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v1
+      - name: Setup dependencies
+        run: |
+          luarocks install --only-deps -- decasify-dev-1.rockspec
+          luarocks install busted
+          luarocks install luacov-coveralls
+      - name: Build and install Lua module locally
+        run: |
+          luarocks make
+      - name: Run busted tests
+        run: busted -c -v
+      - name: Report test coverage
+        if: success()
+        continue-on-error: true
+        run: luacov-coveralls -i cldr -e .luarocks
+        env:
+          COVERALLS_REPO_TOKEN: ${{ github.token }}
