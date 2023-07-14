@@ -1,42 +1,64 @@
-use crate::cli::{InputLocale, StyleGuide};
 use regex::Regex;
-use std::{error, result};
+use std::{error, fmt, result, str::FromStr};
+use strum::{Display, EnumVariantNames};
 use unicode_titlecase::StrTitleCase;
 
-// TODO: We may have to handle our own FromStr so we can move the enum away from being dependent on
-// clap so this can be used as a library without so much overhead. Collecting code to that end...
+#[cfg(feature = "cli")]
+pub mod cli;
 
-/*
-impl FromStr for StyleGuide {
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
+
+#[derive(Debug)]
+struct DecasifyError(String);
+
+impl fmt::Display for DecasifyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl error::Error for DecasifyError {}
+
+#[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
+pub enum InputLocale {
+    #[default]
+    EN,
+    TR,
+}
+
+#[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
+pub enum StyleGuide {
+    #[strum(serialize = "ap")]
+    AssociatedPress,
+    #[strum(serialize = "cmos")]
+    ChicagoManualOfStyle,
+    #[strum(serialize = "gruber")]
+    #[default]
+    DaringFireball,
+}
+
+impl FromStr for InputLocale {
+    type Err = Box<dyn error::Error>;
+    fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "gruber" => Ok(StyleGuide::DaringFireball),
-            "fireball" => Ok(StyleGuide::DaringFireball),
-            "daringfireball" => Ok(StyleGuide::DaringFireball),
-            "associatedpress" => Ok(StyleGuide::AssociatedPress),
-            "ap" => Ok(StyleGuide::AssociatedPress),
-            "chicagoManualofstyle" => Ok(StyleGuide::ChicagoManualOfStyle),
-            "chicago" => Ok(StyleGuide::ChicagoManualOfStyle),
-            "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "en" | "English" | "en_en" => Ok(InputLocale::EN),
+            "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(InputLocale::TR),
+            _ => Err(Box::new(DecasifyError("Invalid input language".into()))),
         }
     }
 }
-*/
 
-/*
-impl std::str::FromStr for Format {
-    type Err = String;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use clap::ValueEnum;
-        for variant in Self::value_variants() {
-            if variant.to_possible_value().unwrap().matches(s, false) {
-                return Ok(*variant);
-            }
+impl FromStr for StyleGuide {
+    type Err = Box<dyn error::Error>;
+    fn from_str(s: &str) -> Result<Self> {
+        match s.to_ascii_lowercase().as_str() {
+            "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
+            "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
+            "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            _ => Err(Box::new(DecasifyError("Invalid style guide".into()))),
         }
-        Err(format!("Invalid variant: {s}"))
     }
 }
-*/
 
 #[cfg(feature = "luamodule")]
 use mlua::prelude::*;
@@ -56,16 +78,12 @@ fn titlecase<'a>(
     (input, locale, style): (LuaString<'a>, LuaString<'a>, LuaString<'a>),
 ) -> LuaResult<LuaString<'a>> {
     let input = input.to_string_lossy();
-    let locale = locale.to_string_lossy();
-    let style = style.to_string_lossy();
-    let output = to_titlecase(&input, &locale, &style);
+    let locale: InputLocale = locale.to_string_lossy().parse().unwrap();
+    let style: StyleGuide = style.to_string_lossy().parse().unwrap();
+    let style: Option<&StyleGuide> = Some(&style);
+    let output = to_titlecase(&input, &locale, style);
     lua.create_string(&output)
 }
-
-#[cfg(feature = "cli")]
-pub mod cli;
-
-pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
 /// Convert a string to title case following typestting conventions for a target locale
 pub fn to_titlecase(string: &str, locale: &InputLocale, style: Option<&StyleGuide>) -> String {
@@ -78,9 +96,9 @@ pub fn to_titlecase(string: &str, locale: &InputLocale, style: Option<&StyleGuid
 
 fn to_titlecase_en(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
     match style {
-        Some(StyleGuide::AP) => to_titlecase_ap(words),
-        Some(StyleGuide::CMOS) => to_titlecase_ap(words),
-        Some(StyleGuide::Gruber) => to_titlecase_ap(words),
+        Some(StyleGuide::AssociatedPress) => to_titlecase_ap(words),
+        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_ap(words),
+        Some(StyleGuide::DaringFireball) => to_titlecase_ap(words),
         None => to_titlecase_ap(words),
     }
 }

@@ -1,6 +1,6 @@
 use decasify::cli::Cli;
-use decasify::cli::{InputLocale, StyleGuide};
 use decasify::to_titlecase;
+use decasify::{InputLocale, StyleGuide};
 
 use clap::CommandFactory;
 use std::io;
@@ -10,8 +10,8 @@ fn main() -> decasify::Result<()> {
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let app = Cli::command().version(version);
     let matches = app.get_matches();
-    let locale = matches.get_one::<InputLocale>("locale").unwrap();
-    let style = matches.get_one::<StyleGuide>("style");
+    let locale = matches.get_one("locale").unwrap();
+    let style = matches.get_one("style");
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches

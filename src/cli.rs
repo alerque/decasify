@@ -1,16 +1,13 @@
-use clap::{Parser, ValueEnum};
+use crate::{InputLocale, StyleGuide};
+use clap::{builder, Parser};
+use strum::VariantNames;
 
-#[derive(Debug, Clone, PartialEq, Parser, ValueEnum)]
-pub enum StyleGuide {
-    AP,
-    CMOS,
-    Gruber,
-}
-
-#[derive(Debug, Clone, PartialEq, Parser, ValueEnum)]
-pub enum InputLocale {
-    EN,
-    TR,
+#[macro_export]
+macro_rules! clap_enum_variants {
+    ($e: ty) => {{
+        use builder::TypedValueParser;
+        builder::PossibleValuesParser::new(<$e>::VARIANTS).map(|s| s.parse::<$e>().unwrap())
+    }};
 }
 
 /// A CLI tool to convert all-caps strings to title-case or other less aggressive tones that
@@ -19,11 +16,11 @@ pub enum InputLocale {
 #[clap(author, bin_name = "decasify")]
 pub struct Cli {
     /// Locale
-    #[clap(short, long, value_enum)]
+    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(InputLocale))]
     pub locale: InputLocale,
 
     /// Style Guide
-    #[clap(short, long, value_enum)]
+    #[clap(short, long, ignore_case = true, value_parser = clap_enum_variants!(StyleGuide))]
     pub style: Option<StyleGuide>,
 
     /// Input string
