@@ -14,18 +14,45 @@ A CLI utility, Rust crate, and Lua module to cast strings to title-case accordin
 This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-casing strings, particularly coming from Turkish.
 Many tools can handle casing single words, and many others can handle English strings, but nothing seemed to be out there for full Turkish strings.
 
-Input may be either shell arguments or STDIN.
 Currently defaults to title-casing, others to come later.
 Currently defaults to English rules, but the Turkish ones are actually more complete because that's my main use case.
+
+For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
+The Gruber style is by far the most complete.
+The CMOS style handles a number of parts of speech has punctuation related issues.
+The AP style is largely unimplemented.
+Contributions are welcome for better style guide support or further languages.
 
 ``` console
 $ decasify -l tr ILIK SU VE İTEN RÜZGARLAR
 Ilık Su ve İten Rüzgarlar
 $ echo ILIK SU VE İTEN RÜZGARLAR | decasify -l tr
 Ilık Su ve İten Rüzgarlar
+$ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
+Foo BAR and Baz: An Alter Ego
 ```
 
-## Use as a binary
+## Use as a Binary
+
+Use of the CLI is pretty simple.
+Input may be either shell arguments or STDIN.
+
+```console
+$ decasify --help
+A CLI tool to convert all-caps strings to title-case or other less aggressive tones that supports
+Turkish input
+
+Usage: decasify [OPTIONS] [INPUT]...
+
+Arguments:
+  [INPUT]...  Input string
+
+Options:
+  -l, --locale <LOCALE>  Locale [default: EN] [possible values: EN, TR]
+  -s, --style <STYLE>    Style Guide [possible values: ap, cmos, gruber]
+  -h, --help             Print help
+  -V, --version          Print version
+```
 
 First, check your distro for packages, e.g. for Arch Linux get it [from the AUR](https://aur.archlinux.org/packages/decasify).
 
@@ -72,7 +99,7 @@ fn main() {
 }
 ```
 
-## Use as Lua rock
+## Use as LuaRock
 
 Depend on the LuaRock in your project or install with `luarocks install decasify`:
 
