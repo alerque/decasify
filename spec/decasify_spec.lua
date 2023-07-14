@@ -10,6 +10,12 @@ describe("decasify", function()
 
    describe("titlecase", function()
 
+      it("should not balk at nil values for optional args", function()
+         assert.no.error(function () titlecase("foo", "en", "cmos") end)
+         assert.no.error(function () titlecase("foo", "tr") end)
+         assert.no.error(function () titlecase("foo") end)
+      end)
+
       it("should cooperate with English style guides", function()
          local text = "foo: a baz"
          local cmos = "Foo: a Baz"

@@ -76,18 +76,30 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
 #[cfg(feature = "luamodule")]
 fn titlecase<'a>(
     lua: &'a Lua,
-    (input, locale, style): (LuaString<'a>, LuaString<'a>, LuaString<'a>),
+    (input, locale, style): (LuaString<'a>, LuaValue<'a>, LuaValue<'a>),
 ) -> LuaResult<LuaString<'a>> {
     let input = input.to_string_lossy();
-    let locale: InputLocale = locale.to_string_lossy().parse().unwrap();
-    let style: StyleGuide = style.to_string_lossy().parse().unwrap();
-    let style: Option<&StyleGuide> = Some(&style);
-    let output = to_titlecase(&input, &locale, style);
+    let locale: InputLocale = match locale {
+        LuaValue::String(s) => s
+            .to_string_lossy()
+            .parse()
+            .unwrap_or_else(|_| InputLocale::EN),
+        _ => InputLocale::EN,
+    };
+    let style: Option<StyleGuide> = match style {
+        LuaValue::String(s) => s
+            .to_string_lossy()
+            .parse::<StyleGuide>()
+            .and_then(|s| Ok(Some(s)))
+            .unwrap_or_else(|_| None),
+        _ => None,
+    };
+    let output = to_titlecase(&input, locale, style);
     lua.create_string(&output)
 }
 
 /// Convert a string to title case following typestting conventions for a target locale
-pub fn to_titlecase(string: &str, locale: &InputLocale, style: Option<&StyleGuide>) -> String {
+pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
         InputLocale::EN => to_titlecase_en(words, style),
@@ -95,7 +107,7 @@ pub fn to_titlecase(string: &str, locale: &InputLocale, style: Option<&StyleGuid
     }
 }
 
-fn to_titlecase_en(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
+fn to_titlecase_en(words: Vec<&str>, style: Option<StyleGuide>) -> String {
     match style {
         Some(StyleGuide::AssociatedPress) => to_titlecase_ap(words),
         Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_cmos(words),
@@ -134,7 +146,7 @@ fn to_titlecase_gruber(words: Vec<&str>) -> String {
     gruber_titlecase(&text)
 }
 
-fn to_titlecase_tr(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
+fn to_titlecase_tr(words: Vec<&str>, style: Option<StyleGuide>) -> String {
     match style {
         Some(_) => panic!("Turkish implementation doesn't support different style guides."),
         None => {
@@ -189,75 +201,75 @@ mod tests {
         };
     }
 
-    testcase!(abc_none, &InputLocale::EN, None, "a b c", "A B C");
+    testcase!(abc_none, InputLocale::EN, None, "a b c", "A B C");
 
     testcase!(
         abc_cmos,
-        &InputLocale::EN,
-        Some(&StyleGuide::ChicagoManualOfStyle),
+        InputLocale::EN,
+        Some(StyleGuide::ChicagoManualOfStyle),
         "a b c",
         "A B C"
     );
 
     testcase!(
         abc_gruber,
-        &InputLocale::EN,
-        Some(&StyleGuide::DaringFireball),
+        InputLocale::EN,
+        Some(StyleGuide::DaringFireball),
         "a b c",
         "A B C"
     );
 
     testcase!(
         simple_cmos,
-        &InputLocale::EN,
-        Some(&StyleGuide::ChicagoManualOfStyle),
+        InputLocale::EN,
+        Some(StyleGuide::ChicagoManualOfStyle),
         "Once UPON A time",
         "Once upon a Time"
     );
 
     testcase!(
         simple_gruber,
-        &InputLocale::EN,
-        Some(&StyleGuide::DaringFireball),
+        InputLocale::EN,
+        Some(StyleGuide::DaringFireball),
         "Once UPON A time",
         "Once UPON a Time"
     );
 
     testcase!(
         colon_cmos,
-        &InputLocale::EN,
-        Some(&StyleGuide::ChicagoManualOfStyle),
+        InputLocale::EN,
+        Some(StyleGuide::ChicagoManualOfStyle),
         "foo: a baz",
         "Foo: a Baz"
     );
 
     testcase!(
         colon_gruber,
-        &InputLocale::EN,
-        Some(&StyleGuide::DaringFireball),
+        InputLocale::EN,
+        Some(StyleGuide::DaringFireball),
         "foo: a baz",
         "Foo: A Baz"
     );
 
     // testcase!(
     //     qna_cmos,
-    //     &InputLocale::EN,
-    //     Some(&StyleGuide::ChicagoManualOfStyle),
+    //     InputLocale::EN,
+    //     Some(StyleGuide::ChicagoManualOfStyle),
     //     "Q&A with Steve Jobs: 'That's what happens in technology'",
     //     "Q&a with Steve Jobs: 'that's What Happens in Technology'"
     // );
 
     testcase!(
         qna_gruber,
-        &InputLocale::EN,
-        Some(&StyleGuide::DaringFireball),
+        InputLocale::EN,
+        Some(StyleGuide::DaringFireball),
         "Q&A with Steve Jobs: 'That's what happens in technology'",
         "Q&A With Steve Jobs: 'That's What Happens in Technology'"
     );
 
     testcase!(
         turkish_chars,
-        &InputLocale::TR,
+        InputLocale::TR,
         None,
         "İLKİ ILIK ÖĞLEN",
         "İlki Ilık Öğlen"
@@ -265,7 +277,7 @@ mod tests {
 
     testcase!(
         turkish_blockwords,
-        &InputLocale::TR,
+        InputLocale::TR,
         None,
         "Sen VE ben ile o",
         "Sen ve Ben ile O"
