@@ -1,6 +1,7 @@
 use regex::Regex;
 use std::{error, fmt, result, str::FromStr};
 use strum::{Display, EnumVariantNames};
+use titlecase::titlecase as gruber_titlecase;
 use unicode_titlecase::StrTitleCase;
 
 #[cfg(feature = "cli")]
@@ -97,13 +98,18 @@ pub fn to_titlecase(string: &str, locale: &InputLocale, style: Option<&StyleGuid
 fn to_titlecase_en(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
     match style {
         Some(StyleGuide::AssociatedPress) => to_titlecase_ap(words),
-        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_ap(words),
-        Some(StyleGuide::DaringFireball) => to_titlecase_ap(words),
-        None => to_titlecase_ap(words),
+        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_cmos(words),
+        Some(StyleGuide::DaringFireball) => to_titlecase_gruber(words),
+        None => to_titlecase_gruber(words),
     }
 }
 
 fn to_titlecase_ap(words: Vec<&str>) -> String {
+    eprintln!("AP style guide not implemented, string returned as-is!");
+    words.join(" ")
+}
+
+fn to_titlecase_cmos(words: Vec<&str>) -> String {
     let mut words = words.iter().peekable();
     let mut output: Vec<String> = Vec::new();
     let first = words.next().unwrap();
@@ -121,6 +127,11 @@ fn to_titlecase_ap(words: Vec<&str>) -> String {
         }
     }
     output.join(" ")
+}
+
+fn to_titlecase_gruber(words: Vec<&str>) -> String {
+    let text = words.join(" ");
+    gruber_titlecase(&text)
 }
 
 fn to_titlecase_tr(words: Vec<&str>, style: Option<&StyleGuide>) -> String {
