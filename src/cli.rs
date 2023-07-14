@@ -1,4 +1,6 @@
+#[cfg(build)]
 use crate::{InputLocale, StyleGuide};
+
 use clap::{builder, Parser};
 use strum::VariantNames;
 

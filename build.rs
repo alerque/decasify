@@ -12,9 +12,13 @@ use std::{fs, path};
 use vergen::EmitBuilder;
 
 #[cfg(feature = "completions")]
+include!("src/types.rs");
+
+#[cfg(feature = "completions")]
 include!("src/cli.rs");
 
 fn main() {
+    println!("cargo:rustc-cfg=build");
     let mut builder = EmitBuilder::builder();
     // If passed a version from automake, use that instead of vergen's formatting
     if let Ok(val) = env::var("DECASIFY_VERSION") {

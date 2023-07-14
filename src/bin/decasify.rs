@@ -1,12 +1,12 @@
 use decasify::cli::Cli;
 use decasify::to_titlecase;
-use decasify::{InputLocale, StyleGuide};
+use decasify::types::{InputLocale, Result, StyleGuide};
 
 use clap::CommandFactory;
 use std::io;
 use std::io::BufRead;
 
-fn main() -> decasify::Result<()> {
+fn main() -> Result<()> {
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let app = Cli::command().version(version);
     let matches = app.get_matches();
