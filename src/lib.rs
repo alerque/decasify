@@ -173,3 +173,85 @@ fn is_reserved_tr(word: String) -> bool {
     let word = word.as_str();
     baglac.is_match(word) || soruek.is_match(word)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! testcase {
+        ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_titlecase($input, $locale, $style);
+                // eprintln!("WAS: {actual}");
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    testcase!(abc_none, &InputLocale::EN, None, "a b c", "A B C");
+
+    testcase!(
+        abc_cmos,
+        &InputLocale::EN,
+        Some(&StyleGuide::ChicagoManualOfStyle),
+        "a b c",
+        "A B C"
+    );
+
+    testcase!(
+        abc_gruber,
+        &InputLocale::EN,
+        Some(&StyleGuide::DaringFireball),
+        "a b c",
+        "A B C"
+    );
+
+    testcase!(
+        simple_cmos,
+        &InputLocale::EN,
+        Some(&StyleGuide::ChicagoManualOfStyle),
+        "Once UPON A time",
+        "Once upon a Time"
+    );
+
+    testcase!(
+        simple_gruber,
+        &InputLocale::EN,
+        Some(&StyleGuide::DaringFireball),
+        "Once UPON A time",
+        "Once UPON a Time"
+    );
+
+    testcase!(
+        colon_cmos,
+        &InputLocale::EN,
+        Some(&StyleGuide::ChicagoManualOfStyle),
+        "foo: a baz",
+        "Foo: a Baz"
+    );
+
+    testcase!(
+        colon_gruber,
+        &InputLocale::EN,
+        Some(&StyleGuide::DaringFireball),
+        "foo: a baz",
+        "Foo: A Baz"
+    );
+
+    // testcase!(
+    //     qna_cmos,
+    //     &InputLocale::EN,
+    //     Some(&StyleGuide::ChicagoManualOfStyle),
+    //     "Q&A with Steve Jobs: 'That's what happens in technology'",
+    //     "Q&a with Steve Jobs: 'that's What Happens in Technology'"
+    // );
+
+    testcase!(
+        qna_gruber,
+        &InputLocale::EN,
+        Some(&StyleGuide::DaringFireball),
+        "Q&A with Steve Jobs: 'That's what happens in technology'",
+        "Q&A With Steve Jobs: 'That's What Happens in Technology'"
+    );
+}
