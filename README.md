@@ -89,6 +89,8 @@ In your `Cargo.toml` file.
 decasify = "0.3"
 ```
 
+Then use the crate functions and types in your project something like this:
+
 ```rust
 use decasify::to_titlecase;
 use decasify::types::{InputLocale, StyleGuide};
@@ -111,8 +113,9 @@ Depend on the LuaRock in your project or install with `luarocks install decasify
 dependencies = {
    "decasify"
 }
+```
 
-Then import ande use the provided function:
+Then import and use the provided function:
 
 ```lua
 local decasify = require("decasify")
