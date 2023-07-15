@@ -1,6 +1,6 @@
 [package]
 name = "decasify"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Caleb Maclennan <caleb@alerque.com>"]
 edition = "2021"
 description = "A CLI utility and library to cast strings to title-case according to locale specific style guides including Turkish support"
