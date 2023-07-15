@@ -4,7 +4,7 @@ use unicode_titlecase::StrTitleCase;
 
 pub mod types;
 
-use types::{InputLocale, StyleGuide};
+pub use types::{InputLocale, Result, StyleGuide};
 
 #[cfg(feature = "cli")]
 pub mod cli;

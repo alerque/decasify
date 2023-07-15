@@ -1,6 +1,6 @@
 use decasify::cli::Cli;
 use decasify::to_titlecase;
-use decasify::types::{InputLocale, Result, StyleGuide};
+use decasify::{InputLocale, Result, StyleGuide};
 
 use clap::CommandFactory;
 use std::io;

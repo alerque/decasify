@@ -98,7 +98,7 @@ Then use the crate functions and types in your project something like this:
 
 ```rust
 use decasify::to_titlecase;
-use decasify::types::{InputLocale, StyleGuide};
+use decasify::{InputLocale, StyleGuide};
 
 fn main() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
