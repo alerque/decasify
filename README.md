@@ -50,6 +50,8 @@ Arguments:
 
 Options:
   -l, --locale <LOCALE>  Locale [default: EN] [possible values: EN, TR]
+  -c, --case <CASE>      Target case [default: Title] [possible values: Lower, Sentence, Title,
+                         Upper]
   -s, --style <STYLE>    Style Guide [possible values: ap, cmos, gruber]
   -h, --help             Print help
   -V, --version          Print version

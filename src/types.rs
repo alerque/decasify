@@ -22,7 +22,17 @@ pub enum InputLocale {
     TR,
 }
 
-/// Style guide selector to change gramar and context rules used for title casing.
+/// Target case selector.
+#[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
+pub enum TargetCase {
+    Lower,
+    Sentence,
+    #[default]
+    Title,
+    Upper,
+}
+
+/// Style guide selector to change grammar and context rules used for title casing.
 #[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
@@ -41,6 +51,19 @@ impl FromStr for InputLocale {
             "en" | "English" | "en_en" => Ok(InputLocale::EN),
             "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(InputLocale::TR),
             _ => Err(Box::new(DecasifyError("Invalid input language".into()))),
+        }
+    }
+}
+
+impl FromStr for TargetCase {
+    type Err = Box<dyn error::Error>;
+    fn from_str(s: &str) -> Result<Self> {
+        match s.to_ascii_lowercase().as_str() {
+            "lower" => Ok(TargetCase::Lower),
+            "sentence" => Ok(TargetCase::Sentence),
+            "title" => Ok(TargetCase::Title),
+            "upper" => Ok(TargetCase::Upper),
+            _ => Err(Box::new(DecasifyError("Unknown target case".into()))),
         }
     }
 }

@@ -1,5 +1,5 @@
 #[cfg(build)]
-use crate::{InputLocale, StyleGuide};
+use crate::{InputLocale, StyleGuide, TargetCase};
 
 use clap::{builder, Parser};
 use strum::VariantNames;
@@ -20,6 +20,10 @@ pub struct Cli {
     /// Locale
     #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(InputLocale))]
     pub locale: InputLocale,
+
+    /// Target case
+    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(TargetCase))]
+    pub case: TargetCase,
 
     /// Style Guide
     #[clap(short, long, ignore_case = true, value_parser = clap_enum_variants!(StyleGuide))]
