@@ -11,11 +11,12 @@
 
 A CLI utility, Rust crate, and Lua module to cast strings to title-case according to locale specific style guides including Turkish support.
 
-This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-casing strings, particularly coming from Turkish.
-Many tools can handle casing single words, and many others can handle English strings, but nothing seemed to be out there for full Turkish strings.
+This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
+Many tools can handle casing single words, and some others can handle English strings, but nothing seemed to be out there for full Turkish strings.
 
 Currently defaults to title-casing, others to come later.
 Currently defaults to English rules, but the Turkish ones are actually more complete because that's my main use case.
+Currently defaults to the Gruber style rules, but others are available
 
 For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
 The Gruber style is by far the most complete.
@@ -56,25 +57,29 @@ Options:
 
 First, check your distro for packages, e.g. for Arch Linux get it [from the AUR](https://aur.archlinux.org/packages/decasify).
 
-Otherwise for most *nix platforms you can run it directly or install it to a shell using Nix Flakes:
+Otherwise for many platforms you can run it directly or install it to a shell using Nix Flakes:
 
 ``` console
 $ nix run github:alerque/decasify
 ```
 
-To install from source, grab the tarball or Git clone:
+To do a full install from source, grab the tarball attached to the [latest release](https://github.com/alerque/decasify/releases/latest) or use Git to clone the repository.
+Don't use the "source code" zip/tar.gz files linked from releases, go for the `tar.xz` source file.
+If you use a Git close, first run `./bootstrap.sh` after checkout.
+This isn't needed in the source release tarballs.
+Next, configure and install with:
 
 ```console
-# If using a Git clone (not needed for tarball releases):
-$ ./bootstrap.sh
 $ ./configure
 $ make
 $ sudo make install
 ```
-Of course all the usual autotools options apply such as setting a prefix to install to.
-Note the source installation will include a man page, and shell completions.
 
-Of course the bare binary can also be installed with Cargo:
+Note that installing from source has the advantage of include a man page and shell completions.
+All the usual autotools options apply, see `--help` for details.
+The most commonly used option especially for distro packagers is probably `--prefix /usr` to change the install location from the default of `/usr/local`.
+
+Of course the bare binary can also be installed directly with Cargo:
 
 ```console
 $ cargo install --features cli decasify
