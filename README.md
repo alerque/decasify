@@ -33,7 +33,7 @@ $ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
 Foo BAR and Baz: An Alter Ego
 ```
 
-## Use as a Binary
+## Use as a CLI tool
 
 Use of the CLI is pretty simple.
 Input may be either shell arguments or STDIN.
