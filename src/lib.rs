@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 use regex::Regex;
 use titlecase::titlecase as gruber_titlecase;
 use unicode_titlecase::StrTitleCase;
