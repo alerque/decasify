@@ -22,7 +22,7 @@ CLEANFILES =
 
 CARGO_FEATURE_ARGS = --features full
 
-include $(top_srcdir)/build-aux/rust_boilerplate.am
+include $(top_srcdir)/build-aux/rust_boilerplate.mk
 
 SEMVER = $(shell $(AWK) -F\" '/^version/ { print $$2 }' Cargo.toml)
 ROCKREV = 1
