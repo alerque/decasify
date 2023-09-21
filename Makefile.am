@@ -22,7 +22,6 @@ CLEANFILES =
 
 CARGO_FEATURE_ARGS = --features full
 
-include $(top_srcdir)/build-aux/git_version.am
 include $(top_srcdir)/build-aux/rust_boilerplate.am
 
 SEMVER = $(shell $(AWK) -F\" '/^version/ { print $$2 }' Cargo.toml)
