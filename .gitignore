@@ -27,7 +27,7 @@ target/
 /build-aux/missing
 build-aux/rust_boilerplate.mk
 
-decasify-*/
+decasify-*
 
 # LuaRocks
 /lua_modules
