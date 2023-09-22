@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: luacheck
-        uses: lunarmodules/luacheck@v0
+        uses: lunarmodules/luacheck@v1
