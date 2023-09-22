@@ -46,7 +46,7 @@ regex = "1.9"
 strum = "0.25"
 strum_macros = "0.25"
 titlecase = "2.2"
-unicode_titlecase = "2.2"
+unicode_titlecase = "2.3"
 
   [dependencies.clap]
   version = "4.4"

@@ -1342,9 +1342,9 @@ dependencies = [
 
 [[package]]
 name = "unicode_titlecase"
-version = "2.2.1"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9e9403fceac1c65b106517e31879d52ee5a041bda19efa63d4881369a8ba36b"
+checksum = "c9f865ed539c93628813817ee7076cc4d636081e35c2a9ef70626c1ef853df34"
 
 [[package]]
 name = "url"
