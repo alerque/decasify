@@ -13,6 +13,7 @@ jobs:
     uses: lunarmodules/.github/.github/workflows/test_build_rock.yml@main
     with:
       rockspecs: ${{ needs.affected.outputs.rockspecs }}
+      format3: true
 
   upload:
     needs: [ affected, build ]
