@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/alerque/decasify"
 repository = "https://github.com/alerque/decasify"
 license = "GPL-3.0-only"
-build = "build.rs"
+build = "build-aux/build.rs"
 include = ["*.rs"]
 
 [lib]

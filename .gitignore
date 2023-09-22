@@ -25,6 +25,7 @@ target/
 /autom4te.cache
 /build-aux/install-sh
 /build-aux/missing
+build-aux/rust_boilerplate.mk
 
 decasify-*/
 
