@@ -24,10 +24,10 @@ AC_DEFUN_ONCE([AX_RUST_BOILERPLATE], [
                 AX_PROGVAR([cargo])
                 AX_PROGVAR([jq])
                 AX_PROGVAR([rustc])
-                AX_PROGVAR([git])
                 AX_PROGVAR([cmp])
                 AX_PROGVAR([xargs])
                 AM_COND_IF([DEVELOPER], [
+                        AX_PROGVAR([git])
                         AX_PROGVAR([rustfmt])
                 ])
         ])
