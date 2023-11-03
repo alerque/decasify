@@ -43,7 +43,7 @@ vendored = ["luamodule", "mlua/vendored"]
 lto = true
 
 [dependencies]
-regex = "1.9"
+regex = "1.10"
 strum = "0.25"
 strum_macros = "0.25"
 titlecase = "2.2"
