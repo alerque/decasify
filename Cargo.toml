@@ -80,3 +80,7 @@ strum_macros = "0.25"
   version = "8.2"
   default-features = false
   features = ["build", "cargo", "git", "gitoxide"]
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.0"
