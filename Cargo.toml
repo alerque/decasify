@@ -44,8 +44,8 @@ lto = true
 
 [dependencies]
 regex = "1.10"
-strum = "0.25"
-strum_macros = "0.25"
+strum = "0.26"
+strum_macros = "0.26"
 titlecase = "2.2"
 unicode_titlecase = "2.3"
 
@@ -60,8 +60,8 @@ unicode_titlecase = "2.3"
   features = ["module"]
 
 [build-dependencies]
-strum = "0.25"
-strum_macros = "0.25"
+strum = "0.26"
+strum_macros = "0.26"
 
   [build-dependencies.clap_complete]
   version = "4.4"
@@ -77,10 +77,10 @@ strum_macros = "0.25"
   features = ["derive"]
 
   [build-dependencies.vergen]
-  version = "8.2"
+  version = "8.3"
   default-features = false
   features = ["build", "cargo", "git", "gitoxide"]
 
 [dev-dependencies]
 assert_cmd = "2.0"
-predicates = "3.0"
+predicates = "3.1"
