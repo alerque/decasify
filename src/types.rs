@@ -1,5 +1,5 @@
 use std::{error, fmt, result, str::FromStr};
-use strum_macros::{Display, EnumVariantNames};
+use strum_macros::{Display, VariantNames};
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
@@ -15,7 +15,7 @@ impl fmt::Display for DecasifyError {
 impl error::Error for DecasifyError {}
 
 /// Locale selector to change language support rules of case functions.
-#[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
+#[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 pub enum InputLocale {
     #[default]
     EN,
@@ -23,7 +23,7 @@ pub enum InputLocale {
 }
 
 /// Target case selector.
-#[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
+#[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 pub enum TargetCase {
     Lower,
     Sentence,
@@ -33,7 +33,7 @@ pub enum TargetCase {
 }
 
 /// Style guide selector to change grammar and context rules used for title casing.
-#[derive(Default, Display, EnumVariantNames, Debug, Clone, PartialEq)]
+#[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
     AssociatedPress,
