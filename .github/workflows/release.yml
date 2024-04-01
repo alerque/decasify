@@ -32,4 +32,4 @@ jobs:
         with:
           files: |
             decasify-${{ env.VERSION }}.zip
-            decasify-${{ env.VERSION }}.tar.xz
+            decasify-${{ env.VERSION }}.tar.zst

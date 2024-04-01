@@ -66,7 +66,7 @@ $ nix run github:alerque/decasify
 ```
 
 To do a full install from source, grab the tarball attached to the [latest release](https://github.com/alerque/decasify/releases/latest) or use Git to clone the repository.
-Don't use the "source code" zip/tar.gz files linked from releases, go for the `tar.xz` source file.
+Don't use the "source code" zip/tar.gz files linked from releases, go for the `tar.zst` source file.
 If you use a Git close, first run `./bootstrap.sh` after checkout.
 This isn't needed in the source release tarballs.
 Next, configure and install with:
