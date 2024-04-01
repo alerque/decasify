@@ -41,7 +41,7 @@ DIST_ARTIFACTS := $(wildcard $(distdir).tar.zst $(distdir).zip $(REL_ROCK))
 
 # Output both a file to attach to releases and stdout so CI build logs can be
 # audited as matching what is actually posted.
-checksums.sha256.txt: $(DIST_ARTIFACTS)
+$(PACKAGE_NAME)-%.sha256.txt: $(DIST_ARTIFACTS)
 	sha256sum $^ | tee $@
 
 .PHONY: rockspecs
