@@ -27,9 +27,13 @@ jobs:
       - name: Build source package
         run: |
           make dist
+      - name: Generate checksums of release artifacts
+        run: |
+          make checksums.sha256.txt
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             decasify-${{ env.VERSION }}.zip
             decasify-${{ env.VERSION }}.tar.zst
+            checksums.sha256.txt
