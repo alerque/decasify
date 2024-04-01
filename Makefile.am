@@ -40,6 +40,9 @@ EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 .PHONY: rockspecs
 rockspecs: $(DEV_SPEC) $(REL_SPEC)
 
+.PHONY: srcrocks
+srcrocks: $(DEV_ROCK) $(REL_ROCK)
+
 .PHONY: install-luarock
 install-luarock: $(DEV_SPEC)
 	luarocks $(LUAROCKS_ARGS) make $<
