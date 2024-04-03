@@ -22,6 +22,7 @@ CLEANFILES =
 
 CARGO_FEATURE_ARGS = --features full
 
+include $(top_srcdir)/build-aux/dist_checksums.mk
 include $(top_srcdir)/build-aux/rust_boilerplate.mk
 
 SEMVER = $(shell $(AWK) -F\" '/^version/ { print $$2 }' Cargo.toml)
@@ -36,13 +37,6 @@ REL_SPEC = rockspecs/$(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).rockspec
 REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
 
 EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
-
-DIST_ARTIFACTS := $(wildcard $(distdir).tar.zst $(distdir).zip $(REL_ROCK))
-
-# Output both a file to attach to releases and stdout so CI build logs can be
-# audited as matching what is actually posted.
-$(PACKAGE_NAME)-%.sha256.txt: $(DIST_ARTIFACTS)
-	sha256sum $^ | tee $@
 
 .PHONY: rockspecs
 rockspecs: $(DEV_SPEC) $(REL_SPEC)
