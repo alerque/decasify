@@ -26,6 +26,7 @@ target/
 /build-aux/install-sh
 /build-aux/missing
 build-aux/rust_boilerplate.mk
+aminclude.am
 
 decasify-*
 

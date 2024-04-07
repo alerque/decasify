@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS = -I build-aux
+AM_DISTCHECK_CONFIGURE_FLAGS = --enable-developer-mode
 
 .ONESHELL:
 .SECONDARY:
@@ -22,7 +23,15 @@ CLEANFILES =
 
 CARGO_FEATURE_ARGS = --features full
 
-@INC_AMINCLUDE@
+# A classical use of the autoconf-archive include macro would expand
+# INC_AMINCLUDE here, but the perl script that inlines include statements
+# runs before the automake that organizes logic and performs substitution.
+# Consequentially with a substitution here it becomes impossible to use
+# automake conditionals and substitutions in the included Makefile fragments.
+# By entering the expanded value directly we are ready in time for the inlining
+# functionality and hence can use conditionals in included makefile fragments.
+include $(top_srcdir)/aminclude.am
+
 DISTCLEANFILES = @AMINCLUDE@
 
 SEMVER = $(shell $(AWK) -F\" '/^version/ { print $$2 }' Cargo.toml)

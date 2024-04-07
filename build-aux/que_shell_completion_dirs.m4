@@ -2,8 +2,6 @@ AC_DEFUN_ONCE([QUE_SHELL_COMPLETION_DIRS], [
 
         QUE_TRANSFORM_PACKAGE_NAME
 
-        AC_PROG_SED
-
         AC_ARG_WITH([bash-completion-dir],
                 AS_HELP_STRING([--with-bash-completion-dir[=PATH]],
                         [Install the bash auto-completion script in this directory. @<:@default=yes@:>@]),
@@ -18,7 +16,20 @@ AC_DEFUN_ONCE([QUE_SHELL_COMPLETION_DIRS], [
                                 [BASH_COMPLETION_DIR="$datadir/bash-completion/completions"])],
                 [BASH_COMPLETION_DIR="$with_bash_completion_dir"])
         AC_SUBST([BASH_COMPLETION_DIR])
-        _bash="s/@_BASH_COMPLETION@/$with_bash_completion_dir/"
+
+        AC_ARG_WITH([fish-completion-dir],
+                AS_HELP_STRING([--with-fish-completion-dir[=PATH]],
+                        [Install the fish auto-completion script in this directory. @<:@default=yes@:>@]),
+                [],
+                [with_fish_completion_dir=yes])
+        AM_CONDITIONAL([ENABLE_FISH_COMPLETION],[test "x$with_fish_completion_dir" != "xno"])
+
+        AM_COND_IF([ENABLE_FISH_COMPLETION],
+                [PKG_CHECK_MODULES([FISH_COMPLETION], [fish >= 3.0],
+                        [FISH_COMPLETION_DIR="$(pkg-config --define-variable=datadir=$datadir --variable=completionsdir fish)"],
+                        [FISH_COMPLETION_DIR="$datadir/fish/vendor_completions.d"])],
+                [FISH_COMPLETION_DIR="$with_fish_completion_dir"])
+        AC_SUBST([FISH_COMPLETION_DIR])
 
         AC_ARG_WITH([zsh-completion-dir],
                 AS_HELP_STRING([--with-zsh-completion-dir[=PATH]],
@@ -32,12 +43,10 @@ AC_DEFUN_ONCE([QUE_SHELL_COMPLETION_DIRS], [
                 [ZSH_COMPLETION_DIR="$datadir/zsh/site-functions"],
                 [ZSH_COMPLETION_DIR="$with_zsh_completion_dir"])
         AC_SUBST([ZSH_COMPLETION_DIR])
-        _zsh="s/@_ZSH_COMPLETION@/$with_zsh_completion_dir/"
 
         AC_REQUIRE([AX_AM_MACROS])
         AX_ADD_AM_MACRO([dnl
-
-$($SED -e "$_bash;$_zsh" build-aux/que_shell_completion_dirs.mk)
+$(cat build-aux/que_shell_completion_dirs.am)
 ])dnl
 
 ])
