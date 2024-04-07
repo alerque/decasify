@@ -6,12 +6,12 @@ AM_DISTCHECK_CONFIGURE_FLAGS = --enable-developer-mode
 .SECONDEXPANSION:
 .DELETE_ON_ERROR:
 
-licensedir = $(datarootdir)/licenses/$(TRANSFORMED_PACKAGE_NAME)
 docdir = $(datarootdir)/doc/$(TRANSFORMED_PACKAGE_NAME)
+licensedir = $(datarootdir)/licenses/$(TRANSFORMED_PACKAGE_NAME)
 
 bin_PROGRAMS = decasify
-decasify_SOURCES = src/bin/decasify.rs src/lib.rs src/cli.rs src/types.rs
-EXTRA_decasify_SOURCES =
+decasify_SOURCES = src/bin/decasify.rs src/cli.rs src/lib.rs src/types.rs
+EXTRA_decasify_SOURCES = tests/cli.rs
 EXTRA_DIST =
 dist_doc_DATA = README.md
 dist_license_DATA = LICENSE.md
