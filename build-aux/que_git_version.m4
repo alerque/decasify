@@ -18,6 +18,8 @@ AC_DEFUN_ONCE([QUE_GIT_VERSION], [
 
         AC_REQUIRE([AX_AM_MACROS])
         AX_ADD_AM_MACRO([dnl
+EXTRA_DIST += build-aux/que_git_version.am
+
 $(cat build-aux/que_git_version.am)
 ])dnl
 

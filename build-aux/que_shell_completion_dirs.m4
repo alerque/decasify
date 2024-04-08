@@ -46,6 +46,8 @@ AC_DEFUN_ONCE([QUE_SHELL_COMPLETION_DIRS], [
 
         AC_REQUIRE([AX_AM_MACROS])
         AX_ADD_AM_MACRO([dnl
+EXTRA_DIST += build-aux/que_shell_completion_dirs.am
+
 $(cat build-aux/que_shell_completion_dirs.am)
 ])dnl
 
