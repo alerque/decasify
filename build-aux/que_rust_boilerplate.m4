@@ -41,7 +41,7 @@ AC_DEFUN_ONCE([QUE_RUST_BOILERPLATE], [
 
         AC_REQUIRE([AX_AM_MACROS])
         AX_ADD_AM_MACRO([dnl
-$($SED -E "s/@PACKAGE_VAR@/$PACKAGE_VAR/g" build-aux/que_rust_boilerplate.am)
+$($SED -E "s/@PACKAGE_VAR@/$PACKAGE_VAR/g;s/@PACKAGE_NAME@/$PACKAGE_NAME/g" build-aux/que_rust_boilerplate.am)
 ])dnl
 
 ])
