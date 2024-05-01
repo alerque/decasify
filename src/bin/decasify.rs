@@ -1,5 +1,5 @@
 use decasify::cli::Cli;
-use decasify::to_titlecase;
+use decasify::{to_lowercase, to_titlecase, to_uppercase};
 use decasify::{InputLocale, Result, StyleGuide, TargetCase};
 
 use clap::CommandFactory;
@@ -43,6 +43,14 @@ fn process<I: IntoIterator<Item = String>>(
         match case {
             TargetCase::Title => {
                 let output = to_titlecase(&string, locale.clone(), style.clone());
+                println!("{output}")
+            }
+            TargetCase::Lower => {
+                let output = to_lowercase(&string, locale.clone());
+                println!("{output}")
+            }
+            TargetCase::Upper => {
+                let output = to_uppercase(&string, locale.clone());
                 println!("{output}")
             }
             _ => eprintln!("Target case {case:?} not implemented!"),

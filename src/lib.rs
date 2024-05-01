@@ -3,6 +3,7 @@
 use regex::Regex;
 use titlecase::titlecase as gruber_titlecase;
 use unicode_titlecase::StrTitleCase;
+use unicode_titlecase::tr_az::StrTrAzCasing;
 
 pub mod types;
 
@@ -51,6 +52,24 @@ pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>
     match locale {
         InputLocale::EN => to_titlecase_en(words, style),
         InputLocale::TR => to_titlecase_tr(words, style),
+    }
+}
+
+/// Convert a string to lower case following typestting conventions for a target locale
+pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = string.split_whitespace().collect();
+    match locale {
+        InputLocale::EN => to_lowercase_en(words),
+        InputLocale::TR => to_lowercase_tr(words),
+    }
+}
+
+/// Convert a string to upper case following typestting conventions for a target locale
+pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = string.split_whitespace().collect();
+    match locale {
+        InputLocale::EN => to_uppercase_en(words),
+        InputLocale::TR => to_uppercase_tr(words),
     }
 }
 
@@ -133,24 +152,55 @@ fn is_reserved_tr(word: String) -> bool {
     baglac.is_match(word) || soruek.is_match(word)
 }
 
+fn to_lowercase_en(words: Vec<&str>) -> String {
+    let mut output: Vec<String> = Vec::new();
+    for word in words {
+        output.push(word.to_lowercase());
+    }
+    output.join(" ")
+}
+
+fn to_lowercase_tr(words: Vec<&str>) -> String {
+    let mut output: Vec<String> = Vec::new();
+    for word in words {
+        output.push(word.to_lowercase_tr_az());
+    }
+    output.join(" ")
+}
+
+fn to_uppercase_en(words: Vec<&str>) -> String {
+    let mut output: Vec<String> = Vec::new();
+    for word in words {
+        output.push(word.to_uppercase());
+    }
+    output.join(" ")
+}
+
+fn to_uppercase_tr(words: Vec<&str>) -> String {
+    let mut output: Vec<String> = Vec::new();
+    for word in words {
+        output.push(word.to_uppercase_tr_az());
+    }
+    output.join(" ")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    macro_rules! testcase {
+    macro_rules! titlecase {
         ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
             #[test]
             fn $name() {
                 let actual = to_titlecase($input, $locale, $style);
-                // eprintln!("WAS: {actual}");
                 assert_eq!(actual, $expected);
             }
         };
     }
 
-    testcase!(abc_none, InputLocale::EN, None, "a b c", "A B C");
+    titlecase!(abc_none, InputLocale::EN, None, "a b c", "A B C");
 
-    testcase!(
+    titlecase!(
         abc_cmos,
         InputLocale::EN,
         Some(StyleGuide::ChicagoManualOfStyle),
@@ -158,7 +208,7 @@ mod tests {
         "A B C"
     );
 
-    testcase!(
+    titlecase!(
         abc_gruber,
         InputLocale::EN,
         Some(StyleGuide::DaringFireball),
@@ -166,7 +216,7 @@ mod tests {
         "A B C"
     );
 
-    testcase!(
+    titlecase!(
         simple_cmos,
         InputLocale::EN,
         Some(StyleGuide::ChicagoManualOfStyle),
@@ -174,7 +224,7 @@ mod tests {
         "Once upon a Time"
     );
 
-    testcase!(
+    titlecase!(
         simple_gruber,
         InputLocale::EN,
         Some(StyleGuide::DaringFireball),
@@ -182,7 +232,7 @@ mod tests {
         "Once UPON a Time"
     );
 
-    testcase!(
+    titlecase!(
         colon_cmos,
         InputLocale::EN,
         Some(StyleGuide::ChicagoManualOfStyle),
@@ -190,7 +240,7 @@ mod tests {
         "Foo: a Baz"
     );
 
-    testcase!(
+    titlecase!(
         colon_gruber,
         InputLocale::EN,
         Some(StyleGuide::DaringFireball),
@@ -198,7 +248,7 @@ mod tests {
         "Foo: A Baz"
     );
 
-    // testcase!(
+    // titlecase!(
     //     qna_cmos,
     //     InputLocale::EN,
     //     Some(StyleGuide::ChicagoManualOfStyle),
@@ -206,7 +256,7 @@ mod tests {
     //     "Q&a with Steve Jobs: 'that's What Happens in Technology'"
     // );
 
-    testcase!(
+    titlecase!(
         qna_gruber,
         InputLocale::EN,
         Some(StyleGuide::DaringFireball),
@@ -214,7 +264,7 @@ mod tests {
         "Q&A With Steve Jobs: 'That's What Happens in Technology'"
     );
 
-    testcase!(
+    titlecase!(
         turkish_chars,
         InputLocale::TR,
         None,
@@ -222,11 +272,59 @@ mod tests {
         "İlki Ilık Öğlen"
     );
 
-    testcase!(
+    titlecase!(
         turkish_blockwords,
         InputLocale::TR,
         None,
         "Sen VE ben ile o",
         "Sen ve Ben ile O"
+    );
+
+    macro_rules! lowercase {
+        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_lowercase($input, $locale);
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    lowercase!(
+        lower_en,
+        InputLocale::EN,
+        "foo BAR BaZ BIKE",
+        "foo bar baz bike"
+    );
+
+    lowercase!(
+        lower_tr,
+        InputLocale::TR,
+        "foo BAR BaZ ILIK İLE",
+        "foo bar baz ılık ile"
+    );
+
+    macro_rules! uppercase {
+        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_uppercase($input, $locale);
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    uppercase!(
+        upper_en,
+        InputLocale::EN,
+        "foo BAR BaZ bike",
+        "FOO BAR BAZ BIKE"
+    );
+
+    uppercase!(
+        upper_tr,
+        InputLocale::TR,
+        "foo BAR BaZ ILIK İLE",
+        "FOO BAR BAZ ILIK İLE"
     );
 }
