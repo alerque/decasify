@@ -2,8 +2,8 @@
 
 use regex::Regex;
 use titlecase::titlecase as gruber_titlecase;
-use unicode_titlecase::StrTitleCase;
 use unicode_titlecase::tr_az::StrTrAzCasing;
+use unicode_titlecase::StrTitleCase;
 
 pub mod types;
 
