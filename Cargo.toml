@@ -46,7 +46,6 @@ lto = true
 regex = "1.10"
 strum = "0.26"
 strum_macros = "0.26"
-titlecase = "3.0"
 unicode_titlecase = "2.3"
 
   [dependencies.clap]
@@ -58,6 +57,10 @@ unicode_titlecase = "2.3"
   version = "0.9"
   optional = true
   features = ["module"]
+
+  [dependencies.titlecase]
+  version = "3.2"
+  features = [ "perf" ]
 
 [build-dependencies]
 strum = "0.26"
