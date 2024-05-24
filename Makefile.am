@@ -38,7 +38,7 @@ SEMVER = $(shell $(AWK) -F\" '/^version/ { print $$2 }' Cargo.toml)
 ROCKREV = 1
 TAG ?= v$(SEMVER)
 
-LUAROCKS_ARGS ?= --local --tree lua_modules
+LUAROCKS_ARGS ?= --tree lua_modules
 
 DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
 DEV_ROCK = $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock
@@ -56,6 +56,11 @@ srcrocks: $(DEV_ROCK) $(REL_ROCK)
 .PHONY: install-luarock
 install-luarock: $(DEV_SPEC)
 	luarocks $(LUAROCKS_ARGS) make $<
+
+.PHONY: busted
+busted: install-luarock
+	$$(eval luarocks $(LUAROCKS_ARGS) path)
+	busted -c -v
 
 define rockpec_template =
 	sed -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
