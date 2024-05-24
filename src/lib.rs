@@ -50,7 +50,7 @@ fn titlecase<'a>(
         _ => None,
     };
     let output = to_titlecase(&input, locale, style);
-    lua.create_string(&output)
+    lua.create_string(output)
 }
 
 #[cfg(feature = "luamodule")]
@@ -64,7 +64,7 @@ fn lowercase<'a>(
         _ => InputLocale::EN,
     };
     let output = to_lowercase(&input, locale);
-    lua.create_string(&output)
+    lua.create_string(output)
 }
 
 #[cfg(feature = "luamodule")]
@@ -78,7 +78,7 @@ fn uppercase<'a>(
         _ => InputLocale::EN,
     };
     let output = to_uppercase(&input, locale);
-    lua.create_string(&output)
+    lua.create_string(output)
 }
 
 /// Convert a string to title case following typestting conventions for a target locale
