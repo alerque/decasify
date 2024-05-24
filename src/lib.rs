@@ -20,7 +20,10 @@ use mlua::prelude::*;
 fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table().unwrap();
     let titlecase = lua.create_function(titlecase)?;
+    let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
+    let version = lua.create_string(version)?;
     exports.set("titlecase", titlecase).unwrap();
+    exports.set("version", version).unwrap();
     Ok(exports)
 }
 
