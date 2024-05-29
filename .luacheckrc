@@ -3,15 +3,15 @@ include_files = {
    "**/*.lua",
    "**/*.rockspec",
    ".busted",
-   ".luacheckrc"
+   ".luacheckrc",
 }
 exclude_files = {
    ".install",
    ".lua",
    ".luarocks",
-   "lua_modules"
+   "lua_modules",
 }
 files["**/*_spec.lua"] = {
-   std = "+busted"
+   std = "+busted",
 }
 max_line_length = false
