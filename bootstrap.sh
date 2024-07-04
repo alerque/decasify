@@ -28,7 +28,7 @@ fi
 # expanded value of @INC_AMINCLUDE@ directly so the include will be inlined. To
 # bootstrap we must pre-seed an empty file to avoid a 'file not found' error on
 # first run. Subsequently running ./configure will generate the correct content
-# based on the configuration flags and also get re-inline into Makefile.in.
+# based on the configuration flags and also get re-inlined into Makefile.in.
 touch aminclude.am
 
 autoreconf --install
