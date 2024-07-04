@@ -37,7 +37,6 @@ lua53 = ["luamodule", "mlua/lua53"]
 lua52 = ["luamodule", "mlua/lua52"]
 lua51 = ["luamodule", "mlua/lua51"]
 luajit = ["luamodule", "mlua/luajit"]
-vendored = ["luamodule", "mlua/vendored"]
 
 [profile.release]
 lto = true
