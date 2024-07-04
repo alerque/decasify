@@ -47,23 +47,24 @@ REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
 
 EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 
-.PHONY: rockspecs
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks install-luarock busted
+.PHONY: $(PHONY_DEVELOPER_TARGETS)
+
+if DEVELOPER_MODE
+
 rockspecs: $(DEV_SPEC) $(REL_SPEC)
 
-.PHONY: srcrocks
 srcrocks: $(DEV_ROCK) $(REL_ROCK)
 
-.PHONY: install-luarock
 install-luarock: $(DEV_SPEC)
-	luarocks $(LUAROCKS_ARGS) make $<
+	$(LUAROCKS) $(LUAROCKS_ARGS) make $<
 
-.PHONY: busted
 busted: install-luarock
-	$$(eval luarocks $(LUAROCKS_ARGS) path)
+	$$(eval $(LUAROCKS) $(LUAROCKS_ARGS) path)
 	busted -c -v
 
 define rockpec_template =
-	sed -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
+	$(SED) -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
 		-e "s/@SEMVER@/$(SEMVER)/g" \
 		-e "s/@ROCKREV@/$(ROCKREV)/g" \
 		-e "s/@TAG@/$(TAG)/g" \
@@ -74,7 +75,7 @@ $(DEV_SPEC): SEMVER = dev
 $(DEV_SPEC): TAG = master
 $(DEV_SPEC): $(PACKAGE_NAME).rockspec.in
 	$(rockpec_template)
-	sed -i \
+	$(SED) -i \
 		-e '/tag =/s/tag/branch/' \
 		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
 		$@
@@ -83,7 +84,7 @@ rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: SEMVER = $*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: TAG = v$*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
 	$(rockpec_template)
-	sed -i \
+	$(SED) -i \
 		-e '/rockspec_format/s/3.0/1.0/' \
 		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
 		-e '/issues_url/d' \
@@ -92,7 +93,14 @@ rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
 		$@
 
 $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
-	luarocks $(LUAROCKS_ARGS) pack $<
+	$(LUAROCKS) $(LUAROCKS_ARGS) pack $<
 
 $(PACKAGE_NAME)-%.src.rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
-	luarocks $(LUAROCKS_ARGS) pack $<
+	$(LUAROCKS) $(LUAROCKS_ARGS) pack $<
+
+else !DEVELOPER_MODE
+
+$(PHONY_DEVELOPER_TARGETS):
+	@: $(error "Please reconfigure using --enable-developer-mode to use developer tooling")
+
+endif !DEVELOPER_MODE

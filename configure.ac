@@ -13,6 +13,11 @@ QUE_DIST_CHECKSUMS
 
 # Check for and set variables for tooling used during our build process
 AC_PROG_AWK
+AC_PROG_SED
+
+AM_COND_IF([DEVELOPER_MODE], [
+    QUE_PROGVAR([luarocks])
+])
 
 QUE_RUST_BOILERPLATE
 
