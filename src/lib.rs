@@ -15,6 +15,9 @@ pub mod cli;
 #[cfg(feature = "luamodule")]
 pub mod lua;
 
+#[cfg(feature = "pythonmodule")]
+pub mod python;
+
 /// Convert a string to title case following typestting conventions for a target locale
 pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
