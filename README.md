@@ -102,7 +102,7 @@ Then use the crate functions and types in your project something like this:
 use decasify::to_titlecase;
 use decasify::{InputLocale, StyleGuide};
 
-fn main() {
+fn demo() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
     let output = to_titlecase(input, InputLocale::TR, None);
     eprintln! {"{output}"};
