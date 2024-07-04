@@ -15,7 +15,7 @@ EXTRA_decasify_SOURCES = tests/cli.rs
 EXTRA_DIST =
 dist_doc_DATA = README.md
 dist_license_DATA = LICENSE.md
-dist_man_MANS =
+nodist_man_MANS =
 
 BUILT_SOURCES =
 
