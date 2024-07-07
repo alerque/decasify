@@ -15,13 +15,14 @@ A CLI utility, Rust crate, Lua Rock, and Python module to cast strings to title-
 This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
 Many tools can handle casing single words, and some others can handle English strings, but nothing seemed to be out there for full Turkish strings.
 
-Currently defaults to title-casing, others to come later.
-Currently defaults to English rules, but the Turkish ones are actually more complete because that's my main use case.
-Currently defaults to the Gruber style rules, but others are available
+The CLI defaults to titlecase and English, but lower and upper case options are also available.
+The crate library, Lua Rock and Python Module APIs have functions specific to each operation.
+Where possible the APIs currently default to English rules and (for English) the Gruber style urules, but others are available.
+The Turkish rules follow Turkish Language Instutute's [guidelines][tdk].
 
 For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
-The Gruber style is by far the most complete.
-The CMOS style handles a number of parts of speech has punctuation related issues.
+The Gruber style is by far the most complete, being implemented by the [titlecase crate][titlecase_crate].
+The CMOS style handles a number of parts of speech but has punctuation related issues.
 The AP style is largely unimplemented.
 Contributions are welcome for better style guide support or further languages.
 
@@ -33,6 +34,9 @@ Ilık Su ve İten Rüzgarlar
 $ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
 Foo BAR and Baz: An Alter Ego
 ```
+
+[tdk]: https://tdk.gov.tr/icerik/yazim-kurallari/buyuk-harflerin-kullanildigi-yerler/
+[titlecase_crate]: https://crates.io/crates/titlecase
 
 ## Use as a CLI tool
 
