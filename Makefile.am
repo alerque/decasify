@@ -12,7 +12,7 @@ licensedir = $(datarootdir)/licenses/$(TRANSFORMED_PACKAGE_NAME)
 bin_PROGRAMS = decasify
 decasify_SOURCES = src/bin/decasify.rs src/cli.rs src/lib.rs src/lua.rs src/python.rs src/types.rs
 EXTRA_decasify_SOURCES = tests/cli.rs
-EXTRA_DIST = pyproject.toml spec/decasify_spec.lua
+EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py
 dist_doc_DATA = README.md
 dist_license_DATA = LICENSE.md
 nodist_man_MANS =
@@ -47,9 +47,9 @@ REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
 
 EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 
-check: busted
+check: busted pytest
 
-PHONY_DEVELOPER_TARGETS = rockspecs srcrocks install-luarock busted
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks install-luarock busted pytest
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
 
 if DEVELOPER_MODE
@@ -64,6 +64,13 @@ install-luarock: $(DEV_SPEC)
 busted: install-luarock
 	$$(eval $(LUAROCKS) $(LUAROCKS_ARGS) path)
 	$(BUSTED) -c -v
+
+pytest:
+	$(UV) venv
+	$(UV) pip install pip
+	source .venv/bin/activate
+	$(MATURIN) develop
+	env PYTHONPATH=.venv/lib/python3.12/site-packages/decasify $(PYTEST)
 
 define rockpec_template =
 	$(SED) -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \

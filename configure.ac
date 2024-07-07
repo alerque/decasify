@@ -19,6 +19,10 @@ AM_COND_IF([DEVELOPER_MODE], [
     # Lua build and testing dependencies
     QUE_PROGVAR([busted])
     QUE_PROGVAR([luarocks])
+    # Python build and testing dependencies
+    QUE_PROGVAR([maturin])
+    QUE_PROGVAR([pytest])
+    QUE_PROGVAR([uv])
 ])
 
 QUE_RUST_BOILERPLATE
