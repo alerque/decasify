@@ -1,12 +1,13 @@
 from decasify import *
 
+
 def test_isfuction():
     assert callable(titlecase)
     assert callable(lowercase)
     assert callable(uppercase)
 
-class TestTitlecase:
 
+class TestTitlecase:
     def test_optional_arguments(self):
         assert titlecase("foo", InputLocale.EN) == "Foo"
         assert titlecase("foo", InputLocale.EN) == "Foo"
@@ -28,6 +29,7 @@ class TestTitlecase:
         outp = "Sen ve Ben ile O"
         assert titlecase(text, InputLocale.TR) == outp
 
+
 class TestLowercase:
     def test_english_defaults(self):
         text = "IBUPROFIN"
@@ -39,6 +41,7 @@ class TestLowercase:
         outp = "ilki ılık öğlen"
         assert lowercase(text, InputLocale.TR) == outp
 
+
 class TestUppercase:
     def test_english_defaults(self):
         text = "ibuprofin"
@@ -49,4 +52,3 @@ class TestUppercase:
         text = "ilki ılık öğlen"
         outp = "İLKİ ILIK ÖĞLEN"
         assert uppercase(text, InputLocale.TR) == outp
-
