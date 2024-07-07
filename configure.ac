@@ -16,6 +16,8 @@ AC_PROG_AWK
 AC_PROG_SED
 
 AM_COND_IF([DEVELOPER_MODE], [
+    # Lua build and testing dependencies
+    QUE_PROGVAR([busted])
     QUE_PROGVAR([luarocks])
 ])
 
