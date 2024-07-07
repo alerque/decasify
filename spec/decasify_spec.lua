@@ -8,8 +8,10 @@ describe("decasify", function ()
    local lowercase = decasify.lowercase
    local uppercase = decasify.uppercase
 
-   it("should provide the titlecase function", function ()
+   it("should provide the casing functions", function ()
       assert.is_function(titlecase)
+      assert.is_function(lowercase)
+      assert.is_function(uppercase)
    end)
 
    describe("titlecase", function ()
@@ -76,12 +78,12 @@ describe("decasify", function ()
       end)
 
       it("should default to handling string as English", function ()
-         local result = uppercase("IBUPROFIN")
+         local result = uppercase("ibuprofin")
          assert.equals("IBUPROFIN", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
-         local result = uppercase("İLKİ ILIK ÖĞLEN", "tr")
+         local result = uppercase("ilki ılık öğlen", "tr")
          assert.equals("İLKİ ILIK ÖĞLEN", result)
       end)
    end)

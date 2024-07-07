@@ -9,7 +9,7 @@
 [![Crates.io (latest)](https://img.shields.io/crates/v/decasify)](https://crates.io/crates/decasify)
 [![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify)](https://luarocks.org/modules/alerque/decasify)
 
-A CLI utility, Rust crate, and Lua module to cast strings to title-case according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua Rock, and Python module to cast strings to title-case according to locale specific style guides including Turkish support.
 
 This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
 Many tools can handle casing single words, and some others can handle English strings, but nothing seemed to be out there for full Turkish strings.
@@ -112,7 +112,7 @@ fn demo() {
 }
 ```
 
-## Use as LuaRock
+## Use as Lua Rock
 
 Depend on the LuaRock in your project or install with `luarocks install decasify`:
 
@@ -131,5 +131,29 @@ local output = decasify.titlecase(input, "tr")
 print(output)
 input = "title with a twist: a colon"
 output  = decasify.titlecase(input, "en", "gruber")
+print(output)
+```
+
+## Use as Python Module
+
+Depend on the Python module in your project or install with `pip install decasify`:
+
+```toml
+[project]
+dependencies = [
+  "decasify"
+]
+```
+
+Then import and use the provided function and classes:
+
+```python
+import decasify import *
+
+input = "ILIK SU VE İTEN RÜZGARLAR"
+output = titlecase(input, InputLocale.TR)
+print(output)
+input = "title with a twist: a colon"
+output  = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
 print(output)
 ```
