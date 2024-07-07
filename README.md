@@ -8,6 +8,7 @@
 [![GitHub tag (latest)](https://img.shields.io/github/v/tag/alerque/decasify)](https://github.com/alerque/decasify/releases)
 [![Crates.io (latest)](https://img.shields.io/crates/v/decasify)](https://crates.io/crates/decasify)
 [![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify)](https://luarocks.org/modules/alerque/decasify)
+[![PyPi (latest)](https://img.shields.io/pypi/v/decasify)](https://pypi.org/project/decasify)
 
 A CLI utility, Rust crate, Lua Rock, and Python module to cast strings to title-case according to locale specific style guides including Turkish support.
 
