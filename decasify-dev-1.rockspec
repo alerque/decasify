@@ -25,7 +25,9 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
-   "luarocks-build-rust-mlua"
+   -- v2.0 broke support for LuaRocks 3.1 under Lua 5.1, pin to old version until fixed
+   -- https://github.com/khvzak/luarocks-build-rust-mlua/pull/10
+   "luarocks-build-rust-mlua == 0.1.2-1"
 }
 
 build = {
