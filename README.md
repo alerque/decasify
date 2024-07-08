@@ -5,10 +5,10 @@
 [![Flake Run Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/nix.yml?branch=master&label=Flake&logo=NixOS)](https://github.com/alerque/decasify/actions/workflows/nix.yml)
 [![Lua Lint Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/luacheck.yml?branch=master&label=Luacheck&logo=Lua)](https://github.com/alerque/decasify/actions/workflows/luacheck.yml)
 [![Lua Test Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/busted.yml?branch=master&label=Busted&logo=Lua)](https://github.com/alerque/decasify/actions/workflows/busted.yml)  
-[![GitHub tag (latest)](https://img.shields.io/github/v/tag/alerque/decasify)](https://github.com/alerque/decasify/releases)
-[![Crates.io (latest)](https://img.shields.io/crates/v/decasify)](https://crates.io/crates/decasify)
-[![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify)](https://luarocks.org/modules/alerque/decasify)
-[![PyPi (latest)](https://img.shields.io/pypi/v/decasify)](https://pypi.org/project/decasify)
+[![GitHub tag (latest)](https://img.shields.io/github/v/tag/alerque/decasify?logo=github&color=blue)](https://github.com/alerque/decasify/releases)
+[![Crates.io (latest)](https://img.shields.io/crates/v/decasify?logo=rust&color=blue)](https://crates.io/crates/decasify)
+[![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify?logo=lua&color=blue)](https://luarocks.org/modules/alerque/decasify)
+[![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 
 A CLI utility, Rust crate, Lua Rock, and Python module to cast strings to title-case according to locale specific style guides including Turkish support.
 
