@@ -22,13 +22,12 @@ jobs:
           fetch-depth: 0
       - name: Configure
         run: |
-          echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
-          echo "${GITHUB_REF#refs/*/v}" > .tarball-version
           ./bootstrap.sh
           ./configure \
             BUSTED=: LUAROCKS=: MATURIN=: PYTEST=: UV=: GITCLIFF=: \
             --enable-developer-mode \
             --without-{bash,fish,zsh}-completion-dir
+          echo "VERSION=$(./build-aux/git-version-gen .tarball-version)" >> $GITHUB_ENV
       - name: Build source package
         run: |
           make dist
