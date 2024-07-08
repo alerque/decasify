@@ -153,7 +153,7 @@ dependencies = [
 Then import and use the provided function and classes:
 
 ```python
-import decasify import *
+from decasify import *
 
 input = "ILIK SU VE İTEN RÜZGARLAR"
 output = titlecase(input, InputLocale.TR)
