@@ -1,4 +1,4 @@
-from decasify import *
+from decasify import titlecase, lowercase, uppercase, InputLocale, StyleGuide
 
 
 def test_isfuction():
