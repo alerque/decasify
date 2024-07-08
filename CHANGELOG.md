@@ -1,3 +1,9 @@
+## [0.5.4] - 2024-07-08
+
+### Bug Fixes
+
+- *(tooling)* Checkout repo history so CI deploy correctly packages source files
+
 ## [0.5.3] - 2024-07-08
 
 ### Features
