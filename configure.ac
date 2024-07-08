@@ -23,6 +23,8 @@ AM_COND_IF([DEVELOPER_MODE], [
     QUE_PROGVAR([maturin])
     QUE_PROGVAR([pytest])
     QUE_PROGVAR([uv])
+    # Release tooling
+    QUE_PROGVAR([gitcliff], [git-cliff])
 ])
 
 QUE_RUST_BOILERPLATE

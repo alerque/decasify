@@ -13,7 +13,7 @@ bin_PROGRAMS = decasify
 decasify_SOURCES = src/bin/decasify.rs src/cli.rs src/lib.rs src/lua.rs src/python.rs src/types.rs
 EXTRA_decasify_SOURCES = tests/cli.rs
 EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py
-dist_doc_DATA = README.md
+dist_doc_DATA = README.md CHANGELOG.md
 dist_license_DATA = LICENSE.md
 nodist_man_MANS =
 
@@ -49,10 +49,20 @@ EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 
 check: busted pytest
 
-PHONY_DEVELOPER_TARGETS = rockspecs srcrocks install-luarock busted pytest
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks install-luarock busted pytest release-preview
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
 
 if DEVELOPER_MODE
+
+release-preview:
+	$(GITCLIFF) --unreleased
+
+CHANGELOG.md: .version
+	$(GITCLIFF) -o $@
+
+decasify-%.md: CHANGELOG.md
+	$(SED) -e '/\.\.\.v$*/,/\.\.\.v/!d' $< | \
+		$(SED) -e '1,3d;N;$$!P;$$!D;$$d' > $@
 
 rockspecs: $(DEV_SPEC) $(REL_SPEC)
 

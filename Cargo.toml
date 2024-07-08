@@ -92,3 +92,11 @@ strum_macros = "0.26"
 [dev-dependencies]
 assert_cmd = "2.0"
 predicates = "3.1"
+
+[package.metadata.git-cliff.git]
+commit_parsers = [
+    { message = "^feat", group = "<!-- 0 -->Features" },
+    { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
+    { message = "^perf", group = "<!-- 2 -->Performance" },
+    { message = ".*", skip = true },
+]
