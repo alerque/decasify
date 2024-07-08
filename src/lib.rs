@@ -45,6 +45,15 @@ pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
     }
 }
 
+/// Convert a string to sentence case following typesetting conventions for a target locale
+pub fn to_sentencecase(string: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = string.split_whitespace().collect();
+    match locale {
+        InputLocale::EN => to_sentencecase_en(words),
+        InputLocale::TR => to_sentencecase_tr(words),
+    }
+}
+
 fn to_titlecase_en(words: Vec<&str>, style: Option<StyleGuide>) -> String {
     match style {
         Some(StyleGuide::AssociatedPress) => to_titlecase_ap(words),
@@ -152,6 +161,28 @@ fn to_uppercase_tr(words: Vec<&str>) -> String {
     let mut output: Vec<String> = Vec::new();
     for word in words {
         output.push(word.to_uppercase_tr_az());
+    }
+    output.join(" ")
+}
+
+fn to_sentencecase_en(words: Vec<&str>) -> String {
+    let mut words = words.iter().peekable();
+    let mut output: Vec<String> = Vec::new();
+    let first = words.next().unwrap();
+    output.push(gruber_titlecase(first));
+    for word in words {
+        output.push(word.to_lowercase());
+    }
+    output.join(" ")
+}
+
+fn to_sentencecase_tr(words: Vec<&str>) -> String {
+    let mut words = words.iter().peekable();
+    let mut output: Vec<String> = Vec::new();
+    let first = words.next().unwrap();
+    output.push(first.to_titlecase_tr_or_az());
+    for word in words {
+        output.push(word.to_lowercase_tr_az());
     }
     output.join(" ")
 }

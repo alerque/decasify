@@ -12,6 +12,8 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     exports.set("lowercase", lowercase).unwrap();
     let uppercase = lua.create_function(uppercase)?;
     exports.set("uppercase", uppercase).unwrap();
+    let sentencecase = lua.create_function(sentencecase)?;
+    exports.set("sentencecase", sentencecase).unwrap();
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let version = lua.create_string(version)?;
     exports.set("version", version).unwrap();
@@ -62,5 +64,18 @@ fn uppercase<'a>(
         _ => InputLocale::EN,
     };
     let output = to_uppercase(&input, locale);
+    lua.create_string(output)
+}
+
+fn sentencecase<'a>(
+    lua: &'a Lua,
+    (input, locale): (LuaString<'a>, LuaValue<'a>),
+) -> LuaResult<LuaString<'a>> {
+    let input = input.to_string_lossy();
+    let locale: InputLocale = match locale {
+        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(InputLocale::EN),
+        _ => InputLocale::EN,
+    };
+    let output = to_sentencecase(&input, locale);
     lua.create_string(output)
 }
