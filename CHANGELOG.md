@@ -1,3 +1,9 @@
+## [0.5.5] - 2024-07-08
+
+### Bug Fixes
+
+- *(tooling)* Stop CI from pretending to be a source tarball
+
 ## [0.5.4] - 2024-07-08
 
 ### Bug Fixes
