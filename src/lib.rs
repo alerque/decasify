@@ -18,7 +18,7 @@ pub mod lua;
 #[cfg(feature = "pythonmodule")]
 pub mod python;
 
-/// Convert a string to title case following typestting conventions for a target locale
+/// Convert a string to title case following typesetting conventions for a target locale
 pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
@@ -27,7 +27,7 @@ pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>
     }
 }
 
-/// Convert a string to lower case following typestting conventions for a target locale
+/// Convert a string to lower case following typesetting conventions for a target locale
 pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
@@ -36,7 +36,7 @@ pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
     }
 }
 
-/// Convert a string to upper case following typestting conventions for a target locale
+/// Convert a string to upper case following typesetting conventions for a target locale
 pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
