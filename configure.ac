@@ -23,6 +23,9 @@ AM_COND_IF([DEVELOPER_MODE], [
     QUE_PROGVAR([maturin])
     QUE_PROGVAR([pytest])
     QUE_PROGVAR([uv])
+    # Node build and testing dependencies
+    QUE_PROGVAR([node])
+    QUE_PROGVAR([tsc])
     # Release tooling
     QUE_PROGVAR([gitcliff], [git-cliff])
 ])
