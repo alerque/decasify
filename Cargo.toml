@@ -38,6 +38,7 @@ lua52 = ["luamodule", "mlua/lua52"]
 lua51 = ["luamodule", "mlua/lua51"]
 luajit = ["luamodule", "mlua/luajit"]
 pythonmodule = ["pyo3"]
+nodemodule = ["neon"]
 
 [profile.release]
 lto = true
@@ -57,6 +58,11 @@ unicode_titlecase = "2.3"
   version = "0.9"
   optional = true
   features = ["module"]
+
+  [dependencies.neon]
+  version = "1.0"
+  optional = true
+  features = ["napi-9"]
 
   [dependencies.pyo3]
   version = "0.22"
