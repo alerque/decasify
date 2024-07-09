@@ -36,3 +36,8 @@ luacov.stats.out
 
 # Python
 tests/__pycache__
+
+# Node
+lib/
+node_module/
+package-lock.json
