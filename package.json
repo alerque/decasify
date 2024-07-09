@@ -39,7 +39,7 @@
     "type": "library",
     "org": "@nus",
     "platforms": "common",
-    "load": "./src/load.cts"
+    "load": "./node/load.cts"
   },
   "devDependencies": {
     "@neon-rs/cli": "^0.1",
