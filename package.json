@@ -31,7 +31,7 @@
     "load": "./src/load.cts"
   },
   "devDependencies": {
-    "@neon-rs/cli": "^0.1",
+    "neon-cli": "^0.4",
     "@tsconfig/node20": "^20.1",
     "@types/node": "^20.14",
     "typescript": "^5.5"
