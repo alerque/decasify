@@ -4,8 +4,7 @@
   "description": "A CLI utility and library to cast strings to title-case according to locale specific style guides including Turkish support",
   "main": "./lib/index.cjs",
   "scripts": {
-    "build": "npm run cargo-build -- --features nodemodule --release",
-    "install": "npm run build",
+    "build": "tsc && cargo build --features nodemodule --release --message-format=json > cargo.log"
   },
   "author": "Caleb Maclennan <caleb@alerque.com>",
   "license": "GPL-3.0-only",
@@ -29,7 +28,7 @@
     "type": "library",
     "org": "@nus",
     "platforms": "common",
-    "load": "./node/load.cts"
+    "load": "./src/load.cts"
   },
   "devDependencies": {
     "@neon-rs/cli": "^0.1",
