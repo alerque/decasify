@@ -4,6 +4,9 @@ use strum_macros::{Display, VariantNames};
 #[cfg(feature = "pythonmodule")]
 use pyo3::prelude::*;
 
+#[cfg(feature = "wasm")]
+use wasm_bindgen::prelude::*;
+
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
 #[derive(Debug)]
@@ -20,6 +23,7 @@ impl error::Error for DecasifyError {}
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub enum InputLocale {
     #[default]
     EN,
@@ -39,6 +43,7 @@ pub enum TargetCase {
 /// Style guide selector to change grammar and context rules used for title casing.
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
     AssociatedPress,

@@ -23,6 +23,9 @@ AM_COND_IF([DEVELOPER_MODE], [
     QUE_PROGVAR([maturin])
     QUE_PROGVAR([pytest])
     QUE_PROGVAR([uv])
+    # WASM build and testing dependencies
+    QUE_PROGVAR([npm])
+    QUE_PROGVAR([wasmpack], [wasm-pack])
     # Release tooling
     QUE_PROGVAR([gitcliff], [git-cliff])
 ])
