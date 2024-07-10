@@ -23,7 +23,7 @@ naersk.lib."${targetPlatform.system}".buildPackage rec {
   meta = with lib; {
     description = cargoToml.package.description;
     homepage = cargoToml.package.homepage;
-    license = with licenses; [ mit ];
+    license = with licenses; [ lgpl3 ];
     maintainers = with maintainers; [ ];
   };
 }
