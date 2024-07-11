@@ -299,4 +299,28 @@ mod tests {
         "foo BAR BaZ ILIK İLE",
         "FOO BAR BAZ ILIK İLE"
     );
+
+    macro_rules! sentencecase {
+        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_sentencecase($input, $locale);
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    sentencecase!(
+        sentence_en,
+        InputLocale::EN,
+        "insert BIKE here",
+        "Insert bike here"
+    );
+
+    sentencecase!(
+        sentence_tr,
+        InputLocale::TR,
+        "ilk DAVRANSIN",
+        "İlk davransın"
+    );
 }
