@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
+// SPDX-License-Identifier: LGPL-3.0-only
+
 use std::{error, fmt, result, str::FromStr};
 use strum_macros::{Display, VariantNames};
 
