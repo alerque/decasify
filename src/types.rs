@@ -20,6 +20,7 @@ impl error::Error for DecasifyError {}
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[strum(serialize_all = "lowercase")]
 pub enum InputLocale {
     #[default]
     EN,
@@ -28,6 +29,7 @@ pub enum InputLocale {
 
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
+#[strum(serialize_all = "lowercase")]
 pub enum TargetCase {
     Lower,
     Sentence,
@@ -39,6 +41,7 @@ pub enum TargetCase {
 /// Style guide selector to change grammar and context rules used for title casing.
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[strum(serialize_all = "lowercase")]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
     AssociatedPress,
