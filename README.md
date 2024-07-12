@@ -17,8 +17,8 @@ Many tools can handle casing single words, and some others can handle English st
 
 The CLI defaults to titlecase and English, but lower and upper case options are also available.
 The crate library, Lua Rock and Python Module APIs have functions specific to each operation.
-Where possible the APIs currently default to English rules and (for English) the Gruber style urules, but others are available.
-The Turkish rules follow Turkish Language Instutute's [guidelines][tdk].
+Where possible the APIs currently default to English rules and (for English) the Gruber style rules, but others are available.
+The Turkish rules follow Turkish Language Institute's [guidelines][tdk].
 
 For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
 The Gruber style is by far the most complete, being implemented by the [titlecase crate][titlecase_crate].
@@ -127,7 +127,7 @@ dependencies = {
 }
 ```
 
-Then import and use the provided function:
+Then import and use the provided functions:
 
 ```lua
 local decasify = require("decasify")
@@ -150,7 +150,7 @@ dependencies = [
 ]
 ```
 
-Then import and use the provided function and classes:
+Then import and use the provided functions and type classes:
 
 ```python
 from decasify import *
