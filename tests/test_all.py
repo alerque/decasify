@@ -1,10 +1,11 @@
-from decasify import titlecase, lowercase, uppercase, InputLocale, StyleGuide
+from decasify import titlecase, lowercase, uppercase, sentencecase, InputLocale, StyleGuide
 
 
 def test_isfuction():
     assert callable(titlecase)
     assert callable(lowercase)
     assert callable(uppercase)
+    assert callable(sentencecase)
 
 
 class TestTitlecase:
@@ -52,3 +53,15 @@ class TestUppercase:
         text = "ilki ılık öğlen"
         outp = "İLKİ ILIK ÖĞLEN"
         assert uppercase(text, InputLocale.TR) == outp
+
+
+class TestSentencecase:
+    def test_english_defaults(self):
+        text = "insert BIKE here"
+        outp = "Insert bike here"
+        assert sentencecase(text, InputLocale.EN) == outp
+
+    def test_turkish_characters(self):
+        text = "ilk DAVRANSIN"
+        outp = "İlk davransın"
+        assert sentencecase(text, InputLocale.TR) == outp
