@@ -24,6 +24,7 @@ impl error::Error for DecasifyError {}
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[strum(serialize_all = "lowercase")]
 pub enum InputLocale {
     #[default]
     EN,
@@ -32,6 +33,7 @@ pub enum InputLocale {
 
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
+#[strum(serialize_all = "lowercase")]
 pub enum TargetCase {
     Lower,
     Sentence,
@@ -44,6 +46,7 @@ pub enum TargetCase {
 #[derive(Default, Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[strum(serialize_all = "lowercase")]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
     AssociatedPress,

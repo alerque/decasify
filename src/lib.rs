@@ -21,7 +21,7 @@ pub mod python;
 #[cfg(feature = "wasm")]
 pub mod wasm;
 
-/// Convert a string to title case following typestting conventions for a target locale
+/// Convert a string to title case following typesetting conventions for a target locale
 pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
@@ -30,7 +30,7 @@ pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>
     }
 }
 
-/// Convert a string to lower case following typestting conventions for a target locale
+/// Convert a string to lower case following typesetting conventions for a target locale
 pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
@@ -39,12 +39,21 @@ pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
     }
 }
 
-/// Convert a string to upper case following typestting conventions for a target locale
+/// Convert a string to upper case following typesetting conventions for a target locale
 pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
     let words: Vec<&str> = string.split_whitespace().collect();
     match locale {
         InputLocale::EN => to_uppercase_en(words),
         InputLocale::TR => to_uppercase_tr(words),
+    }
+}
+
+/// Convert a string to sentence case following typesetting conventions for a target locale
+pub fn to_sentencecase(string: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = string.split_whitespace().collect();
+    match locale {
+        InputLocale::EN => to_sentencecase_en(words),
+        InputLocale::TR => to_sentencecase_tr(words),
     }
 }
 
@@ -155,6 +164,28 @@ fn to_uppercase_tr(words: Vec<&str>) -> String {
     let mut output: Vec<String> = Vec::new();
     for word in words {
         output.push(word.to_uppercase_tr_az());
+    }
+    output.join(" ")
+}
+
+fn to_sentencecase_en(words: Vec<&str>) -> String {
+    let mut words = words.iter().peekable();
+    let mut output: Vec<String> = Vec::new();
+    let first = words.next().unwrap();
+    output.push(gruber_titlecase(first));
+    for word in words {
+        output.push(word.to_lowercase());
+    }
+    output.join(" ")
+}
+
+fn to_sentencecase_tr(words: Vec<&str>) -> String {
+    let mut words = words.iter().peekable();
+    let mut output: Vec<String> = Vec::new();
+    let first = words.next().unwrap();
+    output.push(first.to_titlecase_tr_or_az());
+    for word in words {
+        output.push(word.to_lowercase_tr_az());
     }
     output.join(" ")
 }
@@ -301,5 +332,29 @@ mod tests {
         InputLocale::TR,
         "foo BAR BaZ ILIK İLE",
         "FOO BAR BAZ ILIK İLE"
+    );
+
+    macro_rules! sentencecase {
+        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_sentencecase($input, $locale);
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    sentencecase!(
+        sentence_en,
+        InputLocale::EN,
+        "insert BIKE here",
+        "Insert bike here"
+    );
+
+    sentencecase!(
+        sentence_tr,
+        InputLocale::TR,
+        "ilk DAVRANSIN",
+        "İlk davransın"
     );
 }
