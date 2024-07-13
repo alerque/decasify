@@ -12,6 +12,9 @@ pub use types::{InputLocale, Result, StyleGuide, TargetCase};
 #[cfg(feature = "cli")]
 pub mod cli;
 
+#[cfg(feature = "nodemodule")]
+pub mod node;
+
 #[cfg(feature = "luamodule")]
 pub mod lua;
 

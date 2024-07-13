@@ -1,0 +1,42 @@
+{
+  "name": "decasify",
+  "version": "0.5.5",
+  "description": "A CLI utility and library to cast strings to title-case according to locale specific style guides including Turkish support",
+  "main": "./lib/index.cjs",
+  "scripts": {
+    "build": "tsc && cargo build --features nodemodule --release --message-format=json > cargo.log"
+  },
+  "author": "Caleb Maclennan <caleb@alerque.com>",
+  "license": "GPL-3.0-only",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./lib/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.cts",
+        "default": "./lib/index.cjs"
+      }
+    }
+  },
+  "types": "./lib/index.d.cts",
+  "files": [
+    "lib/**/*.?({c,m}){t,j}s"
+  ],
+  "neon": {
+    "type": "library",
+    "org": "@nus",
+    "platforms": "common",
+    "load": "./src/load.cts"
+  },
+  "devDependencies": {
+    "neon-cli": "^0.4",
+    "@tsconfig/node20": "^20.1",
+    "@types/node": "^20.14",
+    "typescript": "^5.5"
+  },
+  "dependencies": {
+    "@neon-rs/load": "^0.1"
+  }
+}
