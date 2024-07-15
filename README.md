@@ -162,3 +162,22 @@ input = "title with a twist: a colon"
 output  = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
 print(output)
 ```
+
+## Use as JavaScript (WASM) Module
+
+Depend on the WASM based JavaScript module in your project with `npm add decasify`:
+
+Then import and use the provided functions and classes:
+
+```javascript
+import { titlecase, uppercase, lowercase, InputLocale, StyleGuide } from 'decasify';
+
+var input = "ILIK SU VE İTEN RÜZGARLAR"
+var output = titlecase(input, InputLocale.TR)
+console.log(output)
+
+var input = "title with a twist: a colon"
+var output = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
+console.log(output)
+```
+
