@@ -1,3 +1,10 @@
+## [0.5.6] - 2024-07-15
+
+### Features
+
+- *(wasm)* Implement API as WASM module
+- Implement (fairly naive) sentence casing
+
 ## [0.5.5] - 2024-07-08
 
 ### Bug Fixes

@@ -13,6 +13,7 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(py_titlecase, module)?)?;
     module.add_function(wrap_pyfunction!(py_lowercase, module)?)?;
     module.add_function(wrap_pyfunction!(py_uppercase, module)?)?;
+    module.add_function(wrap_pyfunction!(py_sentencecase, module)?)?;
     Ok(())
 }
 
@@ -35,4 +36,11 @@ fn py_lowercase(input: String, locale: InputLocale) -> PyResult<String> {
 #[pyo3(signature = (input, locale))]
 fn py_uppercase(input: String, locale: InputLocale) -> PyResult<String> {
     Ok(to_uppercase(&input, locale))
+}
+
+#[pyfunction]
+#[pyo3(name = "sentencecase")]
+#[pyo3(signature = (input, locale))]
+fn py_sentencecase(input: String, locale: InputLocale) -> PyResult<String> {
+    Ok(to_sentencecase(&input, locale))
 }

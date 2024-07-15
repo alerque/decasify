@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use decasify::cli::Cli;
-use decasify::{to_lowercase, to_titlecase, to_uppercase};
+use decasify::{to_lowercase, to_sentencecase, to_titlecase, to_uppercase};
 use decasify::{InputLocale, Result, StyleGuide, TargetCase};
 
 use clap::CommandFactory;
@@ -56,7 +56,10 @@ fn process<I: IntoIterator<Item = String>>(
                 let output = to_uppercase(&string, locale.clone());
                 println!("{output}")
             }
-            _ => eprintln!("Target case {case:?} not implemented!"),
+            TargetCase::Sentence => {
+                let output = to_sentencecase(&string, locale.clone());
+                println!("{output}")
+            }
         }
     }
 }

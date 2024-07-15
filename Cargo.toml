@@ -1,6 +1,6 @@
 [package]
 name = "decasify"
-version = "0.5.5"
+version = "0.5.6"
 authors = ["Caleb Maclennan <caleb@alerque.com>"]
 edition = "2021"
 rust-version = "1.73.0"
@@ -38,6 +38,7 @@ lua52 = ["luamodule", "mlua/lua52"]
 lua51 = ["luamodule", "mlua/lua51"]
 luajit = ["luamodule", "mlua/luajit"]
 pythonmodule = ["pyo3"]
+wasm = ["wasm-bindgen"]
 
 [profile.release]
 lto = true
@@ -64,8 +65,12 @@ unicode_titlecase = "2.3"
   features = [ "extension-module" ]
 
   [dependencies.titlecase]
-  version = "3.2"
+  version = "3.3"
   features = [ "perf" ]
+
+  [dependencies.wasm-bindgen]
+  version = "0.2"
+  optional = true
 
 [build-dependencies]
 strum = "0.26"

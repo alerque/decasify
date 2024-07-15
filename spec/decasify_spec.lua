@@ -10,11 +10,13 @@ describe("decasify", function ()
    local titlecase = decasify.titlecase
    local lowercase = decasify.lowercase
    local uppercase = decasify.uppercase
+   local sentencecase = decasify.sentencecase
 
    it("should provide the casing functions", function ()
       assert.is_function(titlecase)
       assert.is_function(lowercase)
       assert.is_function(uppercase)
+      assert.is_function(sentencecase)
    end)
 
    describe("titlecase", function ()
@@ -88,6 +90,27 @@ describe("decasify", function ()
       it("should be at peace with Turkish characters", function ()
          local result = uppercase("ilki ılık öğlen", "tr")
          assert.equals("İLKİ ILIK ÖĞLEN", result)
+      end)
+   end)
+
+   describe("sentencecase", function ()
+      it("should not balk at nil values for optional args", function ()
+         assert.no.error(function ()
+            sentencecase("foo", "en")
+         end)
+         assert.no.error(function ()
+            sentencecase("foo")
+         end)
+      end)
+
+      it("should default to handling string as English", function ()
+         local result = sentencecase("insert BIKE here")
+         assert.equals("Insert bike here", result)
+      end)
+
+      it("should be at peace with Turkish characters", function ()
+         local result = sentencecase("ilk DAVRANSIN", "tr")
+         assert.equals("İlk davransın", result)
       end)
    end)
 end)
