@@ -24,6 +24,6 @@ pub fn uppercase(input: &str, locale: InputLocale) -> Result<String, JsError> {
 }
 
 #[wasm_bindgen]
-pub fn scentencecase(input: &str, locale: InputLocale) -> Result<String, JsError> {
-    Ok(to_scentencecase(input, locale))
+pub fn sentencecase(input: &str, locale: InputLocale) -> Result<String, JsError> {
+    Ok(to_sentencecase(input, locale))
 }
