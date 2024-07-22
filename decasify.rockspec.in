@@ -14,7 +14,7 @@ description = {
       Provides casing functions for long strings (not just individual words)
       supporting the grammatical style guides of various locales including Turkish.
    ]],
-   license = "GPL-3.0-only",
+   license = "LGPL-3.0-only",
    homepage = "https://github.com/alerque/decasify",
    issues_url = "https://github.com/alerque/decasify/issues",
    maintainer = "Caleb Maclennan <caleb@alerque.com>",

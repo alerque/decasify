@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
+# SPDX-License-Identifier: LGPL-3.0-only
 {
   description = "A CLI utility to cast strings to title-case according to locale specific style guides including Turkish support";
   inputs = {

@@ -1,3 +1,6 @@
+-- SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
+-- SPDX-License-Identifier: LGPL-3.0-only
+
 -- The busted tests here are a bit sparse, but we're really just testing that the Lua/Rust interface is working. The
 -- unit tests on the Rust side for various language and casing combinations are much more complete. The important thing
 -- to test here is anything that might need special care on the Lua side.

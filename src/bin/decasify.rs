@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
+// SPDX-License-Identifier: LGPL-3.0-only
+
 use decasify::cli::Cli;
 use decasify::{to_lowercase, to_sentencecase, to_titlecase, to_uppercase};
 use decasify::{InputLocale, Result, StyleGuide, TargetCase};
