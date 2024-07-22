@@ -1,3 +1,9 @@
+## [0.5.7] - 2024-07-15
+
+### Bug Fixes
+
+- *(wasm)* Export missing sentencecase function to JavaScript
+
 ## [0.5.6] - 2024-07-15
 
 ### Features

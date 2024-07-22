@@ -9,14 +9,15 @@
 [![Crates.io (latest)](https://img.shields.io/crates/v/decasify?logo=rust&color=blue)](https://crates.io/crates/decasify)
 [![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify?logo=lua&color=blue)](https://luarocks.org/modules/alerque/decasify)
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
+[![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
-A CLI utility, Rust crate, Lua Rock, and Python module to cast strings to title-case according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua Rock, Python module, and JavaScript module to cast strings to title-case according to locale specific style guides including Turkish support.
 
 This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
 Many tools can handle casing single words, and some others can handle English strings, but nothing seemed to be out there for full Turkish strings.
 
 The CLI defaults to titlecase and English, but lower, upper, and scentence case options are also available.
-The crate library, Lua Rock and Python Module APIs have functions specific to each operation.
+The Rust, Lua, Python, and JavaScript library APIs have functions specific to each operation.
 Where possible the APIs currently default to English rules and (for English) the Gruber style rules, but others are available.
 The Turkish rules follow Turkish Language Institute's [guidelines][tdk].
 
