@@ -1,6 +1,6 @@
 [package]
 name = "decasify"
-version = "0.5.7"
+version = "0.5.8"
 authors = ["Caleb Maclennan <caleb@alerque.com>"]
 edition = "2021"
 rust-version = "1.73.0"
