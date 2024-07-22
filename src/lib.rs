@@ -106,7 +106,7 @@ fn to_titlecase_tr(words: Vec<&str>, style: Option<StyleGuide>) -> String {
             output.push(first.to_titlecase_tr_or_az_lower_rest());
             for word in words {
                 match is_reserved_tr(word.to_string()) {
-                    true => output.push(word.to_string().to_lowercase()),
+                    true => output.push(word.to_string().to_lowercase_tr_az()),
                     false => {
                         output.push(word.to_titlecase_tr_or_az_lower_rest());
                     }
@@ -131,7 +131,7 @@ fn is_reserved_tr(word: String) -> bool {
         r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
     )
     .unwrap();
-    let soruek = Regex::new(r"^([Mm][İiIıUuÜü])").unwrap();
+    let soruek = Regex::new(r"^([Mm][İiIıUuÜü])([Dd][İiIıUuÜü][Rr]([Ll][AaEe][Rr])?|[Ss][İiIıUuÜü][Nn]|[Yy][İiIıUuÜü][Zz]|[Ss][İiIıUuÜü][Nn][İiIıUuÜü][Zz]|[Ll][AaEe][Rr])?$").unwrap();
     let word = word.as_str();
     baglac.is_match(word) || soruek.is_match(word)
 }
@@ -268,6 +268,22 @@ mod tests {
         Some(StyleGuide::DaringFireball),
         "Q&A with Steve Jobs: 'That's what happens in technology'",
         "Q&A With Steve Jobs: 'That's What Happens in Technology'"
+    );
+
+    titlecase!(
+        turkish_question,
+        InputLocale::TR,
+        None,
+        "aç mısın",
+        "Aç mısın"
+    );
+
+    titlecase!(
+        turkish_question_false,
+        InputLocale::TR,
+        None,
+        "dualarımızda minnettarlık",
+        "Dualarımızda Minnettarlık"
     );
 
     titlecase!(
