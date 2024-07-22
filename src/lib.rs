@@ -131,7 +131,7 @@ fn is_reserved_tr(word: String) -> bool {
         r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
     )
     .unwrap();
-    let soruek = Regex::new(r"^([Mm][İiIıUuÜü])").unwrap();
+    let soruek = Regex::new(r"^([Mm][İiIıUuÜü])([Dd][İiIıUuÜü][Rr]([Ll][AaEe][Rr])?|[Ss][İiIıUuÜü][Nn]|[Yy][İiIıUuÜü][Zz]|[Ss][İiIıUuÜü][Nn][İiIıUuÜü][Zz]|[Ll][AaEe][Rr])?$").unwrap();
     let word = word.as_str();
     baglac.is_match(word) || soruek.is_match(word)
 }
