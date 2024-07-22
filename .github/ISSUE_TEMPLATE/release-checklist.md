@@ -6,15 +6,14 @@ labels: ''
 assignees: alerque
 ---
 
-- [ ] Update changelog, `git cliff -o CHANGELOG.md -t vX.Y.Z`, add to stage
-- [ ] Bump version in Cargo.toml, `cargo build`, then add to stage
-- [ ] Generate new rockspe, `make rockspecs SEMVER=X.Y.Z`, add to stage
-- [ ] Commit release point
-- [ ] Test, `make test`
+- [ ] Bump version in Cargo.toml, `cargo build`, then add manifest and lockfile to stage
+- [ ] Generate new rockspec and update changelog, `make SEMVER=X.Y.Z rockspecs CHANGELOG.md`, add release rockspec and changelog to stage
+- [ ] Commit release point, `git commit -m "chore: Release vX.Y.Z"`
+- [ ] Test and lint, `make test lint`
 - [ ] Tag with signature, `git tag -s vX.Y.Z`
 - [ ] Push tag, `git push --follow-tags`
 - [ ] Publish to crates.io, `cargo publish --locked`
-- [ ] Publish to PyPi, `maturin publish`
+- [ ] Publish to PyPi (needs exported API key), `maturin publish`
 - [ ] Publish to NPMJS, `wasm-pack build --features wasm && wasm-pack publish`
 - [ ] Download LuaRocks artifact, `wget https://luarocks.org/manifests/alerque/decasify-X.Y.Z-1.src.rock`
 - [ ] Download PyPi artifact, `wget https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-X.Y.Z-cp312-cp312-manylinux_2_34_x86_64.whl`
