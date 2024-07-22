@@ -271,6 +271,22 @@ mod tests {
     );
 
     titlecase!(
+        turkish_question,
+        InputLocale::TR,
+        None,
+        "aç mısın",
+        "Aç mısın"
+    );
+
+    titlecase!(
+        turkish_question_false,
+        InputLocale::TR,
+        None,
+        "dualarımızda minnettarlık",
+        "Dualarımızda Minnettarlık"
+    );
+
+    titlecase!(
         turkish_chars,
         InputLocale::TR,
         None,
