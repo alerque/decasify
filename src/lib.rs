@@ -106,7 +106,7 @@ fn to_titlecase_tr(words: Vec<&str>, style: Option<StyleGuide>) -> String {
             output.push(first.to_titlecase_tr_or_az_lower_rest());
             for word in words {
                 match is_reserved_tr(word.to_string()) {
-                    true => output.push(word.to_string().to_lowercase()),
+                    true => output.push(word.to_string().to_lowercase_tr_az()),
                     false => {
                         output.push(word.to_titlecase_tr_or_az_lower_rest());
                     }
