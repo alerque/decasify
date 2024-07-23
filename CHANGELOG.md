@@ -1,3 +1,10 @@
+## [0.5.8] - 2024-07-22
+
+### Bug Fixes
+
+- Make sure TR/AZ reserved words are lower-cased with locale
+- Allow freestanding TR question suffixes as reserved without catching unrelated words
+
 ## [0.5.7] - 2024-07-15
 
 ### Bug Fixes

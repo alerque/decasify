@@ -1,0 +1,9 @@
+[default]
+locale = "en-us"
+extend-ignore-identifiers-re = [
+  "[bB][aA][zZ]"
+]
+
+[files]
+ignore-hidden = false
+extend-exclude = ["/.git"]

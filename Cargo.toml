@@ -1,6 +1,6 @@
 [package]
 name = "decasify"
-version = "0.5.7"
+version = "0.5.8"
 authors = ["Caleb Maclennan <caleb@alerque.com>"]
 edition = "2021"
 rust-version = "1.73.0"
@@ -99,9 +99,13 @@ assert_cmd = "2.0"
 predicates = "3.1"
 
 [package.metadata.git-cliff.git]
+protect_breaking_commits = true
 commit_parsers = [
     { message = "^feat", group = "<!-- 0 -->Features" },
     { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
     { message = "^perf", group = "<!-- 2 -->Performance" },
     { message = ".*", skip = true },
+]
+commit_preprocessors = [
+  { pattern = '.*', replace_command = 'typos --write-changes -' },
 ]

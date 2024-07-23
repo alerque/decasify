@@ -58,7 +58,7 @@ release-preview:
 	$(GITCLIFF) --unreleased
 
 CHANGELOG.md: .version
-	$(GITCLIFF) -o $@
+	$(GITCLIFF) -o $@ -t $(TAG)
 
 decasify-%.md: CHANGELOG.md
 	$(SED) -e '/\.\.\.v$*/,/\.\.\.v/!d' $< | \
