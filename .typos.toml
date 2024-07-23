@@ -4,6 +4,9 @@ extend-ignore-identifiers-re = [
   "[bB][aA][zZ]"
 ]
 
+[default.extend-words]
+runing = "running"
+
 [files]
 ignore-hidden = false
 extend-exclude = ["/.git"]
