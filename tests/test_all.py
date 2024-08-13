@@ -1,7 +1,14 @@
 # SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 # SPDX-License-Identifier: LGPL-3.0-only
 
-from decasify import titlecase, lowercase, uppercase, sentencecase, InputLocale, StyleGuide
+from decasify import (
+    titlecase,
+    lowercase,
+    uppercase,
+    sentencecase,
+    InputLocale,
+    StyleGuide,
+)
 
 
 def test_isfuction():

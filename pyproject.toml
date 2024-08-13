@@ -9,9 +9,14 @@ dependencies = [
 ]
 requires-python = ">=3.8"
 classifiers = [
-    "Programming Language :: Rust",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Natural Language :: Turkish",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Programming Language :: Rust",
+  "Topic :: Text Processing :: Filters",
 ]
 dynamic = ["version"]
 

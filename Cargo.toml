@@ -98,6 +98,9 @@ strum_macros = "0.26"
 assert_cmd = "2.0"
 predicates = "3.1"
 
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
+
 [package.metadata.git-cliff.git]
 protect_breaking_commits = true
 commit_parsers = [
@@ -107,5 +110,5 @@ commit_parsers = [
     { message = ".*", skip = true },
 ]
 commit_preprocessors = [
-  { pattern = '.*', replace_command = 'typos --write-changes -' },
+  { pattern = '.*', replace_command = 'typos --quiet --write-changes -' },
 ]

@@ -20,6 +20,7 @@ include!("../src/cli.rs");
 
 fn main() {
     println!("cargo:rustc-cfg=build");
+    println!("cargo:rustc-check-cfg=cfg(build)");
     if let Ok(val) = env::var("AUTOTOOLS_DEPENDENCIES") {
         for dependency in val.split(' ') {
             println!("cargo:rerun-if-changed={dependency}");
