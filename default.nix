@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
+# SPDX-License-Identifier: LGPL-3.0-only
 { lib
 , naersk
 , stdenv
@@ -23,7 +25,7 @@ naersk.lib."${targetPlatform.system}".buildPackage rec {
   meta = with lib; {
     description = cargoToml.package.description;
     homepage = cargoToml.package.homepage;
-    license = with licenses; [ mit ];
+    license = with licenses; [ lgpl3 ];
     maintainers = with maintainers; [ ];
   };
 }
