@@ -112,3 +112,16 @@ commit_parsers = [
 commit_preprocessors = [
   { pattern = '.*', replace_command = 'typos --quiet --write-changes -' },
 ]
+
+[package.metadata.typos.default]
+locale = "en-us"
+extend-ignore-identifiers-re = [
+  "[bB][aA][zZ]"
+]
+
+[package.metadata.typos.default.extend-words]
+runing = "running"
+
+[package.metadata.typos.files]
+ignore-hidden = false
+extend-exclude = ["/.git"]
