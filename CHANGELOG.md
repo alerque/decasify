@@ -1,3 +1,9 @@
+## [0.6.0] - 2024-08-13
+
+### Chore
+
+- [**breaking**] Re-license under GNU Lesser General Public License v3
+
 ## [0.5.8] - 2024-07-22
 
 ### Bug Fixes

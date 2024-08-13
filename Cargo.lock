@@ -268,7 +268,7 @@ dependencies = [
 
 [[package]]
 name = "decasify"
-version = "0.5.8"
+version = "0.6.0"
 dependencies = [
  "assert_cmd",
  "clap",

@@ -1,12 +1,11 @@
--- DO NOT EDIT! Modify template decasify.rockspec.in and rebuild with `make decasify-dev-1.rockspec`
-
-rockspec_format = "3.0"
+rockspec_format = "1.0"
 package = "decasify"
-version = "dev-1"
+version = "0.6.0-1"
 
 source = {
    url = "git+https://github.com/alerque/decasify.git",
-   branch = "master"
+   dir = "decasify",
+   tag = "v0.6.0"
 }
 
 description = {
@@ -18,9 +17,6 @@ description = {
    ]],
    license = "LGPL-3.0-only",
    homepage = "https://github.com/alerque/decasify",
-   issues_url = "https://github.com/alerque/decasify/issues",
-   maintainer = "Caleb Maclennan <caleb@alerque.com>",
-   labels = { "i18n" }
 }
 
 dependencies = {
