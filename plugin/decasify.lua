@@ -2,13 +2,12 @@ if vim.g.loaded_decasify then
    return
 end
 
-local case = vim.g.decasify_case or "title"
-local locale = vim.g.decasify_locale or "en"
-local style = vim.g.decasify_style or "gruber"
-
 local decasify = require("decasify")
 
 vim.api.nvim_create_user_command("Decasify", function (args)
+   local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or "title"
+   local locale = vim.b.decasify_case or vim.g.decasify_locale or "en"
+   local style = vim.b.decasify_case or vim.g.decasify_style or "gruber"
    local first, last = args.line1, args.line2
    local caser = case:gsub("case$", "") .. "case"
    if type(decasify[caser]) ~= "function" then
