@@ -186,12 +186,7 @@ console.log(output)
 
 ## Use as a Neovim plugin
 
-Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply add the plugin to your `rocks.toml`:
-
-```toml
-[plugins]
-decasify.nvim = "dev"
-```
+Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim dev`.
 
 Using other plugin managers you will need to make sure the Lua Rock for [decasify](https://luarocks.org/modules/alerque/decasify) is available as a dependency, then use this repository as a plugin however your plugin manager handles that.
 
