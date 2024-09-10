@@ -41,9 +41,13 @@ TAG ?= v$(SEMVER)
 LUAROCKS_ARGS ?= --tree lua_modules
 
 DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
+DEV_SPEC_NVIM = $(PACKAGE_NAME).nvim-dev-$(ROCKREV).rockspec
 DEV_ROCK = $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock
+DEV_ROCK_NVIM = $(PACKAGE_NAME).nvim-dev-$(ROCKREV).src.rock
 REL_SPEC = rockspecs/$(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).rockspec
+REL_SPEC_NVIM = rockspecs/$(PACKAGE_NAME).nvim-$(SEMVER)-$(ROCKREV).rockspec
 REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
+REL_ROCK_NVIM = $(PACKAGE_NAME).nvim-$(SEMVER)-$(ROCKREV).src.rock
 
 EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 
@@ -99,6 +103,15 @@ $(DEV_SPEC): $(PACKAGE_NAME).rockspec.in
 		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
 		$@
 
+$(DEV_SPEC_NVIM): SEMVER = dev
+$(DEV_SPEC_NVIM): TAG = master
+$(DEV_SPEC_NVIM): $(PACKAGE_NAME).nvim.rockspec.in
+	$(rockpec_template)
+	$(SED) -i \
+		-e '/tag =/s/tag/branch/' \
+		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
+		$@
+
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: SEMVER = $*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: TAG = v$*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
@@ -114,7 +127,13 @@ rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
 $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
 	$(LUAROCKS) $(LUAROCKS_ARGS) pack $<
 
+$(PACKAGE_NAME).nvim-dev-$(ROCKREV).nvim.src.rock: $(DEV_SPEC)
+	$(LUAROCKS) $(LUAROCKS_ARGS) pack $<
+
 $(PACKAGE_NAME)-%.src.rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
+	$(LUAROCKS) $(LUAROCKS_ARGS) pack $<
+
+$(PACKAGE_NAME).nvim-%.src.rock: rockspecs/$(PACKAGE_NAME).nvim-%.rockspec
 	$(LUAROCKS) $(LUAROCKS_ARGS) pack $<
 
 else !DEVELOPER_MODE

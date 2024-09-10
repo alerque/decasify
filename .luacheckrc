@@ -14,4 +14,9 @@ exclude_files = {
 files["**/*_spec.lua"] = {
    std = "+busted",
 }
+files["plugin/*.lua"] = {
+   globals = {
+      "vim",
+   }
+}
 max_line_length = false
