@@ -11,20 +11,22 @@
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 [![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
-A CLI utility, Rust crate, Lua Rock, Python module, and JavaScript module to cast strings to title-case according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua Rock, Python module, JavaScript module, and Neovim plugin to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
 
 This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
-Many tools can handle casing single words, and some others can handle English strings, but nothing seemed to be out there for full Turkish strings.
+Many tools can handle casing single words, some programmer specific tools can recaseing tokens and identifiers, and yet a few others can handle *English* strings, but nothing seemed to be out there for changing the case of full Turkish strings.
 
 The CLI defaults to titlecase and English, but lower, upper, and sentence case options are also available.
 The Rust, Lua, Python, and JavaScript library APIs have functions specific to each operation.
-Where possible the APIs currently default to English rules and (for English) the Gruber style rules, but others are available.
-The Turkish rules follow Turkish Language Institute's [guidelines][tdk].
+Where possible the APIs currently default to English rules and (for English) the Gruber style guide, but others are available.
+
+The Turkish style follows the Turkish Language Institute's [guidelines][tdk].
 
 For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
 The Gruber style is by far the most complete, being implemented by the [titlecase crate][titlecase_crate].
 The CMOS style handles a number of parts of speech but has punctuation related issues.
 The AP style is largely unimplemented.
+
 Contributions are welcome for better style guide support or further languages.
 
 ``` console
@@ -182,3 +184,25 @@ var output = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
 console.log(output)
 ```
 
+## Use as a Neovim plugin
+
+Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply add the plugin to your `rocks.toml`:
+
+```toml
+[plugins]
+decasify.nvim = "dev"
+```
+
+Using other plugin managers you will need to make sure the Lua Rock for [decasify](https://luarocks.org/modules/alerque/decasify) is available as a dependency, then use this repository as a plugin however your plugin manager handles that.
+
+A new command `:Decasify` will become available (with optional subcommands for cases other than title case) that transforms the current line or any range of lines.
+The default case, locale, and style guide can be changed (before or after loading) with global or buffer local variables:
+
+```lua
+-- Set the default target case globally
+vim.g.decasify_case = "title"
+-- Change the locale for the current buffer
+vim.b.decasify_locale = "tr"
+-- Change the default style guide globally
+vim.g.decasify_style = "gruber"
+```
