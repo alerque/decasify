@@ -8,8 +8,10 @@ use titlecase::titlecase as gruber_titlecase;
 use unicode_titlecase::tr_az::StrTrAzCasing;
 use unicode_titlecase::StrTitleCase;
 
+pub mod content;
 pub mod types;
 
+pub use content::{Chunk, Segment};
 pub use types::{InputLocale, Result, StyleGuide, TargetCase};
 
 #[cfg(feature = "cli")]
@@ -25,97 +27,124 @@ pub mod python;
 pub mod wasm;
 
 /// Convert a string to title case following typesetting conventions for a target locale
-pub fn to_titlecase(s: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
-    let words: Vec<&str> = s.split_whitespace().collect();
+pub fn to_titlecase(
+    chunk: impl Into<Chunk>,
+    locale: InputLocale,
+    style: Option<StyleGuide>,
+) -> String {
+    let chunk: Chunk = chunk.into();
     match locale {
-        InputLocale::EN => to_titlecase_en(words, style),
-        InputLocale::TR => to_titlecase_tr(words, style),
+        InputLocale::EN => to_titlecase_en(chunk, style),
+        InputLocale::TR => to_titlecase_tr(chunk, style),
     }
 }
 
 /// Convert a string to lower case following typesetting conventions for a target locale
-pub fn to_lowercase(s: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = s.split_whitespace().collect();
+pub fn to_lowercase(chunk: impl Into<Chunk>, locale: impl Into<InputLocale>) -> String {
+    let chunk: Chunk = chunk.into();
+    let locale: InputLocale = locale.into();
     match locale {
-        InputLocale::EN => to_lowercase_en(words),
-        InputLocale::TR => to_lowercase_tr(words),
+        InputLocale::EN => to_lowercase_en(chunk),
+        InputLocale::TR => to_lowercase_tr(chunk),
     }
 }
 
 /// Convert a string to upper case following typesetting conventions for a target locale
-pub fn to_uppercase(s: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = s.split_whitespace().collect();
+pub fn to_uppercase(chunk: impl Into<Chunk>, locale: impl Into<InputLocale>) -> String {
+    let chunk: Chunk = chunk.into();
+    let locale: InputLocale = locale.into();
     match locale {
-        InputLocale::EN => to_uppercase_en(words),
-        InputLocale::TR => to_uppercase_tr(words),
+        InputLocale::EN => to_uppercase_en(chunk),
+        InputLocale::TR => to_uppercase_tr(chunk),
     }
 }
 
 /// Convert a string to sentence case following typesetting conventions for a target locale
-pub fn to_sentencecase(s: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = s.split_whitespace().collect();
+pub fn to_sentencecase(chunk: impl Into<Chunk>, locale: impl Into<InputLocale>) -> String {
+    let chunk: Chunk = chunk.into();
+    let locale: InputLocale = locale.into();
     match locale {
-        InputLocale::EN => to_sentencecase_en(words),
-        InputLocale::TR => to_sentencecase_tr(words),
+        InputLocale::EN => to_sentencecase_en(chunk),
+        InputLocale::TR => to_sentencecase_tr(chunk),
     }
 }
 
-fn to_titlecase_en(words: Vec<&str>, style: Option<StyleGuide>) -> String {
+fn to_titlecase_en(chunk: Chunk, style: Option<StyleGuide>) -> String {
     match style {
-        Some(StyleGuide::AssociatedPress) => to_titlecase_ap(words),
-        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_cmos(words),
-        Some(StyleGuide::DaringFireball) => to_titlecase_gruber(words),
-        None => to_titlecase_gruber(words),
+        Some(StyleGuide::AssociatedPress) => to_titlecase_ap(chunk),
+        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_cmos(chunk),
+        Some(StyleGuide::DaringFireball) => to_titlecase_gruber(chunk),
+        None => to_titlecase_gruber(chunk),
     }
 }
 
-fn to_titlecase_ap(words: Vec<&str>) -> String {
+fn to_titlecase_ap(chunk: Chunk) -> String {
     eprintln!("AP style guide not implemented, string returned as-is!");
-    words.join(" ")
+    chunk.to_string()
 }
 
-fn to_titlecase_cmos(words: Vec<&str>) -> String {
-    let mut words = words.iter().peekable();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(first.to_titlecase_lower_rest());
-    while let Some(word) = words.next() {
-        if words.peek().is_none() {
-            output.push(word.to_titlecase_lower_rest());
-        } else {
-            match is_reserved_en(word.to_string()) {
-                true => output.push(word.to_string().to_lowercase()),
-                false => {
-                    output.push(word.to_titlecase_lower_rest());
+fn to_titlecase_cmos(chunk: Chunk) -> String {
+    let mut done_first = false;
+    let mut chunk = chunk.clone();
+    let mut segments = chunk.segments.iter_mut().peekable();
+    while let Some(segment) = segments.next() {
+        if let Segment::Word(s) = segment {
+            *s = if !done_first {
+                done_first = true;
+                s.to_string().to_titlecase_lower_rest()
+            } else if segments.peek().is_none() {
+                // TODO: I think a bug is hiding here since peek() might give use a separator
+                // that happens to be a trailing trivia. We need a custom iterator or peeker
+                // that knows how to answer about first/last *word* segments.
+                s.to_string().to_titlecase_lower_rest()
+            } else {
+                match is_reserved_en(s.to_string()) {
+                    true => s.to_string().to_lowercase(),
+                    false => s.to_string().to_titlecase_lower_rest(),
                 }
             }
         }
     }
-    output.join(" ")
+    chunk.to_string()
 }
 
-fn to_titlecase_gruber(words: Vec<&str>) -> String {
-    let text = words.join(" ");
-    gruber_titlecase(&text)
+fn to_titlecase_gruber(chunk: Chunk) -> String {
+    // The titlecase crate we are going to delegate to here trims the input. We need to restore
+    // leading and trailing whitespace ourselves.
+    let leading_trivia = if let Some(Segment::Separator(s)) = chunk.segments.first() {
+        s.to_string()
+    } else {
+        String::from("")
+    };
+    let trailing_trivia = if let Some(Segment::Separator(s)) = chunk.segments.last() {
+        s.to_string()
+    } else {
+        String::from("")
+    };
+    let titilized = gruber_titlecase(&chunk.to_string());
+    format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
-fn to_titlecase_tr(words: Vec<&str>, style: Option<StyleGuide>) -> String {
+fn to_titlecase_tr(chunk: Chunk, style: Option<StyleGuide>) -> String {
     match style {
-        Some(_) => panic!("Turkish implementation doesn't support different style guides."),
+        Some(_) => todo!("Turkish implementation doesn't support different style guides."),
         None => {
-            let mut words = words.iter();
-            let mut output: Vec<String> = Vec::new();
-            let first = words.next().unwrap();
-            output.push(first.to_titlecase_tr_or_az_lower_rest());
-            for word in words {
-                match is_reserved_tr(word.to_string()) {
-                    true => output.push(word.to_string().to_lowercase_tr_az()),
-                    false => {
-                        output.push(word.to_titlecase_tr_or_az_lower_rest());
+            let mut chunk = chunk.clone();
+            let mut done_first = false;
+            chunk.segments.iter_mut().for_each(|segment| {
+                if let Segment::Word(s) = segment {
+                    *s = if !done_first {
+                        done_first = true;
+                        s.to_string().to_titlecase_tr_or_az_lower_rest()
+                    } else {
+                        match is_reserved_tr(s.to_string()) {
+                            true => s.to_string().to_lowercase_tr_az(),
+                            false => s.to_titlecase_tr_or_az_lower_rest(),
+                        }
                     }
                 }
-            }
-            output.join(" ")
+            });
+            chunk.to_string()
         }
     }
 }
@@ -139,58 +168,76 @@ fn is_reserved_tr(word: String) -> bool {
     baglac.is_match(word) || soruek.is_match(word)
 }
 
-fn to_lowercase_en(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_lowercase());
-    }
-    output.join(" ")
+fn to_lowercase_en(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = s.to_string().to_lowercase()
+        }
+    });
+    chunk.to_string()
 }
 
-fn to_lowercase_tr(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_lowercase_tr_az());
-    }
-    output.join(" ")
+fn to_lowercase_tr(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = s.to_string().to_lowercase_tr_az()
+        }
+    });
+    chunk.to_string()
 }
 
-fn to_uppercase_en(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_uppercase());
-    }
-    output.join(" ")
+fn to_uppercase_en(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = s.to_string().to_uppercase()
+        }
+    });
+    chunk.to_string()
 }
 
-fn to_uppercase_tr(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_uppercase_tr_az());
-    }
-    output.join(" ")
+fn to_uppercase_tr(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = s.to_string().to_uppercase_tr_az()
+        }
+    });
+    chunk.to_string()
 }
 
-fn to_sentencecase_en(words: Vec<&str>) -> String {
-    let mut words = words.iter().peekable();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(gruber_titlecase(first));
-    for word in words {
-        output.push(word.to_lowercase());
-    }
-    output.join(" ")
+fn to_sentencecase_en(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    let mut done_first = false;
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = if !done_first {
+                done_first = true;
+                s.to_string().to_titlecase_lower_rest()
+            } else {
+                s.to_string().to_lowercase()
+            }
+        }
+    });
+    chunk.to_string()
 }
 
-fn to_sentencecase_tr(words: Vec<&str>) -> String {
-    let mut words = words.iter().peekable();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(first.to_titlecase_tr_or_az());
-    for word in words {
-        output.push(word.to_lowercase_tr_az());
-    }
-    output.join(" ")
+fn to_sentencecase_tr(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    let mut done_first = false;
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = if !done_first {
+                done_first = true;
+                s.to_string().to_titlecase_tr_or_az_lower_rest()
+            } else {
+                s.to_string().to_lowercase_tr_az()
+            }
+        }
+    });
+    chunk.to_string()
 }
 
 #[cfg(test)]
