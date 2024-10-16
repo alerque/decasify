@@ -95,7 +95,7 @@ Of course the bare binary can also be installed directly with Cargo:
 $ cargo install --features cli decasify
 ```
 
-## Use as Rust crate
+## Use as a Rust crate
 
 In your `Cargo.toml` file.
 
@@ -120,7 +120,7 @@ fn demo() {
 }
 ```
 
-## Use as Lua Rock
+## Use as a Lua Rock
 
 Depend on the LuaRock in your project or install with `luarocks install decasify`:
 
@@ -142,7 +142,7 @@ output  = decasify.titlecase(input, "en", "gruber")
 print(output)
 ```
 
-## Use as Python Module
+## Use as a Python Module
 
 Depend on the Python module in your project or install with `pip install decasify`:
 
@@ -166,7 +166,7 @@ output  = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
 print(output)
 ```
 
-## Use as JavaScript (WASM) Module
+## Use as a JavaScript (WASM) Module
 
 Depend on the WASM based JavaScript module in your project with `npm add decasify`:
 
