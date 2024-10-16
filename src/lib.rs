@@ -25,8 +25,8 @@ pub mod python;
 pub mod wasm;
 
 /// Convert a string to title case following typesetting conventions for a target locale
-pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
+pub fn to_titlecase(s: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
+    let words: Vec<&str> = s.split_whitespace().collect();
     match locale {
         InputLocale::EN => to_titlecase_en(words, style),
         InputLocale::TR => to_titlecase_tr(words, style),
@@ -34,8 +34,8 @@ pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>
 }
 
 /// Convert a string to lower case following typesetting conventions for a target locale
-pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
+pub fn to_lowercase(s: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = s.split_whitespace().collect();
     match locale {
         InputLocale::EN => to_lowercase_en(words),
         InputLocale::TR => to_lowercase_tr(words),
@@ -43,8 +43,8 @@ pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
 }
 
 /// Convert a string to upper case following typesetting conventions for a target locale
-pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
+pub fn to_uppercase(s: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = s.split_whitespace().collect();
     match locale {
         InputLocale::EN => to_uppercase_en(words),
         InputLocale::TR => to_uppercase_tr(words),
@@ -52,8 +52,8 @@ pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
 }
 
 /// Convert a string to sentence case following typesetting conventions for a target locale
-pub fn to_sentencecase(string: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
+pub fn to_sentencecase(s: &str, locale: InputLocale) -> String {
+    let words: Vec<&str> = s.split_whitespace().collect();
     match locale {
         InputLocale::EN => to_sentencecase_en(words),
         InputLocale::TR => to_sentencecase_tr(words),
