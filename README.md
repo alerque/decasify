@@ -7,7 +7,7 @@
 [![Lua Test Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/busted.yml?branch=master&label=Busted&logo=Lua)](https://github.com/alerque/decasify/actions/workflows/busted.yml)  
 [![GitHub tag (latest)](https://img.shields.io/github/v/tag/alerque/decasify?logo=github&color=blue)](https://github.com/alerque/decasify/releases)
 [![Crates.io (latest)](https://img.shields.io/crates/v/decasify?logo=rust&color=blue)](https://crates.io/crates/decasify)
-[![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify?logo=lua&color=blue)](https://luarocks.org/modules/alerque/decasify)
+[![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify?logo=lua&color=blue)][rock]
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 [![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
@@ -122,7 +122,7 @@ fn demo() {
 
 ## Use as a Lua Rock
 
-Depend on the LuaRock in your project or install with `luarocks install decasify`:
+Depend on [the LuaRock][rock] in your project or install with `luarocks install decasify`:
 
 ```lua
 dependencies = {
@@ -186,9 +186,21 @@ console.log(output)
 
 ## Use as a Neovim plugin
 
-Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim dev`.
+* Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim dev`.
 
-Using other plugin managers you will need to make sure the Lua Rock for [decasify](https://luarocks.org/modules/alerque/decasify) is available as a dependency, then use this repository as a plugin however your plugin manager handles that.
+* Using [lazy.nvim](https://lazy.folke.io/), simply add `{ "alerque/decasify" }`
+
+* Using other plugin managers that don't automatically detect dependencies, you will need to manually specify the dependency and/or make sure the Lua Rock for [decasify](https://luarocks.org/modules/alerque/decasify) is available, then use this repository as a plugin however your plugin manager handles that.
+
+    ```lua
+    -- for packer.nvim
+    use {
+       "alerque/decasify",
+       rocks = { "decasify" },
+    }
+    ```
+
+* Using no plugin manager, make sure the [decasify Rock][rock] is installed matching the version of Lua NeoVIM is built with, then copy `plugin/decasify.lua` to wherever your user's plugin directory is.
 
 A new command `:Decasify` will become available (with optional subcommands for cases other than title case) that transforms the current line or any range of lines.
 The default case, locale, and style guide can be changed (before or after loading) with global or buffer local variables:
@@ -201,3 +213,5 @@ vim.b.decasify_locale = "tr"
 -- Change the default style guide globally
 vim.g.decasify_style = "gruber"
 ```
+
+[rock]: http://luarocks.org/modules/alerque/decasify
