@@ -68,9 +68,9 @@ decasify-%.md: CHANGELOG.md
 	$(SED) -e '/\.\.\.v$*/,/\.\.\.v/!d' $< | \
 		$(SED) -e '1,3d;N;$$!P;$$!D;$$d' > $@
 
-rockspecs: $(DEV_SPEC) $(REL_SPEC)
+rockspecs: $(DEV_SPEC) $(DEV_SPEC_NVIM) $(REL_SPEC) $(REL_SPEC_NVIM)
 
-srcrocks: $(DEV_ROCK) $(REL_ROCK)
+srcrocks: $(DEV_ROCK) $(DEV_ROCK_NVIM) $(REL_ROCK) $(REL_ROCK_NVIM)
 
 install-luarock: $(DEV_SPEC)
 	$(LUAROCKS) $(LUAROCKS_ARGS) make $<
@@ -115,6 +115,18 @@ $(DEV_SPEC_NVIM): $(PACKAGE_NAME).nvim.rockspec.in
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: SEMVER = $*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: TAG = v$*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
+	$(rockpec_template)
+	$(SED) -i \
+		-e '/rockspec_format/s/3.0/1.0/' \
+		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
+		-e '/issues_url/d' \
+		-e '/maintainer/d' \
+		-e '/labels/d' \
+		$@
+
+rockspecs/$(PACKAGE_NAME).nvim-%-$(ROCKREV).rockspec: SEMVER = $*
+rockspecs/$(PACKAGE_NAME).nvim-%-$(ROCKREV).rockspec: TAG = v$*
+rockspecs/$(PACKAGE_NAME).nvim-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).nvim.rockspec.in
 	$(rockpec_template)
 	$(SED) -i \
 		-e '/rockspec_format/s/3.0/1.0/' \
