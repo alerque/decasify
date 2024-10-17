@@ -274,6 +274,14 @@ mod tests {
     );
 
     titlecase!(
+        ws_gruber,
+        InputLocale::EN,
+        Some(StyleGuide::DaringFireball),
+        "  free  trolling\n  space  ",
+        "  Free  Trolling\n  Space  "
+    );
+
+    titlecase!(
         turkish_question,
         InputLocale::TR,
         None,
@@ -303,6 +311,14 @@ mod tests {
         None,
         "Sen VE ben ile o",
         "Sen ve Ben ile O"
+    );
+
+    titlecase!(
+        turkish_ws,
+        InputLocale::TR,
+        None,
+        "  serbest  serseri\n  boşluk  ",
+        "  Serbest  Serseri\n  Boşluk  "
     );
 
     macro_rules! lowercase {
