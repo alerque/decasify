@@ -1,5 +1,6 @@
 decasify
 decasify.1
+decasify-v*
 .version
 .version-prev
 
@@ -27,8 +28,6 @@ target/
 /build-aux/missing
 build-aux/rust_boilerplate.mk
 aminclude.am
-
-decasify-*
 
 # LuaRocks
 /lua_modules
