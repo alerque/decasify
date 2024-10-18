@@ -1,3 +1,17 @@
+## [0.6.1] - 2024-10-18
+
+### Features
+
+- Preserve whitespace from inputs
+- *(crate)* Be flexible on accepted types and Implement From trait on common possibilities
+- *(nvim)* Add a rockspec for installation with rocks.nvim
+- *(nvim)* Add a new command that runs decasify titlecasing on input range
+- *(nvim)* Add a subcommand to access all casing options
+- *(nvim)* Add global default case
+- *(nvim)* Add global settings for locale and style guide
+- *(nvim)* Allow and prioritize buffer local settings
+- *(nvim)* Accept visual input range for partial line transformations
+
 ## [0.6.0] - 2024-08-13
 
 ### Chore
