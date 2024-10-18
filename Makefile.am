@@ -65,8 +65,9 @@ CHANGELOG.md: .version
 	$(GITCLIFF) -o $@ -t $(TAG)
 
 decasify-%.md: CHANGELOG.md
-	$(SED) -e '/\.\.\.v$*/,/\.\.\.v/!d' $< | \
-		$(SED) -e '1,3d;N;$$!P;$$!D;$$d' > $@
+	$(SED) -e '/^## \[$*\]/,/^## \[/!d' $< | \
+		$(SED) -e '1,3d;N;$$!P;$$!D;$$d' | \
+		$(SED) -e '1s/^/Release v$*\n/' > $@
 
 rockspecs: $(DEV_SPEC) $(DEV_SPEC_NVIM) $(REL_SPEC) $(REL_SPEC_NVIM)
 
