@@ -29,10 +29,12 @@ pub mod wasm;
 /// Convert a string to title case following typesetting conventions for a target locale
 pub fn to_titlecase(
     chunk: impl Into<Chunk>,
-    locale: Locale,
-    style: Option<StyleGuide>,
+    locale: impl Into<Locale>,
+    style: Option<impl Into<StyleGuide>>,
 ) -> String {
     let chunk: Chunk = chunk.into();
+    let locale: Locale = locale.into();
+    let style = style.map(|style| style.into());
     match locale {
         Locale::EN => to_titlecase_en(chunk, style),
         Locale::TR => to_titlecase_tr(chunk, style),
