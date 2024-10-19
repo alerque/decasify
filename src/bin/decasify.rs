@@ -3,7 +3,7 @@
 
 use decasify::cli::Cli;
 use decasify::{to_lowercase, to_sentencecase, to_titlecase, to_uppercase};
-use decasify::{Locale, Result, StyleGuide, Case};
+use decasify::{Case, Locale, Result, StyleGuide};
 
 use clap::CommandFactory;
 use std::io;
@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     let matches = app.get_matches();
     let locale = matches.get_one::<Locale>("locale").unwrap();
     let case = matches.get_one::<Case>("case").unwrap().to_owned();
-    let style = matches.get_one::<StyleGuide>("style").map(|s| s.to_owned());
+    let style = matches.get_one::<StyleGuide>("style").unwrap().to_owned();
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches
@@ -40,7 +40,7 @@ fn process<I: IntoIterator<Item = String>>(
     strings: I,
     locale: Locale,
     case: Case,
-    style: Option<StyleGuide>,
+    style: StyleGuide,
 ) {
     for string in strings {
         let output = match case {

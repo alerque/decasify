@@ -12,7 +12,7 @@ pub mod content;
 pub mod types;
 
 pub use content::{Chunk, Segment};
-pub use types::{Case, IntoStyleGuide, Locale, Result, StyleGuide};
+pub use types::{Case, Locale, Result, StyleGuide};
 
 #[cfg(feature = "cli")]
 pub mod cli;
@@ -27,13 +27,14 @@ pub mod python;
 pub mod wasm;
 
 /// Convert a string to title case following typesetting conventions for a target locale
-pub fn to_titlecase<T>(chunk: impl Into<Chunk>, locale: impl Into<Locale>, style: T) -> String
-where
-    T: IntoStyleGuide,
-{
+pub fn to_titlecase(
+    chunk: impl Into<Chunk>,
+    locale: impl Into<Locale>,
+    style: impl Into<StyleGuide>,
+) -> String {
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
-    let style = style.as_style_guide();
+    let style: StyleGuide = style.into();
     match locale {
         Locale::EN => to_titlecase_en(chunk, style),
         Locale::TR => to_titlecase_tr(chunk, style),
@@ -70,12 +71,12 @@ pub fn to_sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> St
     }
 }
 
-fn to_titlecase_en(chunk: Chunk, style: Option<StyleGuide>) -> String {
+fn to_titlecase_en(chunk: Chunk, style: StyleGuide) -> String {
     match style {
-        Some(StyleGuide::AssociatedPress) => to_titlecase_ap(chunk),
-        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_cmos(chunk),
-        Some(StyleGuide::DaringFireball) => to_titlecase_gruber(chunk),
-        None => to_titlecase_gruber(chunk),
+        StyleGuide::AssociatedPress => to_titlecase_ap(chunk),
+        StyleGuide::ChicagoManualOfStyle => to_titlecase_cmos(chunk),
+        StyleGuide::DaringFireball => to_titlecase_gruber(chunk),
+        StyleGuide::LanguageDefault => to_titlecase_gruber(chunk),
     }
 }
 
@@ -126,10 +127,9 @@ fn to_titlecase_gruber(chunk: Chunk) -> String {
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
-fn to_titlecase_tr(chunk: Chunk, style: Option<StyleGuide>) -> String {
+fn to_titlecase_tr(chunk: Chunk, style: StyleGuide) -> String {
     match style {
-        Some(_) => todo!("Turkish implementation doesn't support different style guides."),
-        None => {
+        StyleGuide::LanguageDefault => {
             let mut chunk = chunk.clone();
             let mut done_first = false;
             chunk.segments.iter_mut().for_each(|segment| {
@@ -147,6 +147,7 @@ fn to_titlecase_tr(chunk: Chunk, style: Option<StyleGuide>) -> String {
             });
             chunk.to_string()
         }
+        _ => todo!("Turkish implementation doesn't support different style guides."),
     }
 }
 
@@ -246,15 +247,21 @@ mod tests {
     use super::*;
 
     #[test]
-    fn type_cast() {
+    fn cast_from_str() {
         let res = to_titlecase("FIST", "en", "gruber");
-        assert_eq!(res, "Fist");
-        let res = to_titlecase("FIST", "en", Some("gruber"));
         assert_eq!(res, "Fist");
         let res = to_titlecase("FIST", "tr", "");
         assert_eq!(res, "Fıst");
-        let res = to_titlecase("FIST", "tr", None::<StyleGuide>);
+        let res = to_titlecase("FIST", "tr", "default");
         assert_eq!(res, "Fıst");
+    }
+
+    #[test]
+    fn cast_from_legacy_option() {
+        let res = to_titlecase("FIST", "en", Some(StyleGuide::DaringFireball));
+        assert_eq!(res, "Fist");
+        let res = to_titlecase("FIST", "en", None);
+        assert_eq!(res, "Fist");
     }
 
     macro_rules! titlecase {
@@ -267,12 +274,18 @@ mod tests {
         };
     }
 
-    titlecase!(abc_none, Locale::EN, None::<StyleGuide>, "a b c", "A B C");
+    titlecase!(
+        abc_none,
+        Locale::EN,
+        StyleGuide::LanguageDefault,
+        "a b c",
+        "A B C"
+    );
 
     titlecase!(
         abc_cmos,
         Locale::EN,
-        Some(StyleGuide::ChicagoManualOfStyle),
+        StyleGuide::ChicagoManualOfStyle,
         "a b c",
         "A B C"
     );
@@ -280,7 +293,7 @@ mod tests {
     titlecase!(
         abc_gruber,
         Locale::EN,
-        Some(StyleGuide::DaringFireball),
+        StyleGuide::DaringFireball,
         "a b c",
         "A B C"
     );
@@ -288,7 +301,7 @@ mod tests {
     titlecase!(
         simple_cmos,
         Locale::EN,
-        Some(StyleGuide::ChicagoManualOfStyle),
+        StyleGuide::ChicagoManualOfStyle,
         "Once UPON A time",
         "Once upon a Time"
     );
@@ -296,7 +309,7 @@ mod tests {
     titlecase!(
         simple_gruber,
         Locale::EN,
-        Some(StyleGuide::DaringFireball),
+        StyleGuide::DaringFireball,
         "Once UPON A time",
         "Once UPON a Time"
     );
@@ -304,7 +317,7 @@ mod tests {
     titlecase!(
         colon_cmos,
         Locale::EN,
-        Some(StyleGuide::ChicagoManualOfStyle),
+        StyleGuide::ChicagoManualOfStyle,
         "foo: a baz",
         "Foo: a Baz"
     );
@@ -312,7 +325,7 @@ mod tests {
     titlecase!(
         colon_gruber,
         Locale::EN,
-        Some(StyleGuide::DaringFireball),
+        StyleGuide::DaringFireball,
         "foo: a baz",
         "Foo: A Baz"
     );
@@ -320,7 +333,7 @@ mod tests {
     // titlecase!(
     //     qna_cmos,
     //     Locale::EN,
-    //     Some(StyleGuide::ChicagoManualOfStyle),
+    //     StyleGuide::ChicagoManualOfStyle,
     //     "Q&A with Steve Jobs: 'That's what happens in technology'",
     //     "Q&a with Steve Jobs: 'that's What Happens in Technology'"
     // );
@@ -328,7 +341,7 @@ mod tests {
     titlecase!(
         qna_gruber,
         Locale::EN,
-        Some(StyleGuide::DaringFireball),
+        StyleGuide::DaringFireball,
         "Q&A with Steve Jobs: 'That's what happens in technology'",
         "Q&A With Steve Jobs: 'That's What Happens in Technology'"
     );
@@ -336,7 +349,7 @@ mod tests {
     titlecase!(
         ws_gruber,
         Locale::EN,
-        Some(StyleGuide::DaringFireball),
+        StyleGuide::DaringFireball,
         "  free  trolling\n  space  ",
         "  Free  Trolling\n  Space  "
     );
@@ -344,7 +357,7 @@ mod tests {
     titlecase!(
         turkish_question,
         Locale::TR,
-        None::<StyleGuide>,
+        StyleGuide::LanguageDefault,
         "aç mısın",
         "Aç mısın"
     );
@@ -352,7 +365,7 @@ mod tests {
     titlecase!(
         turkish_question_false,
         Locale::TR,
-        None::<StyleGuide>,
+        StyleGuide::LanguageDefault,
         "dualarımızda minnettarlık",
         "Dualarımızda Minnettarlık"
     );
@@ -360,7 +373,7 @@ mod tests {
     titlecase!(
         turkish_chars,
         Locale::TR,
-        None::<StyleGuide>,
+        StyleGuide::LanguageDefault,
         "İLKİ ILIK ÖĞLEN",
         "İlki Ilık Öğlen"
     );
@@ -368,7 +381,7 @@ mod tests {
     titlecase!(
         turkish_blockwords,
         Locale::TR,
-        None::<StyleGuide>,
+        StyleGuide::LanguageDefault,
         "Sen VE ben ile o",
         "Sen ve Ben ile O"
     );
@@ -376,7 +389,7 @@ mod tests {
     titlecase!(
         turkish_ws,
         Locale::TR,
-        None::<StyleGuide>,
+        StyleGuide::LanguageDefault,
         "  serbest  serseri\n  boşluk  ",
         "  Serbest  Serseri\n  Boşluk  "
     );

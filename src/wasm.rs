@@ -8,11 +8,7 @@ use wasm_bindgen::prelude::*;
 pub use crate::types::{Locale, StyleGuide};
 
 #[wasm_bindgen]
-pub fn titlecase(
-    input: &str,
-    locale: Locale,
-    style: Option<StyleGuide>,
-) -> Result<String, JsError> {
+pub fn titlecase(input: &str, locale: Locale, style: StyleGuide) -> Result<String, JsError> {
     Ok(to_titlecase(input, locale, style))
 }
 

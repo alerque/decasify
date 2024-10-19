@@ -19,8 +19,8 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
 
 #[pyfunction]
 #[pyo3(name = "titlecase")]
-#[pyo3(signature = (input, locale, style=None))]
-fn py_titlecase(input: String, locale: Locale, style: Option<StyleGuide>) -> PyResult<String> {
+#[pyo3(signature = (input, locale, style=StyleGuide::LanguageDefault))]
+fn py_titlecase(input: String, locale: Locale, style: StyleGuide) -> PyResult<String> {
     Ok(to_titlecase(&input, locale, style))
 }
 

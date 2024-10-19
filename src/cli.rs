@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #[cfg(build)]
-use crate::{Locale, StyleGuide, Case};
+use crate::{Case, Locale, StyleGuide};
 
 use clap::{builder, Parser};
 use strum::VariantNames;
@@ -29,8 +29,8 @@ pub struct Cli {
     pub case: Case,
 
     /// Style Guide
-    #[clap(short, long, ignore_case = true, value_parser = clap_enum_variants!(StyleGuide))]
-    pub style: Option<StyleGuide>,
+    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(StyleGuide))]
+    pub style: StyleGuide,
 
     /// Input string
     pub input: Vec<String>,

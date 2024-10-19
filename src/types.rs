@@ -56,8 +56,10 @@ pub enum StyleGuide {
     #[strum(serialize = "cmos")]
     ChicagoManualOfStyle,
     #[strum(serialize = "gruber")]
-    #[default]
     DaringFireball,
+    #[strum(serialize = "default")]
+    #[default]
+    LanguageDefault,
 }
 
 impl FromStr for Locale {
@@ -97,6 +99,9 @@ impl FromStr for StyleGuide {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "default" | "languagedefault" | "language" | "none" | "" => {
+                Ok(StyleGuide::LanguageDefault)
+            }
             _ => Err(Box::new(Error("Invalid style guide".into()))),
         }
     }
@@ -108,21 +113,11 @@ impl From<&str> for StyleGuide {
     }
 }
 
-pub trait IntoStyleGuide {
-    fn as_style_guide(&self) -> Option<StyleGuide>;
-}
-
-impl IntoStyleGuide for &str {
-    fn as_style_guide(&self) -> Option<StyleGuide> {
-        match *self {
-            "" => None::<StyleGuide>,
-            _ => Some((*self).into()),
+impl From<Option<StyleGuide>> for StyleGuide {
+    fn from(style: Option<StyleGuide>) -> Self {
+        match style {
+            Some(style) => style,
+            None => StyleGuide::LanguageDefault,
         }
-    }
-}
-
-impl<T: Copy + Clone + Into<StyleGuide>> IntoStyleGuide for Option<T> {
-    fn as_style_guide(&self) -> Option<StyleGuide> {
-        self.as_ref().map(|style| (*style).into())
     }
 }

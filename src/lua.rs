@@ -32,13 +32,12 @@ fn titlecase<'a>(
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
         _ => Locale::EN,
     };
-    let style: Option<StyleGuide> = match style {
+    let style: StyleGuide = match style {
         LuaValue::String(s) => s
             .to_string_lossy()
-            .parse::<StyleGuide>()
-            .map(Some)
-            .unwrap_or(None),
-        _ => None,
+            .parse()
+            .unwrap_or(StyleGuide::LanguageDefault),
+        _ => StyleGuide::LanguageDefault,
     };
     let output = to_titlecase(&input, locale, style);
     lua.create_string(output)
