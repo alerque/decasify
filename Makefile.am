@@ -134,11 +134,7 @@ rockspecs/$(PACKAGE_NAME).nvim-%-$(ROCKREV).rockspec: private TAG = v$*
 rockspecs/$(PACKAGE_NAME).nvim-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).nvim.rockspec.in
 	$(rockpec_template)
 	$(SED) -i \
-		-e '/rockspec_format/s/3.0/1.0/' \
 		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
-		-e '/issues_url/d' \
-		-e '/maintainer/d' \
-		-e '/labels/d' \
 		$@
 
 $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
