@@ -48,6 +48,7 @@ fn process<I: IntoIterator<Item = String>>(
             Case::Lower => to_lowercase(string, locale),
             Case::Upper => to_uppercase(string, locale),
             Case::Sentence => to_sentencecase(string, locale),
+            _ => unreachable!(),
         };
         println!("{output}")
     }

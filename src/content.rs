@@ -6,12 +6,14 @@ use regex::Regex;
 use std::{borrow::Cow, error, fmt, fmt::Display, str::FromStr};
 
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum Segment {
     Separator(String),
     Word(String),
 }
 
 #[derive(Debug, Clone)]
+#[non_exhaustive]
 pub struct Chunk {
     pub segments: Vec<Segment>,
 }

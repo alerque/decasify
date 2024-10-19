@@ -28,6 +28,7 @@ impl error::Error for Error {}
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
+#[non_exhaustive]
 pub enum Locale {
     #[default]
     EN,
@@ -37,6 +38,7 @@ pub enum Locale {
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
 #[strum(serialize_all = "lowercase")]
+#[non_exhaustive]
 pub enum Case {
     Lower,
     Sentence,
@@ -50,6 +52,7 @@ pub enum Case {
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
+#[non_exhaustive]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
     AssociatedPress,
