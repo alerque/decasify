@@ -63,7 +63,7 @@ if DEVELOPER_MODE
 release-preview:
 	$(GITCLIFF) --unreleased
 
-CHANGELOG.md: .version
+CHANGELOG.md:
 	$(GITCLIFF) -o $@ -t $(TAG)
 
 decasify-%.md: CHANGELOG.md
