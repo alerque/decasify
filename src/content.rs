@@ -16,10 +16,10 @@ pub struct Chunk {
     pub segments: Vec<Segment>,
 }
 
-fn split_chunk(src: &str) -> Chunk {
+fn split_chunk(s: &str) -> Chunk {
     let mut segments: Vec<Segment> = Vec::new();
     let captures = Regex::new(r"(?<separator>\p{Whitespace}+)|(?<word>\P{Whitespace}+)").unwrap();
-    for capture in captures.captures_iter(src) {
+    for capture in captures.captures_iter(s) {
         if let Some(m) = capture.name("separator") {
             segments.push(Segment::Separator(m.as_str().to_string()));
         } else if let Some(m) = capture.name("word") {
@@ -30,33 +30,33 @@ fn split_chunk(src: &str) -> Chunk {
 }
 
 impl From<String> for Chunk {
-    fn from(src: String) -> Self {
-        split_chunk(src.as_ref())
+    fn from(s: String) -> Self {
+        split_chunk(s.as_ref())
     }
 }
 
 impl From<&String> for Chunk {
-    fn from(src: &String) -> Self {
-        split_chunk(src.as_ref())
+    fn from(s: &String) -> Self {
+        split_chunk(s.as_ref())
     }
 }
 
 impl From<&str> for Chunk {
-    fn from(src: &str) -> Self {
-        split_chunk(src)
+    fn from(s: &str) -> Self {
+        split_chunk(s)
     }
 }
 
 impl From<&Cow<'_, str>> for Chunk {
-    fn from(src: &Cow<'_, str>) -> Self {
-        split_chunk(src)
+    fn from(s: &Cow<'_, str>) -> Self {
+        split_chunk(s)
     }
 }
 
 impl FromStr for Chunk {
     type Err = Box<dyn error::Error>;
-    fn from_str(src: &str) -> Result<Self> {
-        Ok(split_chunk(src))
+    fn from_str(s: &str) -> Result<Self> {
+        Ok(split_chunk(s))
     }
 }
 
