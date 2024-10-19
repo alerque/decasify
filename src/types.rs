@@ -82,7 +82,7 @@ impl From<&str> for Locale {
 impl FromStr for Case {
     type Err = Box<dyn error::Error>;
     fn from_str(s: &str) -> Result<Self> {
-        match s.to_ascii_lowercase().as_str() {
+        match s.to_ascii_lowercase().as_str().trim_end_matches("case") {
             "lower" => Ok(Case::Lower),
             "sentence" => Ok(Case::Sentence),
             "title" => Ok(Case::Title),
