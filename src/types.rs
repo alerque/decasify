@@ -28,7 +28,7 @@ impl error::Error for Error {}
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
-pub enum InputLocale {
+pub enum Locale {
     #[default]
     EN,
     TR,
@@ -37,7 +37,7 @@ pub enum InputLocale {
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
 #[strum(serialize_all = "lowercase")]
-pub enum TargetCase {
+pub enum Case {
     Lower,
     Sentence,
     #[default]
@@ -60,25 +60,25 @@ pub enum StyleGuide {
     DaringFireball,
 }
 
-impl FromStr for InputLocale {
+impl FromStr for Locale {
     type Err = Box<dyn error::Error>;
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "en" | "English" | "en_en" => Ok(InputLocale::EN),
-            "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(InputLocale::TR),
+            "en" | "English" | "en_en" => Ok(Locale::EN),
+            "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
             _ => Err(Box::new(Error("Invalid input language".into()))),
         }
     }
 }
 
-impl FromStr for TargetCase {
+impl FromStr for Case {
     type Err = Box<dyn error::Error>;
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "lower" => Ok(TargetCase::Lower),
-            "sentence" => Ok(TargetCase::Sentence),
-            "title" => Ok(TargetCase::Title),
-            "upper" => Ok(TargetCase::Upper),
+            "lower" => Ok(Case::Lower),
+            "sentence" => Ok(Case::Sentence),
+            "title" => Ok(Case::Title),
+            "upper" => Ok(Case::Upper),
             _ => Err(Box::new(Error("Unknown target case".into()))),
         }
     }

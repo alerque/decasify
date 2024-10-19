@@ -108,14 +108,14 @@ Then use the crate functions and types in your project something like this:
 
 ```rust
 use decasify::to_titlecase;
-use decasify::{InputLocale, StyleGuide};
+use decasify::{Locale, StyleGuide};
 
 fn demo() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
-    let output = to_titlecase(input, InputLocale::TR, None);
+    let output = to_titlecase(input, Locale::TR, None);
     eprintln! {"{output}"};
     let input = "title with a twist: a colon";
-    let output = to_titlecase(input, InputLocale::EN, Some(StyleGuide::DaringFireball));
+    let output = to_titlecase(input, Locale::EN, Some(StyleGuide::DaringFireball));
     eprintln! {"{output}"};
 }
 ```
@@ -159,10 +159,10 @@ Then import and use the provided functions and type classes:
 from decasify import *
 
 input = "ILIK SU VE İTEN RÜZGARLAR"
-output = titlecase(input, InputLocale.TR)
+output = titlecase(input, Locale.TR)
 print(output)
 input = "title with a twist: a colon"
-output  = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
+output  = titlecase(input, Locale.EN, StyleGuide.DaringFireball)
 print(output)
 ```
 
@@ -173,14 +173,14 @@ Depend on the WASM based JavaScript module in your project with `npm add decasif
 Then import and use the provided functions and classes:
 
 ```javascript
-import { titlecase, uppercase, lowercase, InputLocale, StyleGuide } from 'decasify';
+import { titlecase, uppercase, lowercase, Locale, StyleGuide } from 'decasify';
 
 var input = "ILIK SU VE İTEN RÜZGARLAR"
-var output = titlecase(input, InputLocale.TR)
+var output = titlecase(input, Locale.TR)
 console.log(output)
 
 var input = "title with a twist: a colon"
-var output = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
+var output = titlecase(input, Locale.EN, StyleGuide.DaringFireball)
 console.log(output)
 ```
 

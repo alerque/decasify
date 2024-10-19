@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #[cfg(build)]
-use crate::{InputLocale, StyleGuide, TargetCase};
+use crate::{Locale, StyleGuide, Case};
 
 use clap::{builder, Parser};
 use strum::VariantNames;
@@ -21,12 +21,12 @@ macro_rules! clap_enum_variants {
 #[clap(author, bin_name = "decasify")]
 pub struct Cli {
     /// Locale
-    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(InputLocale))]
-    pub locale: InputLocale,
+    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(Locale))]
+    pub locale: Locale,
 
     /// Target case
-    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(TargetCase))]
-    pub case: TargetCase,
+    #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(Case))]
+    pub case: Case,
 
     /// Style Guide
     #[clap(short, long, ignore_case = true, value_parser = clap_enum_variants!(StyleGuide))]

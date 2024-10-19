@@ -12,7 +12,7 @@ pub mod content;
 pub mod types;
 
 pub use content::{Chunk, Segment};
-pub use types::{InputLocale, Result, StyleGuide, TargetCase};
+pub use types::{Case, Locale, Result, StyleGuide};
 
 #[cfg(feature = "cli")]
 pub mod cli;
@@ -29,43 +29,43 @@ pub mod wasm;
 /// Convert a string to title case following typesetting conventions for a target locale
 pub fn to_titlecase(
     chunk: impl Into<Chunk>,
-    locale: InputLocale,
+    locale: Locale,
     style: Option<StyleGuide>,
 ) -> String {
     let chunk: Chunk = chunk.into();
     match locale {
-        InputLocale::EN => to_titlecase_en(chunk, style),
-        InputLocale::TR => to_titlecase_tr(chunk, style),
+        Locale::EN => to_titlecase_en(chunk, style),
+        Locale::TR => to_titlecase_tr(chunk, style),
     }
 }
 
 /// Convert a string to lower case following typesetting conventions for a target locale
-pub fn to_lowercase(chunk: impl Into<Chunk>, locale: impl Into<InputLocale>) -> String {
+pub fn to_lowercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let chunk: Chunk = chunk.into();
-    let locale: InputLocale = locale.into();
+    let locale: Locale = locale.into();
     match locale {
-        InputLocale::EN => to_lowercase_en(chunk),
-        InputLocale::TR => to_lowercase_tr(chunk),
+        Locale::EN => to_lowercase_en(chunk),
+        Locale::TR => to_lowercase_tr(chunk),
     }
 }
 
 /// Convert a string to upper case following typesetting conventions for a target locale
-pub fn to_uppercase(chunk: impl Into<Chunk>, locale: impl Into<InputLocale>) -> String {
+pub fn to_uppercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let chunk: Chunk = chunk.into();
-    let locale: InputLocale = locale.into();
+    let locale: Locale = locale.into();
     match locale {
-        InputLocale::EN => to_uppercase_en(chunk),
-        InputLocale::TR => to_uppercase_tr(chunk),
+        Locale::EN => to_uppercase_en(chunk),
+        Locale::TR => to_uppercase_tr(chunk),
     }
 }
 
 /// Convert a string to sentence case following typesetting conventions for a target locale
-pub fn to_sentencecase(chunk: impl Into<Chunk>, locale: impl Into<InputLocale>) -> String {
+pub fn to_sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let chunk: Chunk = chunk.into();
-    let locale: InputLocale = locale.into();
+    let locale: Locale = locale.into();
     match locale {
-        InputLocale::EN => to_sentencecase_en(chunk),
-        InputLocale::TR => to_sentencecase_tr(chunk),
+        Locale::EN => to_sentencecase_en(chunk),
+        Locale::TR => to_sentencecase_tr(chunk),
     }
 }
 
@@ -254,11 +254,11 @@ mod tests {
         };
     }
 
-    titlecase!(abc_none, InputLocale::EN, None, "a b c", "A B C");
+    titlecase!(abc_none, Locale::EN, None, "a b c", "A B C");
 
     titlecase!(
         abc_cmos,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::ChicagoManualOfStyle),
         "a b c",
         "A B C"
@@ -266,7 +266,7 @@ mod tests {
 
     titlecase!(
         abc_gruber,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::DaringFireball),
         "a b c",
         "A B C"
@@ -274,7 +274,7 @@ mod tests {
 
     titlecase!(
         simple_cmos,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::ChicagoManualOfStyle),
         "Once UPON A time",
         "Once upon a Time"
@@ -282,7 +282,7 @@ mod tests {
 
     titlecase!(
         simple_gruber,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::DaringFireball),
         "Once UPON A time",
         "Once UPON a Time"
@@ -290,7 +290,7 @@ mod tests {
 
     titlecase!(
         colon_cmos,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::ChicagoManualOfStyle),
         "foo: a baz",
         "Foo: a Baz"
@@ -298,7 +298,7 @@ mod tests {
 
     titlecase!(
         colon_gruber,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::DaringFireball),
         "foo: a baz",
         "Foo: A Baz"
@@ -306,7 +306,7 @@ mod tests {
 
     // titlecase!(
     //     qna_cmos,
-    //     InputLocale::EN,
+    //     Locale::EN,
     //     Some(StyleGuide::ChicagoManualOfStyle),
     //     "Q&A with Steve Jobs: 'That's what happens in technology'",
     //     "Q&a with Steve Jobs: 'that's What Happens in Technology'"
@@ -314,7 +314,7 @@ mod tests {
 
     titlecase!(
         qna_gruber,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::DaringFireball),
         "Q&A with Steve Jobs: 'That's what happens in technology'",
         "Q&A With Steve Jobs: 'That's What Happens in Technology'"
@@ -322,23 +322,17 @@ mod tests {
 
     titlecase!(
         ws_gruber,
-        InputLocale::EN,
+        Locale::EN,
         Some(StyleGuide::DaringFireball),
         "  free  trolling\n  space  ",
         "  Free  Trolling\n  Space  "
     );
 
-    titlecase!(
-        turkish_question,
-        InputLocale::TR,
-        None,
-        "aç mısın",
-        "Aç mısın"
-    );
+    titlecase!(turkish_question, Locale::TR, None, "aç mısın", "Aç mısın");
 
     titlecase!(
         turkish_question_false,
-        InputLocale::TR,
+        Locale::TR,
         None,
         "dualarımızda minnettarlık",
         "Dualarımızda Minnettarlık"
@@ -346,7 +340,7 @@ mod tests {
 
     titlecase!(
         turkish_chars,
-        InputLocale::TR,
+        Locale::TR,
         None,
         "İLKİ ILIK ÖĞLEN",
         "İlki Ilık Öğlen"
@@ -354,7 +348,7 @@ mod tests {
 
     titlecase!(
         turkish_blockwords,
-        InputLocale::TR,
+        Locale::TR,
         None,
         "Sen VE ben ile o",
         "Sen ve Ben ile O"
@@ -362,7 +356,7 @@ mod tests {
 
     titlecase!(
         turkish_ws,
-        InputLocale::TR,
+        Locale::TR,
         None,
         "  serbest  serseri\n  boşluk  ",
         "  Serbest  Serseri\n  Boşluk  "
@@ -378,16 +372,11 @@ mod tests {
         };
     }
 
-    lowercase!(
-        lower_en,
-        InputLocale::EN,
-        "foo BAR BaZ BIKE",
-        "foo bar baz bike"
-    );
+    lowercase!(lower_en, Locale::EN, "foo BAR BaZ BIKE", "foo bar baz bike");
 
     lowercase!(
         lower_tr,
-        InputLocale::TR,
+        Locale::TR,
         "foo BAR BaZ ILIK İLE",
         "foo bar baz ılık ile"
     );
@@ -402,16 +391,11 @@ mod tests {
         };
     }
 
-    uppercase!(
-        upper_en,
-        InputLocale::EN,
-        "foo BAR BaZ bike",
-        "FOO BAR BAZ BIKE"
-    );
+    uppercase!(upper_en, Locale::EN, "foo BAR BaZ bike", "FOO BAR BAZ BIKE");
 
     uppercase!(
         upper_tr,
-        InputLocale::TR,
+        Locale::TR,
         "foo BAR BaZ ILIK İLE",
         "FOO BAR BAZ ILIK İLE"
     );
@@ -428,15 +412,10 @@ mod tests {
 
     sentencecase!(
         sentence_en,
-        InputLocale::EN,
+        Locale::EN,
         "insert BIKE here",
         "Insert bike here"
     );
 
-    sentencecase!(
-        sentence_tr,
-        InputLocale::TR,
-        "ilk DAVRANSIN",
-        "İlk davransın"
-    );
+    sentencecase!(sentence_tr, Locale::TR, "ilk DAVRANSIN", "İlk davransın");
 }
