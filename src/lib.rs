@@ -12,7 +12,7 @@ pub mod content;
 pub mod types;
 
 pub use content::{Chunk, Segment};
-pub use types::{Case, Locale, Result, StyleGuide};
+pub use types::{Case, IntoStyleGuide, Locale, Result, StyleGuide};
 
 #[cfg(feature = "cli")]
 pub mod cli;
@@ -27,14 +27,13 @@ pub mod python;
 pub mod wasm;
 
 /// Convert a string to title case following typesetting conventions for a target locale
-pub fn to_titlecase(
-    chunk: impl Into<Chunk>,
-    locale: impl Into<Locale>,
-    style: Option<impl Into<StyleGuide>>,
-) -> String {
+pub fn to_titlecase<T>(chunk: impl Into<Chunk>, locale: impl Into<Locale>, style: T) -> String
+where
+    T: IntoStyleGuide,
+{
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
-    let style = style.map(|style| style.into());
+    let style = style.as_style_guide();
     match locale {
         Locale::EN => to_titlecase_en(chunk, style),
         Locale::TR => to_titlecase_tr(chunk, style),
@@ -246,6 +245,18 @@ fn to_sentencecase_tr(chunk: Chunk) -> String {
 mod tests {
     use super::*;
 
+    #[test]
+    fn type_cast() {
+        let res = to_titlecase("FIST", "en", "gruber");
+        assert_eq!(res, "Fist");
+        let res = to_titlecase("FIST", "en", Some("gruber"));
+        assert_eq!(res, "Fist");
+        let res = to_titlecase("FIST", "tr", "");
+        assert_eq!(res, "Fıst");
+        let res = to_titlecase("FIST", "tr", None::<StyleGuide>);
+        assert_eq!(res, "Fıst");
+    }
+
     macro_rules! titlecase {
         ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
             #[test]
@@ -256,7 +267,7 @@ mod tests {
         };
     }
 
-    titlecase!(abc_none, Locale::EN, None, "a b c", "A B C");
+    titlecase!(abc_none, Locale::EN, None::<StyleGuide>, "a b c", "A B C");
 
     titlecase!(
         abc_cmos,
@@ -330,12 +341,18 @@ mod tests {
         "  Free  Trolling\n  Space  "
     );
 
-    titlecase!(turkish_question, Locale::TR, None, "aç mısın", "Aç mısın");
+    titlecase!(
+        turkish_question,
+        Locale::TR,
+        None::<StyleGuide>,
+        "aç mısın",
+        "Aç mısın"
+    );
 
     titlecase!(
         turkish_question_false,
         Locale::TR,
-        None,
+        None::<StyleGuide>,
         "dualarımızda minnettarlık",
         "Dualarımızda Minnettarlık"
     );
@@ -343,7 +360,7 @@ mod tests {
     titlecase!(
         turkish_chars,
         Locale::TR,
-        None,
+        None::<StyleGuide>,
         "İLKİ ILIK ÖĞLEN",
         "İlki Ilık Öğlen"
     );
@@ -351,7 +368,7 @@ mod tests {
     titlecase!(
         turkish_blockwords,
         Locale::TR,
-        None,
+        None::<StyleGuide>,
         "Sen VE ben ile o",
         "Sen ve Ben ile O"
     );
@@ -359,7 +376,7 @@ mod tests {
     titlecase!(
         turkish_ws,
         Locale::TR,
-        None,
+        None::<StyleGuide>,
         "  serbest  serseri\n  boşluk  ",
         "  Serbest  Serseri\n  Boşluk  "
     );

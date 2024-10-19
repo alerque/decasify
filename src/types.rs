@@ -71,6 +71,12 @@ impl FromStr for Locale {
     }
 }
 
+impl From<&str> for Locale {
+    fn from(s: &str) -> Self {
+        Self::from_str(s).unwrap()
+    }
+}
+
 impl FromStr for Case {
     type Err = Box<dyn error::Error>;
     fn from_str(s: &str) -> Result<Self> {
@@ -93,5 +99,30 @@ impl FromStr for StyleGuide {
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
             _ => Err(Box::new(Error("Invalid style guide".into()))),
         }
+    }
+}
+
+impl From<&str> for StyleGuide {
+    fn from(s: &str) -> Self {
+        Self::from_str(s).unwrap()
+    }
+}
+
+pub trait IntoStyleGuide {
+    fn as_style_guide(&self) -> Option<StyleGuide>;
+}
+
+impl IntoStyleGuide for &str {
+    fn as_style_guide(&self) -> Option<StyleGuide> {
+        match *self {
+            "" => None::<StyleGuide>,
+            _ => Some((*self).into()),
+        }
+    }
+}
+
+impl<T: Copy + Clone + Into<StyleGuide>> IntoStyleGuide for Option<T> {
+    fn as_style_guide(&self) -> Option<StyleGuide> {
+        self.as_ref().map(|style| (*style).into())
     }
 }
