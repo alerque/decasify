@@ -1,3 +1,19 @@
+## [0.7.0] - 2024-10-19
+
+### Features
+
+- *(crate)* Be flexible on types by accepting `impl Into<T>`
+- Allow Lua/Python/JS to pass similar to 'titlecase' instead of 'title'
+
+### Bug Fixes
+
+- *(nvim)* Correct rockspec_format, NeoVIM plugin only compatible with LuaRocks 3+
+
+### Refator
+
+- [**breaking**] Simplify type names
+- [**breaking**] Change Option<StyleGuide> argument to StyleGuide
+
 ## [0.6.1] - 2024-10-18
 
 ### Features
