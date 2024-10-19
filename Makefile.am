@@ -69,6 +69,7 @@ CHANGELOG.md: .version
 decasify-%.md: CHANGELOG.md
 	$(SED) -e '/^## \[$*\]/,/^## \[/!d' $< | \
 		$(SED) -e '1,3d;N;$$!P;$$!D;$$d' | \
+		$(SED) -e 's/\*//g' | \
 		$(SED) -e '1s/^/Release v$*\n/' > $@
 
 rockspecs: $(DEV_SPEC) $(DEV_SPEC_NVIM) $(REL_SPEC) $(REL_SPEC_NVIM)
