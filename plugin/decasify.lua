@@ -39,11 +39,11 @@ end
 
 vim.api.nvim_create_user_command("Decasify", function (args)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or "title"
-   local locale = vim.b.decasify_case or vim.g.decasify_locale or "en"
-   local style = vim.b.decasify_case or vim.g.decasify_style or "gruber"
+   local locale = vim.b.decasify_case or vim.g.decasify_locale or nil
+   local style = vim.b.decasify_case or vim.g.decasify_style or nil
    local case_func = case:gsub("case$", "") .. "case"
    local decase = function (input)
-      return decasify[case_func](input, locale, locale == "en" and style)
+      return decasify[case_func](input, locale, style)
    end
    if type(decasify[case_func]) ~= "function" then
       vim.notify(("Decasify doesn't know what case '%s' is."):format(case_func))
