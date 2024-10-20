@@ -95,6 +95,12 @@ impl FromStr for Case {
     }
 }
 
+impl From<&str> for Case {
+    fn from(s: &str) -> Self {
+        Self::from_str(s).unwrap()
+    }
+}
+
 impl FromStr for StyleGuide {
     type Err = Box<dyn error::Error>;
     fn from_str(s: &str) -> Result<Self> {
