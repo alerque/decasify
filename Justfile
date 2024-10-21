@@ -14,7 +14,13 @@ pristine:
 	# Ensure there are no changes in the working tree
 	git diff-files --quiet || exit 1
 
-release semver: pristine
+[private]
+[doc('Block execution if we don’t have access to private keys.')]
+keys:
+	gpg -a --sign > /dev/null <<< "test"
+	test -v MATURIN_PYPI_TOKEN
+
+release semver: pristine keys
 	make rockspecs/decasify{,.nvim}-{{semver}}-1.rockspec
 	sed -i -e '/^version/s/".*"/"{{semver}}"/' Cargo.toml
 	env SEMVER={{semver}} sed -i -e "/^decasify =/s/\".*\"/\"${SEMVER%\.*}\"/" README.md
@@ -29,15 +35,16 @@ release semver: pristine
 	./config.status && make
 	maturin build --frozen
 	wasm-pack build --features wasm
-	echo git push --atomic origin master v{{semver}}
-	echo maturin publish --locked
-	echo cargo publish --locked
-	echo wasm-pack publish
-	echo gh release download v{{semver}}
-	echo wget wget https://luarocks.org/manifests/alerque/decasify{,.nvim}-{{semver}}-1.src.rock
-	echo wget wget https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
-	echo 'ls decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl decasify{,.nvim}-{{semver}}-1.src.rock decasify-{{semver}}.{tar.zst,zip} | xargs -n1 gpg -a --detach-sign'
-	echo gh release upload v{{semver}} decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim}-{{semver}}-1.src.rock{,.asc} decasify-{{semver}}.{tar.zst,zip}.asc
-	echo make CARCH=x86_64 decasify{,.nvim}-{{semver}}-1.src.rock decasify-{{semver}}-1.x86_64.rock
+	git push --atomic origin master v{{semver}}
+	maturin publish --locked
+	cargo publish --locked
+	wasm-pack publish
+
+post-release semver:
+	wget https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
+	wget https://luarocks.org/manifests/alerque/decasify{,.nvim}-{{semver}}-1.src.rock
+	gh release download v{{semver}}
+	ls decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl decasify{,.nvim}-{{semver}}-1.src.rock decasify-{{semver}}.{tar.zst,zip} | xargs -n1 gpg -a --detach-sign
+	gh release upload v{{semver}} decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim}-{{semver}}-1.src.rock{,.asc} decasify-{{semver}}.{tar.zst,zip}.asc
 
 # vim: set ft=just
