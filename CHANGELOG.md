@@ -1,3 +1,19 @@
+## [0.7.1] - 2024-10-21
+
+### Features
+
+- *(crate)* Add `impl From<&str>` for case variants
+- *(crate)* Provide all-purpose casing function with target case as argument
+- *(lua)* Provide all-purpose casing function with target case as argument
+- *(python)* Provide all-purpose casing function with target case as argument
+- *(wasm)* Provide all-purpose casing function with target case as argument
+- *(nvim)* Allow overriding locale & style per Decasify command invocation
+
+### Bug Fixes
+
+- Package Lua plugin in source dist
+- *(nvim)* Correctly handle buffer-local default overrides
+
 ## [0.7.0] - 2024-10-19
 
 ### Features
