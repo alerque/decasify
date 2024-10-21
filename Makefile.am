@@ -120,6 +120,7 @@ $(DEV_SPEC_NVIM): $(PACKAGE_NAME).nvim.rockspec.in
 	$(rockpec_template)
 	$(SED) -i \
 		-e '/tag =/s/tag/branch/' \
+		-e '/decasify ==/s/ ==.*/",/' \
 		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
 		$@
 

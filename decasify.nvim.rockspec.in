@@ -23,7 +23,7 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
-   "decasify",
+   "decasify == " .. version,
 }
 
 build = {
