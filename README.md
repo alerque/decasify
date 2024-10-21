@@ -11,10 +11,13 @@
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 [![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
-A CLI utility, Rust crate, Lua Rock, Python module, JavaScript module, and Neovim plugin to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua rock, Python module, JavaScript module, and Neovim plugin to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
 
-This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
-Many tools can handle casing single words, some programmer specific tools can recaseing tokens and identifiers, and yet a few others can handle *English* strings, but nothing seemed to be out there for changing the case of full Turkish strings.
+This project was born out of frustration with authors and editors leaving ALL CAPS TITLES in Markdown sources.
+No tooling I could find properly supported casting these to title-cased strings (which are more versatile for typesetting purposes).
+The problem was doubly hard because most of my work is adjacent to Turkish, and even less tooling was available and has special issues with case conversions.
+Many tools can handle casing single words, some programmer specific tools handle re-casing tokens and identifiers, and yet a few others can handle *English* strings.
+But *nothing* seemed to be out there for changing the case of Turkish prose.
 
 The CLI defaults to titlecase and English, but lower, upper, and sentence case options are also available.
 The Rust, Lua, Python, and JavaScript library APIs have functions specific to each operation.
