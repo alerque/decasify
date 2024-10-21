@@ -16,6 +16,8 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(py_lowercase, module)?)?;
     module.add_function(wrap_pyfunction!(py_uppercase, module)?)?;
     module.add_function(wrap_pyfunction!(py_sentencecase, module)?)?;
+    let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
+    module.add::<&str, &str>("version", version)?;
     Ok(())
 }
 

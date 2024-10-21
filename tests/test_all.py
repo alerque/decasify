@@ -10,6 +10,7 @@ from decasify import (
     Case,
     Locale,
     StyleGuide,
+    version,
 )
 
 
@@ -19,6 +20,7 @@ def test_isfuction():
     assert callable(lowercase)
     assert callable(uppercase)
     assert callable(sentencecase)
+    assert version.startswith("v")
 
 
 class TestCase:
