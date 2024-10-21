@@ -37,6 +37,7 @@ pub enum Locale {
 
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
 pub enum Case {
