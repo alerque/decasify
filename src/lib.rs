@@ -283,6 +283,34 @@ mod tests {
         assert_eq!(res, "Fist");
     }
 
+    macro_rules! case {
+        ($name:ident, $case:expr, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_case($input, $case, $locale, $style);
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    case!(
+        abc_title_me,
+        Case::Title,
+        Locale::EN,
+        StyleGuide::LanguageDefault,
+        "a b c",
+        "A B C"
+    );
+
+    case!(
+        abc_lower_me,
+        Case::Lower,
+        Locale::EN,
+        StyleGuide::LanguageDefault,
+        "A B C",
+        "a b c"
+    );
+
     macro_rules! titlecase {
         ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
             #[test]
