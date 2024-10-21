@@ -2,25 +2,33 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 
 from decasify import (
+    case,
     titlecase,
     lowercase,
     uppercase,
     sentencecase,
+    Case,
     Locale,
     StyleGuide,
 )
 
 
 def test_isfuction():
+    assert callable(case)
     assert callable(titlecase)
     assert callable(lowercase)
     assert callable(uppercase)
     assert callable(sentencecase)
 
 
+class TestCase:
+    def test_optional_arguments(self):
+        assert case("foo", Case.Title, Locale.EN) == "Foo"
+        assert case("foo", Case.Title, Locale.EN, StyleGuide.DaringFireball) == "Foo"
+        assert case("foo", Case.Upper, Locale.EN) == "FOO"
+
 class TestTitlecase:
     def test_optional_arguments(self):
-        assert titlecase("foo", Locale.EN) == "Foo"
         assert titlecase("foo", Locale.EN) == "Foo"
 
     def test_english_style_guides(self):
