@@ -1,3 +1,15 @@
+## [0.7.3] - 2024-10-21
+
+### Features
+
+- *(python)* Export module version number for debug convenience
+- *(sile)* Add SILE package with document command for recasing
+- *(sile)* Setup to publish SILE package via LuaRocks
+
+### Bug Fixes
+
+- *(nvim)* Correct regeneration of nvim dev rockspec
+
 ## [0.7.2] - 2024-10-21
 
 ### Bug Fixes
