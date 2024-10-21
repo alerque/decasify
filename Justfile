@@ -37,7 +37,7 @@ release semver: pristine keys
 	cargo publish --locked
 	wasm-pack publish
 
-post-release semver:
+post-release semver: keys
 	wget https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
 	wget https://luarocks.org/manifests/alerque/decasify{,.nvim}-{{semver}}-1.src.rock
 	gh release download v{{semver}}
