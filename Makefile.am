@@ -39,6 +39,7 @@ ROCKREV = 1
 TAG ?= v$(SEMVER)
 
 LUAROCKS_ARGS ?= --tree lua_modules
+BUSTEDFLAGS ?=
 
 DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
 DEV_SPEC_NVIM = $(PACKAGE_NAME).nvim-dev-$(ROCKREV).rockspec
@@ -82,8 +83,11 @@ install-luarock: $(DEV_SPEC)
 	$(LUAROCKS) $(LUAROCKS_ARGS) make $<
 
 busted: install-luarock
-	$$(eval $(LUAROCKS) $(LUAROCKS_ARGS) path)
-	$(BUSTED) -c -v
+	eval $$($(LUAROCKS) $(LUAROCKS_ARGS) path)
+	set -f; IFS=';'
+	packagepath=($${LUA_PATH})
+	packagecpath=($${LUA_CPATH})
+	$(BUSTED) -c -v --lpath="$${packagepath[*]};;" --cpath="$${packagecpath[*]};;" $(BUSTEDFLAGS) .
 
 pytest:
 	$(UV) venv

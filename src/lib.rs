@@ -26,6 +26,25 @@ pub mod python;
 #[cfg(feature = "wasm")]
 pub mod wasm;
 
+/// Convert a string to a specific case following typesetting conventions for a target locale
+pub fn to_case(
+    chunk: impl Into<Chunk>,
+    case: impl Into<Case>,
+    locale: impl Into<Locale>,
+    style: impl Into<StyleGuide>,
+) -> String {
+    let chunk: Chunk = chunk.into();
+    let case: Case = case.into();
+    let locale: Locale = locale.into();
+    let style: StyleGuide = style.into();
+    match case {
+        Case::Lower => to_lowercase(chunk, locale),
+        Case::Upper => to_uppercase(chunk, locale),
+        Case::Sentence => to_sentencecase(chunk, locale),
+        Case::Title => to_titlecase(chunk, locale, style),
+    }
+}
+
 /// Convert a string to title case following typesetting conventions for a target locale
 pub fn to_titlecase(
     chunk: impl Into<Chunk>,
@@ -263,6 +282,34 @@ mod tests {
         let res = to_titlecase("FIST", "en", None);
         assert_eq!(res, "Fist");
     }
+
+    macro_rules! case {
+        ($name:ident, $case:expr, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
+            #[test]
+            fn $name() {
+                let actual = to_case($input, $case, $locale, $style);
+                assert_eq!(actual, $expected);
+            }
+        };
+    }
+
+    case!(
+        abc_title_me,
+        Case::Title,
+        Locale::EN,
+        StyleGuide::LanguageDefault,
+        "a b c",
+        "A B C"
+    );
+
+    case!(
+        abc_lower_me,
+        Case::Lower,
+        Locale::EN,
+        StyleGuide::LanguageDefault,
+        "A B C",
+        "a b c"
+    );
 
     macro_rules! titlecase {
         ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {

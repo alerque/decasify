@@ -7,20 +7,46 @@
 local decasify = require("decasify")
 
 describe("decasify", function ()
+   local case = decasify.case
    local titlecase = decasify.titlecase
    local lowercase = decasify.lowercase
    local uppercase = decasify.uppercase
    local sentencecase = decasify.sentencecase
 
    it("should provide the casing functions", function ()
+      assert.is_function(case)
       assert.is_function(titlecase)
       assert.is_function(lowercase)
       assert.is_function(uppercase)
       assert.is_function(sentencecase)
    end)
 
+   describe("case", function ()
+      it("should not balk at nil values for optional args", function ()
+         assert.no.error(function ()
+            case("foo", nil, "en", "cmos")
+         end)
+         assert.no.error(function ()
+            case("foo", nil, "tr")
+         end)
+         assert.no.error(function ()
+            case("foo")
+         end)
+      end)
+
+      it("should not balk at pasing all options through", function ()
+         local text = "foo: a baz"
+         assert.equal("Foo: A Baz", case(text, "title", "en", "grubber"))
+         assert.equal("FOO: A BAZ", case(text, "upper", "en", "gruber"))
+      end)
+
+   end)
+
    describe("titlecase", function ()
       it("should not balk at nil values for optional args", function ()
+         assert.no.error(function ()
+            titlecase("foo", nil, "cmos")
+         end)
          assert.no.error(function ()
             titlecase("foo", "en", "cmos")
          end)

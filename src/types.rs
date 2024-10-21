@@ -37,6 +37,8 @@ pub enum Locale {
 
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
 pub enum Case {
@@ -92,6 +94,12 @@ impl FromStr for Case {
             "upper" => Ok(Case::Upper),
             _ => Err(Box::new(Error("Unknown target case".into()))),
         }
+    }
+}
+
+impl From<&str> for Case {
+    fn from(s: &str) -> Self {
+        Self::from_str(s).unwrap()
     }
 }
 
