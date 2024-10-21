@@ -1,3 +1,10 @@
+## [0.7.2] - 2024-10-21
+
+### Bug Fixes
+
+- *(build)* Remove unused developer tooling requirement
+- *(nvim)* Require matching version of module for editor plugin
+
 ## [0.7.1] - 2024-10-21
 
 ### Features
