@@ -39,8 +39,8 @@ end
 
 vim.api.nvim_create_user_command("Decasify", function (args)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
-   local locale = vim.b.decasify_case or vim.g.decasify_locale or nil
-   local style = vim.b.decasify_case or vim.g.decasify_style or nil
+   local locale = vim.b.decasify_locale or vim.g.decasify_locale or nil
+   local style = vim.b.decasify_style or vim.g.decasify_style or nil
    local decase = function (input)
       return decasify.case(input, case, locale, style)
    end
