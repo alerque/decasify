@@ -43,14 +43,18 @@ BUSTEDFLAGS ?=
 
 DEV_SPEC = $(PACKAGE_NAME)-dev-$(ROCKREV).rockspec
 DEV_SPEC_NVIM = $(PACKAGE_NAME).nvim-dev-$(ROCKREV).rockspec
+DEV_SPEC_SILE = $(PACKAGE_NAME).sile-dev-$(ROCKREV).rockspec
 DEV_ROCK = $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock
 DEV_ROCK_BIN = $(PACKAGE_NAME)-dev-$(ROCKREV).$(CARCH).rock
 DEV_ROCK_NVIM = $(PACKAGE_NAME).nvim-dev-$(ROCKREV).src.rock
+DEV_ROCK_SILE = $(PACKAGE_NAME).sile-dev-$(ROCKREV).src.rock
 REL_SPEC = rockspecs/$(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).rockspec
 REL_SPEC_NVIM = rockspecs/$(PACKAGE_NAME).nvim-$(SEMVER)-$(ROCKREV).rockspec
+REL_SPEC_SILE = rockspecs/$(PACKAGE_NAME).sile-$(SEMVER)-$(ROCKREV).rockspec
 REL_ROCK = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).src.rock
 REL_ROCK_BIN = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).$(CARCH).rock
 REL_ROCK_NVIM = $(PACKAGE_NAME).nvim-$(SEMVER)-$(ROCKREV).src.rock
+REL_ROCK_SILE = $(PACKAGE_NAME).sile-$(SEMVER)-$(ROCKREV).src.rock
 
 EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
 
@@ -124,6 +128,16 @@ $(DEV_SPEC_NVIM): $(PACKAGE_NAME).nvim.rockspec.in
 		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
 		$@
 
+$(DEV_SPEC_SILE): private SEMVER = dev
+$(DEV_SPEC_SILE): private TAG = master
+$(DEV_SPEC_SILE): $(PACKAGE_NAME).sile.rockspec.in
+	$(rockpec_template)
+	$(SED) -i \
+		-e '/tag =/s/tag/branch/' \
+		-e '/decasify >=/s/ >=.*/",/' \
+		-e "1i -- DO NOT EDIT! Modify template $< and rebuild with \`make $@\`\n" \
+		$@
+
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: private SEMVER = $*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: private TAG = v$*
 rockspecs/$(PACKAGE_NAME)-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).rockspec.in
@@ -144,13 +158,28 @@ rockspecs/$(PACKAGE_NAME).nvim-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).nvim.rocks
 		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
 		$@
 
+rockspecs/$(PACKAGE_NAME).sile-%-$(ROCKREV).rockspec: private SEMVER = $*
+rockspecs/$(PACKAGE_NAME).sile-%-$(ROCKREV).rockspec: private TAG = v$*
+rockspecs/$(PACKAGE_NAME).sile-%-$(ROCKREV).rockspec: $(PACKAGE_NAME).sile.rockspec.in
+	$(rockpec_template)
+	$(SED) -i \
+		-e '/rockspec_format/s/3.0/1.0/' \
+		-e '/url = "git/a\   dir = "@PACKAGE_NAME@",' \
+		-e '/issues_url/d' \
+		-e '/maintainer/d' \
+		-e '/labels/d' \
+		$@
+
 $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
 	$(LUAROCKS) $(LUAROCKS_ARGS) pack --sign -- $<
 
 $(PACKAGE_NAME)-dev-$(ROCKREV).$(CARCH).rock: $(DEV_SPEC)
 	$(LUAROCKS) $(LUAROCKS_ARGS) make --sign --pack-binary-rock -- $<
 
-$(PACKAGE_NAME).nvim-dev-$(ROCKREV).nvim.src.rock: $(DEV_SPEC)
+$(PACKAGE_NAME).nvim-dev-$(ROCKREV).nvim.src.rock: $(DEV_SPEC_NVIM)
+	$(LUAROCKS) $(LUAROCKS_ARGS) pack --sign -- $<
+
+$(PACKAGE_NAME).sile-dev-$(ROCKREV).sile.src.rock: $(DEV_SPEC_SILE)
 	$(LUAROCKS) $(LUAROCKS_ARGS) pack --sign -- $<
 
 $(PACKAGE_NAME)-%.src.rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
@@ -160,6 +189,9 @@ $(PACKAGE_NAME)-%.$(CARCH).rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
 	$(LUAROCKS) $(LUAROCKS_ARGS) make --sign --pack-binary-rock -- $<
 
 $(PACKAGE_NAME).nvim-%.src.rock: rockspecs/$(PACKAGE_NAME).nvim-%.rockspec
+	$(LUAROCKS) $(LUAROCKS_ARGS) pack --sign -- $<
+
+$(PACKAGE_NAME).sile-%.src.rock: rockspecs/$(PACKAGE_NAME).sile-%.rockspec
 	$(LUAROCKS) $(LUAROCKS_ARGS) pack --sign -- $<
 
 else !DEVELOPER_MODE
