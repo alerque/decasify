@@ -28,7 +28,8 @@ AM_COND_IF([DEVELOPER_MODE], [
     QUE_PROGVAR([wasmpack], [wasm-pack])
     # Release tooling
     QUE_PROGVAR([gitcliff], [git-cliff])
-    QUE_PROGVAR([typos], [typos])
+    QUE_PROGVAR([sponge])
+    QUE_PROGVAR([typos])
 ])
 
 QUE_RUST_BOILERPLATE

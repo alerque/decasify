@@ -65,13 +65,14 @@ release-preview:
 	$(GITCLIFF) --unreleased
 
 CHANGELOG.md:
-	$(GITCLIFF) -o $@ -t $(TAG)
+	$(GITCLIFF) -p $@ --unreleased -t $(TAG)
 
 decasify-%.md: CHANGELOG.md
 	$(SED) -e '/^## \[$*\]/,/^## \[/!d' $< | \
-		$(SED) -e '1,3d;N;$$!P;$$!D;$$d' | \
+		$(SED) -e '1s/^/Release v$*\n/' | \
+		$(SED) -e '/^#/d' -e '/^$$/d' | \
 		$(SED) -e 's/\*//g' | \
-		$(SED) -e '1s/^/Release v$*\n/' > $@
+		$(SED) -e '1a\\' > $@
 
 rockspecs: $(DEV_SPEC) $(DEV_SPEC_NVIM) $(REL_SPEC) $(REL_SPEC_NVIM)
 
