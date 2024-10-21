@@ -5,7 +5,12 @@ use crate::*;
 use std::result::Result;
 use wasm_bindgen::prelude::*;
 
-pub use crate::types::{Locale, StyleGuide};
+pub use crate::types::{Case, Locale, StyleGuide};
+
+#[wasm_bindgen]
+pub fn case(input: &str, case: Case, locale: Locale, style: StyleGuide) -> Result<String, JsError> {
+    Ok(to_case(input, case, locale, style))
+}
 
 #[wasm_bindgen]
 pub fn titlecase(input: &str, locale: Locale, style: StyleGuide) -> Result<String, JsError> {
