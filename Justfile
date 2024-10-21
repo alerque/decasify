@@ -23,7 +23,7 @@ keys:
 release semver: pristine keys
 	make rockspecs/decasify{,.nvim}-{{semver}}-1.rockspec
 	sed -i -e '/^version/s/".*"/"{{semver}}"/' Cargo.toml
-	env SEMVER={{semver}} sed -i -e "/^decasify =/s/\".*\"/\"${SEMVER%\.*}\"/" README.md
+	sed -i -e "/^decasify =/s/\".*\"/\"${${:-{{semver}}}%\.*}\"/" README.md
 	make SEMVER={{semver}} CHANGELOG.md decasify-{{semver}}.md -B
 	cargo build
 	git add Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim}-{{semver}}-1.rockspec
