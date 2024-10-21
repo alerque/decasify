@@ -38,16 +38,11 @@ local function replace_line_range (args, callback)
 end
 
 vim.api.nvim_create_user_command("Decasify", function (args)
-   local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or "title"
+   local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
    local locale = vim.b.decasify_case or vim.g.decasify_locale or nil
    local style = vim.b.decasify_case or vim.g.decasify_style or nil
-   local case_func = case:gsub("case$", "") .. "case"
    local decase = function (input)
-      return decasify[case_func](input, locale, style)
-   end
-   if type(decasify[case_func]) ~= "function" then
-      vim.notify(("Decasify doesn't know what case '%s' is."):format(case_func))
-      return false
+      return decasify.case(input, case, locale, style)
    end
    -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
    local smark = vim.api.nvim_buf_get_mark(0, "<")[2]
