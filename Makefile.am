@@ -150,7 +150,7 @@ $(PACKAGE_NAME)-dev-$(ROCKREV).src.rock: $(DEV_SPEC)
 $(PACKAGE_NAME)-dev-$(ROCKREV).$(CARCH).rock: $(DEV_SPEC)
 	$(LUAROCKS) $(LUAROCKS_ARGS) make --sign --pack-binary-rock -- $<
 
-$(PACKAGE_NAME).nvim-dev-$(ROCKREV).nvim.src.rock: $(DEV_SPEC)
+$(PACKAGE_NAME).nvim-dev-$(ROCKREV).nvim.src.rock: $(DEV_SPEC_NVIM)
 	$(LUAROCKS) $(LUAROCKS_ARGS) pack --sign -- $<
 
 $(PACKAGE_NAME)-%.src.rock: rockspecs/$(PACKAGE_NAME)-%.rockspec
