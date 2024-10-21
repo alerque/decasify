@@ -21,12 +21,12 @@ keys:
 	test -v MATURIN_PYPI_TOKEN
 
 release semver: pristine keys
-	make rockspecs/decasify{,.nvim}-{{semver}}-1.rockspec
+	make rockspecs/decasify{,.nvim,.sile}-{{semver}}-1.rockspec
 	sed -i -e '/^version/s/".*"/"{{semver}}"/' Cargo.toml
 	sed -i -e "/^decasify =/s/\".*\"/\"${${:-{{semver}}}%\.*}\"/" README.md
 	make SEMVER={{semver}} CHANGELOG.md decasify-{{semver}}.md -B
 	cargo build
-	git add Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim}-{{semver}}-1.rockspec
+	git add Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim,.sile}-{{semver}}-1.rockspec
 	git commit -m "chore: Release v{{semver}}"
 	git tag -s v{{semver}} -F decasify-{{semver}}.md
 	./config.status && make
@@ -39,9 +39,9 @@ release semver: pristine keys
 
 post-release semver: keys
 	wget https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
-	wget https://luarocks.org/manifests/alerque/decasify{,.nvim}-{{semver}}-1.src.rock
+	wget https://luarocks.org/manifests/alerque/decasify{,.nvim,.sile}-{{semver}}-1.src.rock
 	gh release download v{{semver}}
-	ls decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl decasify{,.nvim}-{{semver}}-1.src.rock decasify-{{semver}}.{tar.zst,zip} | xargs -n1 gpg -a --detach-sign
-	gh release upload v{{semver}} decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim}-{{semver}}-1.src.rock{,.asc} decasify-{{semver}}.{tar.zst,zip}.asc
+	ls decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl decasify{,.nvim,.sile}-{{semver}}-1.src.rock decasify-{{semver}}.{tar.zst,zip} | xargs -n1 gpg -a --detach-sign
+	gh release upload v{{semver}} decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim,.sile}-{{semver}}-1.src.rock{,.asc} decasify-{{semver}}.{tar.zst,zip}.asc
 
 # vim: set ft=just
