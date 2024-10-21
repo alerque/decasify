@@ -36,18 +36,18 @@ describe("decasify", function ()
          local text = "foo: a baz"
          local cmos = "Foo: a Baz"
          local grub = "Foo: A Baz"
-         assert.equals(cmos, titlecase(text, "en", "cmos"))
-         assert.equals(grub, titlecase(text, "en", "gruber"))
+         assert.equal(cmos, titlecase(text, "en", "cmos"))
+         assert.equal(grub, titlecase(text, "en", "gruber"))
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = titlecase("İLKİ ILIK ÖĞLEN", "tr")
-         assert.equals("İlki Ilık Öğlen", result)
+         assert.equal("İlki Ilık Öğlen", result)
       end)
 
       it("should be nice about Turish words", function ()
          local result = titlecase("Sen VE ben ile o", "tr")
-         assert.equals("Sen ve Ben ile O", result)
+         assert.equal("Sen ve Ben ile O", result)
       end)
    end)
 
@@ -63,12 +63,12 @@ describe("decasify", function ()
 
       it("should default to handling string as English", function ()
          local result = lowercase("IBUPROFIN")
-         assert.equals("ibuprofin", result)
+         assert.equal("ibuprofin", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = lowercase("İLKİ ILIK ÖĞLEN", "tr")
-         assert.equals("ilki ılık öğlen", result)
+         assert.equal("ilki ılık öğlen", result)
       end)
    end)
 
@@ -84,12 +84,12 @@ describe("decasify", function ()
 
       it("should default to handling string as English", function ()
          local result = uppercase("ibuprofin")
-         assert.equals("IBUPROFIN", result)
+         assert.equal("IBUPROFIN", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = uppercase("ilki ılık öğlen", "tr")
-         assert.equals("İLKİ ILIK ÖĞLEN", result)
+         assert.equal("İLKİ ILIK ÖĞLEN", result)
       end)
    end)
 
@@ -105,12 +105,12 @@ describe("decasify", function ()
 
       it("should default to handling string as English", function ()
          local result = sentencecase("insert BIKE here")
-         assert.equals("Insert bike here", result)
+         assert.equal("Insert bike here", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = sentencecase("ilk DAVRANSIN", "tr")
-         assert.equals("İlk davransın", result)
+         assert.equal("İlk davransın", result)
       end)
    end)
 end)
