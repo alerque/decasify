@@ -189,7 +189,7 @@ console.log(output)
 
 ## Use as a Neovim plugin
 
-* Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim dev`.
+* Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim`.
 
 * Using [lazy.nvim](https://lazy.folke.io/), simply add `{ "alerque/decasify" }`
 
