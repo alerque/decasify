@@ -89,10 +89,13 @@ strum_macros = "0.26"
   optional = true
   features = ["derive"]
 
-  [build-dependencies.vergen]
-  version = "8.3"
+  [build-dependencies.anyhow]
+  version = "1.0"
+
+  [build-dependencies.vergen-gix]
+  version = "1.0"
   default-features = false
-  features = ["build", "cargo", "git", "gitoxide"]
+  features = [ "build", "cargo", "rustc" ]
 
 [dev-dependencies]
 assert_cmd = "2.0"

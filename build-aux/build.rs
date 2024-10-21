@@ -3,6 +3,11 @@
 
 #[cfg(feature = "manpage")]
 use clap_mangen::Man;
+use {
+    anyhow::Result as AnyhowResult,
+    std::env,
+    vergen_gix::{CargoBuilder, Emitter, GixBuilder, RustcBuilder},
+};
 #[cfg(feature = "completions")]
 use {
     clap::CommandFactory,
@@ -10,7 +15,6 @@ use {
     clap_complete::shells::{Bash, Elvish, Fish, PowerShell, Zsh},
     std::{fs, path::Path},
 };
-use {std::env, vergen::EmitBuilder};
 
 #[cfg(feature = "completions")]
 include!("../src/types.rs");
@@ -18,7 +22,7 @@ include!("../src/types.rs");
 #[cfg(feature = "completions")]
 include!("../src/cli.rs");
 
-fn main() {
+fn main() -> AnyhowResult<()> {
     println!("cargo:rustc-cfg=build");
     println!("cargo:rustc-check-cfg=cfg(build)");
     if let Ok(val) = env::var("AUTOTOOLS_DEPENDENCIES") {
@@ -26,18 +30,21 @@ fn main() {
             println!("cargo:rerun-if-changed={dependency}");
         }
     }
-    let mut builder = EmitBuilder::builder();
+    let mut builder = Emitter::default();
+    builder.add_instructions(&CargoBuilder::all_cargo()?)?;
     // If passed a version from automake, use that instead of vergen's formatting
     if let Ok(val) = env::var("VERSION_FROM_AUTOTOOLS") {
-        println!("cargo:rustc-env=VERGEN_GIT_DESCRIBE={val}")
+        println!("cargo:rustc-env=VERGEN_GIT_DESCRIBE={val}");
+        builder.add_instructions(&RustcBuilder::all_rustc()?)?;
     } else {
-        builder = *builder.git_describe(true, true, None);
+        builder.add_instructions(&GixBuilder::all_git()?)?;
     };
-    builder.emit().expect("Unable to generate the cargo keys!");
+    builder.emit()?;
     #[cfg(feature = "manpage")]
     generate_manpage();
     #[cfg(feature = "completions")]
     generate_shell_completions();
+    Ok(())
 }
 
 /// Generate man page
