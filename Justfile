@@ -21,13 +21,12 @@ keys:
 	test -v MATURIN_PYPI_TOKEN
 
 release semver: pristine keys
-	make rockspecs/decasify{,.nvim,.sile}-{{semver}}-1.rockspec
 	sed -i -e '/^version/s/".*"/"{{semver}}"/' Cargo.toml
 	sed -i -e "/^decasify =/s/\".*\"/\"${${:-{{semver}}}%\.*}\"/" README.md
-	make SEMVER={{semver}} CHANGELOG.md decasify-{{semver}}.md -B
-	cargo build
+	make SEMVER={{semver}} rockspecs CHANGELOG.md decasify-{{semver}}.md -B
 	git add Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim,.sile}-{{semver}}-1.rockspec
 	git commit -m "chore: Release v{{semver}}"
+	cargo build
 	git tag -s v{{semver}} -F decasify-{{semver}}.md
 	./config.status && make
 	maturin build --frozen
