@@ -1,3 +1,9 @@
+## [0.7.6] - 2024-10-22
+
+### Bug Fixes
+
+- Make sure distributed rockspecs include version
+
 ## [0.7.5] - 2024-10-22
 
 ### Bug Fixes
