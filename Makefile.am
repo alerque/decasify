@@ -56,7 +56,8 @@ REL_ROCK_BIN = $(PACKAGE_NAME)-$(SEMVER)-$(ROCKREV).$(CARCH).rock
 REL_ROCK_NVIM = $(PACKAGE_NAME).nvim-$(SEMVER)-$(ROCKREV).src.rock
 REL_ROCK_SILE = $(PACKAGE_NAME).sile-$(SEMVER)-$(ROCKREV).src.rock
 
-EXTRA_decasify_SOURCES += $(REL_SPEC) $(DEV_SPEC)
+EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
+EXTRA_DIST += $(DEV_SPEC) $(DEV_SPEC_NVIM) $(DEV_SPEC_SILE)
 
 check: busted pytest
 
@@ -78,9 +79,9 @@ decasify-%.md: CHANGELOG.md
 		$(SED) -e 's/\*//g' | \
 		$(SED) -e '1a\\' > $@
 
-rockspecs: $(DEV_SPEC) $(DEV_SPEC_NVIM) $(REL_SPEC) $(REL_SPEC_NVIM)
+rockspecs: $(DEV_SPEC) $(DEV_SPEC_NVIM) $(DEV_SPEC_SILE) $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
 
-srcrocks: $(DEV_ROCK) $(DEV_ROCK_NVIM) $(REL_ROCK) $(REL_ROCK_NVIM)
+srcrocks: $(DEV_ROCK) $(DEV_ROCK_NVIM) $(DEV_ROCK_SILE) $(REL_ROCK) $(REL_ROCK_NVIM) $(REL_ROCK_SILE)
 
 rocks: $(DEV_ROCK_BIN) $(REL_ROCK_BIN)
 
