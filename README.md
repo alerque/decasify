@@ -11,7 +11,7 @@
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 [![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
-A CLI utility, Rust crate, Lua rock, Python module, JavaScript module, and Neovim plugin to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua rock, Python module, JavaScript module, Neovim plugin, and SILE package to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
 
 This project was born out of frustration with authors and editors leaving ALL CAPS TITLES in Markdown sources.
 No tooling I could find properly supported casting these to title-cased strings (which are more versatile for typesetting purposes).
@@ -217,4 +217,15 @@ vim.b.decasify_locale = "tr"
 vim.g.decasify_style = "gruber"
 ```
 
+## Use as a SILE package
+
+[The SILE Typesetter](https://sile-typesetter.org/) leverages LuaRocks to manage 3rd party packages.
+The [decasify.sile][rock.sile] rock can be installed with `luarocks install decasify.sile`.
+Typically you'll want to adjust the Lua version to match your SILE installation, perhaps with `luarocks --lua $(sile -q <<< SILE.lua_version) install decasify.sile`.
+Additionally you make want to use `--local` to install to your user account instead of the system root, or `--tree lua_modules` to install locally inside a single project.
+Loading it in a SILE document uses the usual `\use[module=package.decasify]` (see notes in the SILE manual about setting package paths if you installed via `--local`).
+Once loaded the package exposes a `\decasify{}` function that can take any combination of `case`, `locale`, and `style` settings and applies the appropriate transformation to the content.
+By default it will track the language of the document content.
+
 [rock]: http://luarocks.org/modules/alerque/decasify
+[rock.sile]: http://luarocks.org/modules/alerque/decasify.sile
