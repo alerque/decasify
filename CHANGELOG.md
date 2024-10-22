@@ -1,3 +1,9 @@
+## [0.7.5] - 2024-10-22
+
+### Bug Fixes
+
+- Make sure lock file is updated before release tag
+
 ## [0.7.4] - 2024-10-22
 
 ### Bug Fixes
