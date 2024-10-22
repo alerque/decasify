@@ -34,9 +34,9 @@ DISTCLEANFILES = @AMINCLUDE@
 # functionality and hence can use conditionals in included makefile fragments.
 include $(top_srcdir)/aminclude.am
 
-SEMVER ?= $(shell $(AWK) -F\" '/^version/ { print $$2 }' $(top_srcdir)/Cargo.toml)
+SEMVER := $(shell $(AWK) -F\" '/^version/ { print $$2 }' $(top_srcdir)/Cargo.toml)
 ROCKREV = 1
-TAG = v$(SEMVER)
+TAG := v$(SEMVER)
 
 LUAROCKS_ARGS ?= --tree lua_modules
 BUSTEDFLAGS ?=
