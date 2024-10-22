@@ -1,3 +1,9 @@
+## [0.7.4] - 2024-10-22
+
+### Bug Fixes
+
+- *(sile)* Make sure SILE module is in release package
+
 ## [0.7.3] - 2024-10-21
 
 ### Features
