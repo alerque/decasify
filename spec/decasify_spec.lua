@@ -13,6 +13,13 @@ describe("decasify", function ()
    local uppercase = decasify.uppercase
    local sentencecase = decasify.sentencecase
 
+   it("should identify its version", function ()
+      local version_file = assert(io.open(".version", "r"))
+      local build_env_version = version_file:read("*all")
+      version_file:close()
+      assert.is.equal("v" .. build_env_version, decasify.version)
+   end)
+
    it("should provide the casing functions", function ()
       assert.is_function(case)
       assert.is_function(titlecase)
@@ -39,7 +46,6 @@ describe("decasify", function ()
          assert.equal("Foo: A Baz", case(text, "title", "en", "grubber"))
          assert.equal("FOO: A BAZ", case(text, "upper", "en", "gruber"))
       end)
-
    end)
 
    describe("titlecase", function ()
