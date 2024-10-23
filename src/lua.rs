@@ -25,10 +25,10 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     Ok(exports)
 }
 
-fn case<'a>(
-    lua: &'a Lua,
-    (input, case, locale, style): (LuaString<'a>, LuaValue<'a>, LuaValue<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
+fn case(
+    lua: &Lua,
+    (input, case, locale, style): (LuaString, LuaValue, LuaValue, LuaValue),
+) -> LuaResult<LuaString> {
     let input = input.to_string_lossy();
     let case: Case = match case {
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Case::Title),
@@ -49,10 +49,10 @@ fn case<'a>(
     lua.create_string(output)
 }
 
-fn titlecase<'a>(
-    lua: &'a Lua,
-    (input, locale, style): (LuaString<'a>, LuaValue<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
+fn titlecase(
+    lua: &Lua,
+    (input, locale, style): (LuaString, LuaValue, LuaValue),
+) -> LuaResult<LuaString> {
     let input = input.to_string_lossy();
     let locale: Locale = match locale {
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
@@ -69,10 +69,7 @@ fn titlecase<'a>(
     lua.create_string(output)
 }
 
-fn lowercase<'a>(
-    lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
+fn lowercase(lua: &Lua, (input, locale): (LuaString, LuaValue)) -> LuaResult<LuaString> {
     let input = input.to_string_lossy();
     let locale: Locale = match locale {
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
@@ -82,10 +79,7 @@ fn lowercase<'a>(
     lua.create_string(output)
 }
 
-fn uppercase<'a>(
-    lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
+fn uppercase(lua: &Lua, (input, locale): (LuaString, LuaValue)) -> LuaResult<LuaString> {
     let input = input.to_string_lossy();
     let locale: Locale = match locale {
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
@@ -95,10 +89,7 @@ fn uppercase<'a>(
     lua.create_string(output)
 }
 
-fn sentencecase<'a>(
-    lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
+fn sentencecase(lua: &Lua, (input, locale): (LuaString, LuaValue)) -> LuaResult<LuaString> {
     let input = input.to_string_lossy();
     let locale: Locale = match locale {
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
