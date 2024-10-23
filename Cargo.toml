@@ -49,6 +49,9 @@ strum = "0.26"
 strum_macros = "0.26"
 unicode_titlecase = "2.3"
 
+  [dependencies.anyhow]
+  version = "1.0"
+
   [dependencies.clap]
   version = "4.5"
   optional = true
@@ -57,7 +60,7 @@ unicode_titlecase = "2.3"
   [dependencies.mlua]
   version = "0.10.0-rc.1"
   optional = true
-  features = ["module"]
+  features = ["module", "anyhow"]
 
   [dependencies.pyo3]
   version = "0.22"
