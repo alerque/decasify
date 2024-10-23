@@ -14,10 +14,17 @@ describe("decasify", function ()
    local sentencecase = decasify.sentencecase
 
    it("should identify its version", function ()
-      local version_file = assert(io.open(".version", "r"))
-      local build_env_version = version_file:read("*all")
-      version_file:close()
-      assert.is.equal("v" .. build_env_version, decasify.version)
+      local build_env_version
+      local version_file = io.open(".version", "r")
+      if version_file then
+         build_env_version = version_file:read("*all")
+         version_file:close()
+      else
+         local which = require("luarocks.loader").which
+         local _, _, rock_version = which("decasify")
+         build_env_version = rock_version:gsub("-.*", "")
+      end
+      assert.is.equal(build_env_version, decasify.version:sub(2, #build_env_version + 1))
    end)
 
    it("should provide the casing functions", function ()
