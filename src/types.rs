@@ -65,6 +65,8 @@ pub enum StyleGuide {
     #[strum(serialize = "default")]
     #[default]
     LanguageDefault,
+    #[strum(serialize = "tdk")]
+    TurkishLanguageInstitute,
 }
 
 impl FromStr for Locale {
@@ -134,6 +136,7 @@ impl FromStr for StyleGuide {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
             "default" | "languagedefault" | "language" | "none" | "" => {
                 Ok(StyleGuide::LanguageDefault)
             }

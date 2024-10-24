@@ -10,26 +10,29 @@ use unicode_titlecase::StrTitleCase;
 
 pub fn to_titlecase(chunk: Chunk, style: StyleGuide) -> String {
     match style {
-        StyleGuide::LanguageDefault => {
-            let mut chunk = chunk.clone();
-            let mut done_first = false;
-            chunk.segments.iter_mut().for_each(|segment| {
-                if let Segment::Word(s) = segment {
-                    *s = if !done_first {
-                        done_first = true;
-                        s.to_string().to_titlecase_tr_or_az_lower_rest()
-                    } else {
-                        match is_reserved(s.to_string()) {
-                            true => s.to_string().to_lowercase_tr_az(),
-                            false => s.to_titlecase_tr_or_az_lower_rest(),
-                        }
-                    }
-                }
-            });
-            chunk.to_string()
-        }
+        StyleGuide::LanguageDefault => to_titlecase_tdk(chunk),
+        StyleGuide::TurkishLanguageInstitute => to_titlecase_tdk(chunk),
         _ => todo!("Turkish implementation doesn't support different style guides."),
     }
+}
+
+fn to_titlecase_tdk(chunk: Chunk) -> String {
+    let mut chunk = chunk.clone();
+    let mut done_first = false;
+    chunk.segments.iter_mut().for_each(|segment| {
+        if let Segment::Word(s) = segment {
+            *s = if !done_first {
+                done_first = true;
+                s.to_string().to_titlecase_tr_or_az_lower_rest()
+            } else {
+                match is_reserved(s.to_string()) {
+                    true => s.to_string().to_lowercase_tr_az(),
+                    false => s.to_titlecase_tr_or_az_lower_rest(),
+                }
+            }
+        }
+    });
+    chunk.to_string()
 }
 
 fn is_reserved(word: String) -> bool {

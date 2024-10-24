@@ -10,10 +10,11 @@ use unicode_titlecase::StrTitleCase;
 
 pub fn to_titlecase(chunk: Chunk, style: StyleGuide) -> String {
     match style {
+        StyleGuide::LanguageDefault => to_titlecase_gruber(chunk),
         StyleGuide::AssociatedPress => to_titlecase_ap(chunk),
         StyleGuide::ChicagoManualOfStyle => to_titlecase_cmos(chunk),
         StyleGuide::DaringFireball => to_titlecase_gruber(chunk),
-        StyleGuide::LanguageDefault => to_titlecase_gruber(chunk),
+        _ => todo!("English implementation doesn't support this style guide."),
     }
 }
 
