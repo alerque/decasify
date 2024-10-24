@@ -6,6 +6,45 @@ use mlua::prelude::*;
 
 pub use crate::types::{Case, Locale, Result, StyleGuide};
 
+impl FromLua for Chunk {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            _ => Ok("".into()),
+        }
+    }
+}
+
+impl FromLua for Locale {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+impl FromLua for Case {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+impl FromLua for StyleGuide {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
 #[mlua::lua_module]
 fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table().unwrap();

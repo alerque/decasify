@@ -12,7 +12,7 @@ pub enum Segment {
     Word(String),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 #[non_exhaustive]
 pub struct Chunk {
     pub segments: Vec<Segment>,
