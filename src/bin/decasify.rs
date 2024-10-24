@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use decasify::cli::Cli;
-use decasify::{to_lowercase, to_sentencecase, to_titlecase, to_uppercase};
+use decasify::{lowercase, sentencecase, titlecase, uppercase};
 use decasify::{Case, Locale, Result, StyleGuide};
 
 use clap::CommandFactory;
@@ -44,10 +44,10 @@ fn process<I: IntoIterator<Item = String>>(
 ) {
     for string in strings {
         let output = match case {
-            Case::Title => to_titlecase(string, locale, style),
-            Case::Lower => to_lowercase(string, locale),
-            Case::Upper => to_uppercase(string, locale),
-            Case::Sentence => to_sentencecase(string, locale),
+            Case::Title => titlecase(string, locale, style),
+            Case::Lower => lowercase(string, locale),
+            Case::Upper => uppercase(string, locale),
+            Case::Sentence => sentencecase(string, locale),
             _ => unreachable!(),
         };
         println!("{output}")

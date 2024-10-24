@@ -25,7 +25,7 @@ mod en;
 mod tr;
 
 /// Convert a string to a specific case following typesetting conventions for a target locale
-pub fn to_case(
+pub fn case(
     chunk: impl Into<Chunk>,
     case: impl Into<Case>,
     locale: impl Into<Locale>,
@@ -36,15 +36,15 @@ pub fn to_case(
     let locale: Locale = locale.into();
     let style: StyleGuide = style.into();
     match case {
-        Case::Lower => to_lowercase(chunk, locale),
-        Case::Upper => to_uppercase(chunk, locale),
-        Case::Sentence => to_sentencecase(chunk, locale),
-        Case::Title => to_titlecase(chunk, locale, style),
+        Case::Lower => lowercase(chunk, locale),
+        Case::Upper => uppercase(chunk, locale),
+        Case::Sentence => sentencecase(chunk, locale),
+        Case::Title => titlecase(chunk, locale, style),
     }
 }
 
 /// Convert a string to title case following typesetting conventions for a target locale
-pub fn to_titlecase(
+pub fn titlecase(
     chunk: impl Into<Chunk>,
     locale: impl Into<Locale>,
     style: impl Into<StyleGuide>,
@@ -53,37 +53,37 @@ pub fn to_titlecase(
     let locale: Locale = locale.into();
     let style: StyleGuide = style.into();
     match locale {
-        Locale::EN => en::to_titlecase(chunk, style),
-        Locale::TR => tr::to_titlecase(chunk, style),
+        Locale::EN => en::titlecase(chunk, style),
+        Locale::TR => tr::titlecase(chunk, style),
     }
 }
 
 /// Convert a string to lower case following typesetting conventions for a target locale
-pub fn to_lowercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
+pub fn lowercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
     match locale {
-        Locale::EN => en::to_lowercase(chunk),
-        Locale::TR => tr::to_lowercase(chunk),
+        Locale::EN => en::lowercase(chunk),
+        Locale::TR => tr::lowercase(chunk),
     }
 }
 
 /// Convert a string to upper case following typesetting conventions for a target locale
-pub fn to_uppercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
+pub fn uppercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
     match locale {
-        Locale::EN => en::to_uppercase(chunk),
-        Locale::TR => tr::to_uppercase(chunk),
+        Locale::EN => en::uppercase(chunk),
+        Locale::TR => tr::uppercase(chunk),
     }
 }
 
 /// Convert a string to sentence case following typesetting conventions for a target locale
-pub fn to_sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
+pub fn sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
     match locale {
-        Locale::EN => en::to_sentencecase(chunk),
-        Locale::TR => tr::to_sentencecase(chunk),
+        Locale::EN => en::sentencecase(chunk),
+        Locale::TR => tr::sentencecase(chunk),
     }
 }

@@ -5,19 +5,19 @@ use decasify::*;
 
 #[test]
 fn cast_from_str() {
-    let res = to_titlecase("FIST", "en", "gruber");
+    let res = titlecase("FIST", "en", "gruber");
     assert_eq!(res, "Fist");
-    let res = to_titlecase("FIST", "tr", "");
+    let res = titlecase("FIST", "tr", "");
     assert_eq!(res, "Fıst");
-    let res = to_titlecase("FIST", "tr", "default");
+    let res = titlecase("FIST", "tr", "default");
     assert_eq!(res, "Fıst");
 }
 
 #[test]
 fn cast_from_legacy_option() {
-    let res = to_titlecase("FIST", "en", Some(StyleGuide::DaringFireball));
+    let res = titlecase("FIST", "en", Some(StyleGuide::DaringFireball));
     assert_eq!(res, "Fist");
-    let res = to_titlecase("FIST", "en", None);
+    let res = titlecase("FIST", "en", None);
     assert_eq!(res, "Fist");
 }
 
@@ -25,7 +25,7 @@ macro_rules! case {
     ($name:ident, $case:expr, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = to_case($input, $case, $locale, $style);
+            let actual = case($input, $case, $locale, $style);
             assert_eq!(actual, $expected);
         }
     };
@@ -53,7 +53,7 @@ macro_rules! titlecase {
     ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = to_titlecase($input, $locale, $style);
+            let actual = titlecase($input, $locale, $style);
             assert_eq!(actual, $expected);
         }
     };
@@ -183,7 +183,7 @@ macro_rules! lowercase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = to_lowercase($input, $locale);
+            let actual = lowercase($input, $locale);
             assert_eq!(actual, $expected);
         }
     };
@@ -202,7 +202,7 @@ macro_rules! uppercase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = to_uppercase($input, $locale);
+            let actual = uppercase($input, $locale);
             assert_eq!(actual, $expected);
         }
     };
@@ -221,7 +221,7 @@ macro_rules! sentencecase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = to_sentencecase($input, $locale);
+            let actual = sentencecase($input, $locale);
             assert_eq!(actual, $expected);
         }
     };
