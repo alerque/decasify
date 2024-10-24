@@ -50,7 +50,7 @@ describe("decasify", function ()
 
       it("should not balk at passing all options through", function ()
          local text = "foo: a baz"
-         assert.equal("Foo: A Baz", case(text, "title", "en", "grubber"))
+         assert.equal("Foo: A Baz", case(text, "title", "en", "gruber"))
          assert.equal("FOO: A BAZ", case(text, "upper", "en", "gruber"))
       end)
    end)
