@@ -12,6 +12,7 @@ licensedir = $(datarootdir)/licenses/$(TRANSFORMED_PACKAGE_NAME)
 bin_PROGRAMS = decasify
 decasify_SOURCES  = src/bin/decasify.rs src/content.rs src/cli.rs src/lib.rs src/types.rs
 decasify_SOURCES += src/lua.rs src/python.rs src/wasm.rs
+decasify_SOURCES += src/en.rs src/tr.rs
 EXTRA_decasify_SOURCES = tests/cli.rs tests/lib.rs
 EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py plugin/decasify.lua sile/decasify.lua
 dist_doc_DATA = README.md CHANGELOG.md
