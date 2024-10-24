@@ -84,6 +84,18 @@ impl From<&str> for Locale {
     }
 }
 
+impl From<String> for Locale {
+    fn from(s: String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
+impl From<&String> for Locale {
+    fn from(s: &String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
 impl FromStr for Case {
     type Err = Box<dyn error::Error>;
     fn from_str(s: &str) -> Result<Self> {
@@ -100,6 +112,18 @@ impl FromStr for Case {
 impl From<&str> for Case {
     fn from(s: &str) -> Self {
         Self::from_str(s).unwrap()
+    }
+}
+
+impl From<String> for Case {
+    fn from(s: String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
+impl From<&String> for Case {
+    fn from(s: &String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
     }
 }
 
@@ -121,6 +145,18 @@ impl FromStr for StyleGuide {
 impl From<&str> for StyleGuide {
     fn from(s: &str) -> Self {
         Self::from_str(s).unwrap()
+    }
+}
+
+impl From<String> for StyleGuide {
+    fn from(s: String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
+impl From<&String> for StyleGuide {
+    fn from(s: &String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
     }
 }
 
