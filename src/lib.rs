@@ -3,8 +3,8 @@
 
 #![doc = include_str!("../README.md")]
 
-pub mod content;
-pub mod types;
+mod content;
+mod types;
 
 pub use content::{Chunk, Segment};
 pub use types::{Case, Locale, Result, StyleGuide};
