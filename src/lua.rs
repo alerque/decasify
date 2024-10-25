@@ -8,102 +8,68 @@ pub use crate::types::{Case, Locale, Result, StyleGuide};
 
 #[mlua::lua_module]
 fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
-    let exports = lua.create_table().unwrap();
-    let case = lua.create_function(case)?;
-    exports.set("case", case).unwrap();
-    let titlecase = lua.create_function(titlecase)?;
-    exports.set("titlecase", titlecase).unwrap();
-    let lowercase = lua.create_function(lowercase)?;
-    exports.set("lowercase", lowercase).unwrap();
-    let uppercase = lua.create_function(uppercase)?;
-    exports.set("uppercase", uppercase).unwrap();
-    let sentencecase = lua.create_function(sentencecase)?;
-    exports.set("sentencecase", sentencecase).unwrap();
+    let exports = lua.create_table()?;
+    exports.set(
+        "case",
+        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide)>(to_case),
+    )?;
+    exports.set(
+        "titlecase",
+        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide)>(to_titlecase),
+    )?;
+    exports.set(
+        "lowercase",
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(to_lowercase),
+    )?;
+    exports.set(
+        "uppercase",
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(to_uppercase),
+    )?;
+    exports.set(
+        "sentencecase",
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(to_sentencecase),
+    )?;
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let version = lua.create_string(version)?;
-    exports.set("version", version).unwrap();
+    exports.set("version", version)?;
     Ok(exports)
 }
 
-fn case<'a>(
-    lua: &'a Lua,
-    (input, case, locale, style): (LuaString<'a>, LuaValue<'a>, LuaValue<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
-    let input = input.to_string_lossy();
-    let case: Case = match case {
-        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Case::Title),
-        _ => Case::Title,
-    };
-    let locale: Locale = match locale {
-        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
-        _ => Locale::EN,
-    };
-    let style: StyleGuide = match style {
-        LuaValue::String(s) => s
-            .to_string_lossy()
-            .parse()
-            .unwrap_or(StyleGuide::LanguageDefault),
-        _ => StyleGuide::LanguageDefault,
-    };
-    let output = to_case(&input, case, locale, style);
-    lua.create_string(output)
+impl FromLua for Chunk {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            _ => Ok("".into()),
+        }
+    }
 }
 
-fn titlecase<'a>(
-    lua: &'a Lua,
-    (input, locale, style): (LuaString<'a>, LuaValue<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
-    let input = input.to_string_lossy();
-    let locale: Locale = match locale {
-        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
-        _ => Locale::EN,
-    };
-    let style: StyleGuide = match style {
-        LuaValue::String(s) => s
-            .to_string_lossy()
-            .parse()
-            .unwrap_or(StyleGuide::LanguageDefault),
-        _ => StyleGuide::LanguageDefault,
-    };
-    let output = to_titlecase(&input, locale, style);
-    lua.create_string(output)
+impl FromLua for Locale {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
 }
 
-fn lowercase<'a>(
-    lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
-    let input = input.to_string_lossy();
-    let locale: Locale = match locale {
-        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
-        _ => Locale::EN,
-    };
-    let output = to_lowercase(&input, locale);
-    lua.create_string(output)
+impl FromLua for Case {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
 }
 
-fn uppercase<'a>(
-    lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
-    let input = input.to_string_lossy();
-    let locale: Locale = match locale {
-        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
-        _ => Locale::EN,
-    };
-    let output = to_uppercase(&input, locale);
-    lua.create_string(output)
-}
-
-fn sentencecase<'a>(
-    lua: &'a Lua,
-    (input, locale): (LuaString<'a>, LuaValue<'a>),
-) -> LuaResult<LuaString<'a>> {
-    let input = input.to_string_lossy();
-    let locale: Locale = match locale {
-        LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
-        _ => Locale::EN,
-    };
-    let output = to_sentencecase(&input, locale);
-    lua.create_string(output)
+impl FromLua for StyleGuide {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
 }

@@ -3,7 +3,7 @@
 
 use crate::types::Result;
 use regex::Regex;
-use std::{borrow::Cow, error, fmt, fmt::Display, str::FromStr};
+use std::{borrow::Cow, fmt, fmt::Display, str::FromStr};
 
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
@@ -12,7 +12,7 @@ pub enum Segment {
     Word(String),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 #[non_exhaustive]
 pub struct Chunk {
     pub segments: Vec<Segment>,
@@ -56,7 +56,7 @@ impl From<&Cow<'_, str>> for Chunk {
 }
 
 impl FromStr for Chunk {
-    type Err = Box<dyn error::Error>;
+    type Err = anyhow::Error;
     fn from_str(s: &str) -> Result<Self> {
         Ok(split_chunk(s))
     }
