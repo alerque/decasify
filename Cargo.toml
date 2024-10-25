@@ -24,7 +24,7 @@ required-features = ["cli"]
 default = []
 full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
 completions = ["cli", "clap_complete"]
-cli = ["clap"]
+cli = ["clap", "snafu"]
 bash = ["completions"]
 elvish = ["completions"]
 fish = ["completions"]
@@ -66,6 +66,10 @@ unicode_titlecase = "2.3"
   version = "0.22"
   optional = true
   features = [ "extension-module" ]
+
+  [dependencies.snafu]
+  version = "0.8"
+  optional = true
 
   [dependencies.titlecase]
   version = "3.3"
