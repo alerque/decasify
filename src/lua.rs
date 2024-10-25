@@ -45,7 +45,7 @@ fn case<'a>(
             .unwrap_or(StyleGuide::LanguageDefault),
         _ => StyleGuide::LanguageDefault,
     };
-    let output = to_case(&input, case, locale, style);
+    let output = case(&input, case, locale, style);
     lua.create_string(output)
 }
 
@@ -65,7 +65,7 @@ fn titlecase<'a>(
             .unwrap_or(StyleGuide::LanguageDefault),
         _ => StyleGuide::LanguageDefault,
     };
-    let output = to_titlecase(&input, locale, style);
+    let output = titlecase(&input, locale, style);
     lua.create_string(output)
 }
 
@@ -78,7 +78,7 @@ fn lowercase<'a>(
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
         _ => Locale::EN,
     };
-    let output = to_lowercase(&input, locale);
+    let output = lowercase(&input, locale);
     lua.create_string(output)
 }
 
@@ -91,7 +91,7 @@ fn uppercase<'a>(
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
         _ => Locale::EN,
     };
-    let output = to_uppercase(&input, locale);
+    let output = uppercase(&input, locale);
     lua.create_string(output)
 }
 
@@ -104,6 +104,6 @@ fn sentencecase<'a>(
         LuaValue::String(s) => s.to_string_lossy().parse().unwrap_or(Locale::EN),
         _ => Locale::EN,
     };
-    let output = to_sentencecase(&input, locale);
+    let output = sentencecase(&input, locale);
     lua.create_string(output)
 }

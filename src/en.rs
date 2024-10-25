@@ -8,22 +8,22 @@ use regex::Regex;
 use titlecase::titlecase as gruber_titlecase;
 use unicode_titlecase::StrTitleCase;
 
-pub fn to_titlecase(chunk: Chunk, style: StyleGuide) -> String {
+pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
     match style {
-        StyleGuide::LanguageDefault => to_titlecase_gruber(chunk),
-        StyleGuide::AssociatedPress => to_titlecase_ap(chunk),
-        StyleGuide::ChicagoManualOfStyle => to_titlecase_cmos(chunk),
-        StyleGuide::DaringFireball => to_titlecase_gruber(chunk),
+        StyleGuide::LanguageDefault => titlecase_gruber(chunk),
+        StyleGuide::AssociatedPress => titlecase_ap(chunk),
+        StyleGuide::ChicagoManualOfStyle => titlecase_cmos(chunk),
+        StyleGuide::DaringFireball => titlecase_gruber(chunk),
         _ => todo!("English implementation doesn't support this style guide."),
     }
 }
 
-fn to_titlecase_ap(chunk: Chunk) -> String {
+fn titlecase_ap(chunk: Chunk) -> String {
     eprintln!("AP style guide not implemented, string returned as-is!");
     chunk.to_string()
 }
 
-fn to_titlecase_cmos(chunk: Chunk) -> String {
+fn titlecase_cmos(chunk: Chunk) -> String {
     let mut done_first = false;
     let mut chunk = chunk.clone();
     let mut segments = chunk.segments.iter_mut().peekable();
@@ -48,7 +48,7 @@ fn to_titlecase_cmos(chunk: Chunk) -> String {
     chunk.to_string()
 }
 
-fn to_titlecase_gruber(chunk: Chunk) -> String {
+fn titlecase_gruber(chunk: Chunk) -> String {
     // The titlecase crate we are going to delegate to here trims the input. We need to restore
     // leading and trailing whitespace ourselves.
     let leading_trivia = if let Some(Segment::Separator(s)) = chunk.segments.first() {
@@ -74,7 +74,7 @@ fn is_reserved(word: String) -> bool {
     article.is_match(word) || congunction.is_match(word) || preposition.is_match(word)
 }
 
-pub fn to_lowercase(chunk: Chunk) -> String {
+pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
@@ -84,7 +84,7 @@ pub fn to_lowercase(chunk: Chunk) -> String {
     chunk.to_string()
 }
 
-pub fn to_uppercase(chunk: Chunk) -> String {
+pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
@@ -94,7 +94,7 @@ pub fn to_uppercase(chunk: Chunk) -> String {
     chunk.to_string()
 }
 
-pub fn to_sentencecase(chunk: Chunk) -> String {
+pub fn sentencecase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {

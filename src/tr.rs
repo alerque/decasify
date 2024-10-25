@@ -8,15 +8,15 @@ use regex::Regex;
 use unicode_titlecase::tr_az::StrTrAzCasing;
 use unicode_titlecase::StrTitleCase;
 
-pub fn to_titlecase(chunk: Chunk, style: StyleGuide) -> String {
+pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
     match style {
-        StyleGuide::LanguageDefault => to_titlecase_tdk(chunk),
-        StyleGuide::TurkishLanguageInstitute => to_titlecase_tdk(chunk),
+        StyleGuide::LanguageDefault => titlecase_tdk(chunk),
+        StyleGuide::TurkishLanguageInstitute => titlecase_tdk(chunk),
         _ => todo!("Turkish implementation doesn't support different style guides."),
     }
 }
 
-fn to_titlecase_tdk(chunk: Chunk) -> String {
+fn titlecase_tdk(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
@@ -45,7 +45,7 @@ fn is_reserved(word: String) -> bool {
     baglac.is_match(word) || soruek.is_match(word)
 }
 
-pub fn to_lowercase(chunk: Chunk) -> String {
+pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
@@ -55,7 +55,7 @@ pub fn to_lowercase(chunk: Chunk) -> String {
     chunk.to_string()
 }
 
-pub fn to_uppercase(chunk: Chunk) -> String {
+pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
@@ -65,7 +65,7 @@ pub fn to_uppercase(chunk: Chunk) -> String {
     chunk.to_string()
 }
 
-pub fn to_sentencecase(chunk: Chunk) -> String {
+pub fn sentencecase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
