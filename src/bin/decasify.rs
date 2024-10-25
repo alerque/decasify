@@ -14,16 +14,16 @@ use std::io::BufRead;
 #[derive(Snafu)]
 enum Error {
     #[snafu(display("Failed to identify input"))]
-    InvalidInput {},
+    Input {},
 
     #[snafu(display("Failed to resolve a known locale"))]
-    InvalidLocale {},
+    Locale {},
 
     #[snafu(display("Failed to resolve a known case"))]
-    InvalidCase {},
+    Case {},
 
     #[snafu(display("Failed to resolve a known style guide"))]
-    InvalidStyleGuide {},
+    StyleGuide {},
 }
 
 // Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
@@ -40,22 +40,20 @@ fn main() -> Result<()> {
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let app = Cli::command().version(version);
     let matches = app.get_matches();
-    let locale = matches
-        .get_one::<Locale>("locale")
-        .context(InvalidLocaleSnafu)?;
+    let locale = matches.get_one::<Locale>("locale").context(LocaleSnafu)?;
     let case = matches
         .get_one::<Case>("case")
-        .context(InvalidCaseSnafu)?
+        .context(CaseSnafu)?
         .to_owned();
     let style = matches
         .get_one::<StyleGuide>("style")
-        .context(InvalidStyleGuideSnafu)?
+        .context(StyleGuideSnafu)?
         .to_owned();
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches
                 .get_many::<String>("input")
-                .context(InvalidInputSnafu)?
+                .context(InputSnafu)?
                 .cloned()
                 .collect();
             let input: Vec<String> = vec![input.join(" ")];
