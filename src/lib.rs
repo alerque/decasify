@@ -4,6 +4,7 @@
 #![doc = include_str!("../README.md")]
 
 pub mod content;
+pub mod traits;
 pub mod types;
 
 pub use content::{Chunk, Segment};

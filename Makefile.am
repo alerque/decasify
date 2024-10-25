@@ -10,7 +10,7 @@ docdir = $(datarootdir)/doc/$(TRANSFORMED_PACKAGE_NAME)
 licensedir = $(datarootdir)/licenses/$(TRANSFORMED_PACKAGE_NAME)
 
 bin_PROGRAMS = decasify
-decasify_SOURCES  = src/bin/decasify.rs src/content.rs src/cli.rs src/lib.rs src/types.rs
+decasify_SOURCES  = src/bin/decasify.rs src/content.rs src/cli.rs src/lib.rs src/types.rs str/traits.rs
 decasify_SOURCES += src/lua.rs src/python.rs src/wasm.rs
 decasify_SOURCES += src/en.rs src/tr.rs
 EXTRA_decasify_SOURCES = tests/cli.rs tests/lib.rs
