@@ -11,23 +11,23 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table()?;
     exports.set(
         "case",
-        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide)>(to_case),
+        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide)>(case),
     )?;
     exports.set(
         "titlecase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide)>(to_titlecase),
+        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide)>(titlecase),
     )?;
     exports.set(
         "lowercase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(to_lowercase),
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(lowercase),
     )?;
     exports.set(
         "uppercase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(to_uppercase),
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(uppercase),
     )?;
     exports.set(
         "sentencecase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(to_sentencecase),
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(sentencecase),
     )?;
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let version = lua.create_string(version)?;
