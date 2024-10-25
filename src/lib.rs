@@ -6,7 +6,7 @@
 mod content;
 mod types;
 
-pub use content::{Chunk, Segment};
+pub use content::Chunk;
 pub use types::{Case, Locale, StyleGuide};
 
 #[cfg(feature = "cli")]
