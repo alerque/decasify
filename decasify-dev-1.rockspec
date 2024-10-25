@@ -25,7 +25,7 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
-   "luarocks-build-rust-mlua >= 0.2.2-1",
+   "luarocks-build-rust-mlua >= 0.2.3-1",
 }
 
 build = {

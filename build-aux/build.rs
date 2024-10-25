@@ -36,6 +36,9 @@ fn main() -> AnyhowResult<()> {
     if let Ok(val) = env::var("VERSION_FROM_AUTOTOOLS") {
         println!("cargo:rustc-env=VERGEN_GIT_DESCRIBE={val}");
         builder.add_instructions(&RustcBuilder::all_rustc()?)?;
+    } else if let Ok(val) = env::var("LUA_ROCKSPEC_VERSION") {
+        println!("cargo:rustc-env=VERGEN_GIT_DESCRIBE=v{val}");
+        builder.add_instructions(&RustcBuilder::all_rustc()?)?;
     } else {
         builder.add_instructions(&GixBuilder::all_git()?)?;
     };
