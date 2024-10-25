@@ -24,7 +24,7 @@ required-features = ["cli"]
 default = []
 full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
 completions = ["cli", "dep:clap_complete"]
-cli = ["dep:clap", "dep:snafu"]
+cli = ["dep:clap"]
 bash = ["completions"]
 elvish = ["completions"]
 fish = ["completions"]
@@ -45,12 +45,10 @@ lto = true
 
 [dependencies]
 regex = "1.11"
+snafu = "0.8"
 strum = "0.26"
 strum_macros = "0.26"
 unicode_titlecase = "2.4"
-
-  [dependencies.anyhow]
-  version = "1.0"
 
   [dependencies.clap]
   version = "4.5"
@@ -60,16 +58,12 @@ unicode_titlecase = "2.4"
   [dependencies.mlua]
   version = "0.10.0"
   optional = true
-  features = ["module", "anyhow"]
+  features = ["module"]
 
   [dependencies.pyo3]
   version = "0.22"
   optional = true
   features = [ "extension-module" ]
-
-  [dependencies.snafu]
-  version = "0.8"
-  optional = true
 
   [dependencies.titlecase]
   version = "3.3"
@@ -80,6 +74,7 @@ unicode_titlecase = "2.4"
   optional = true
 
 [build-dependencies]
+snafu = "0.8"
 strum = "0.26"
 strum_macros = "0.26"
 

@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use std::{error, fmt, fmt::Display, str::FromStr};
+use std::str::FromStr;
 use strum_macros::{Display, VariantNames};
+
+use snafu::prelude::*;
 
 #[cfg(feature = "pythonmodule")]
 use pyo3::prelude::*;
@@ -10,18 +12,27 @@ use pyo3::prelude::*;
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-pub type Result<T> = anyhow::Result<T>;
+#[derive(Snafu)]
+pub enum Error {
+    #[snafu(display("Invalid input language {}", input))]
+    Locale { input: String },
 
-#[derive(Debug)]
-pub struct Error(pub String);
+    #[snafu(display("Invalid target case {}", input))]
+    Case { input: String },
 
-impl Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
+    #[snafu(display("Invalid preferred style guide {}", input))]
+    StyleGuide { input: String },
+}
+
+// Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
+// So we delegate. c.f. https://github.com/shepmaster/snafu/issues/110
+impl std::fmt::Debug for Error {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        std::fmt::Display::fmt(self, fmt)
     }
 }
 
-impl error::Error for Error {}
+pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
@@ -70,12 +81,12 @@ pub enum StyleGuide {
 }
 
 impl FromStr for Locale {
-    type Err = anyhow::Error;
-    fn from_str(s: &str) -> crate::Result<Self> {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "en" | "English" | "en_en" => Ok(Locale::EN),
             "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
-            _ => Err(anyhow::Error::new(Error("Invalid input language".into()))),
+            input => LocaleSnafu { input }.fail()?,
         }
     }
 }
@@ -99,14 +110,14 @@ impl From<&String> for Locale {
 }
 
 impl FromStr for Case {
-    type Err = anyhow::Error;
-    fn from_str(s: &str) -> crate::Result<Self> {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str().trim_end_matches("case") {
             "lower" => Ok(Case::Lower),
             "sentence" => Ok(Case::Sentence),
             "title" => Ok(Case::Title),
             "upper" => Ok(Case::Upper),
-            _ => Err(anyhow::Error::new(Error("Unknown target case".into()))),
+            input => CaseSnafu { input }.fail()?,
         }
     }
 }
@@ -130,8 +141,8 @@ impl From<&String> for Case {
 }
 
 impl FromStr for StyleGuide {
-    type Err = anyhow::Error;
-    fn from_str(s: &str) -> crate::Result<Self> {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
@@ -140,7 +151,7 @@ impl FromStr for StyleGuide {
             "default" | "languagedefault" | "language" | "none" | "" => {
                 Ok(StyleGuide::LanguageDefault)
             }
-            _ => Err(anyhow::Error::new(Error("Invalid style guide".into()))),
+            input => StyleGuideSnafu { input }.fail()?,
         }
     }
 }

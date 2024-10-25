@@ -1114,7 +1114,6 @@ version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0f6ddbd668297c46be4bdea6c599dcc1f001a129586272d53170b7ac0a62961e"
 dependencies = [
- "anyhow",
  "bstr",
  "either",
  "mlua-sys",
