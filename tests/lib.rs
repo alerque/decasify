@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
+use decasify::traits::Decasify;
 use decasify::*;
 
 #[test]
@@ -19,6 +20,16 @@ fn cast_from_legacy_option() {
     assert_eq!(res, "Fist");
     let res = titlecase("FIST", "en", None);
     assert_eq!(res, "Fist");
+}
+
+#[test]
+fn trait_chery() {
+    let s = "WHY THE LONG FACE?";
+    assert_eq!(s.to_case("sentence", "en", None), "Why the long face?");
+    assert_eq!(
+        <str as Decasify>::to_lowercase(s, "en"),
+        "why the long face?"
+    );
 }
 
 macro_rules! case {
