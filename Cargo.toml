@@ -58,7 +58,7 @@ unicode_titlecase = "2.3"
   features = ["derive", "wrap_help"]
 
   [dependencies.mlua]
-  version = "0.10.0-rc.1"
+  version = "0.10.0"
   optional = true
   features = ["module", "anyhow"]
 
