@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use std::{error, fmt, fmt::Display, result, str::FromStr};
+use std::{error, fmt, fmt::Display, str::FromStr};
 use strum_macros::{Display, VariantNames};
 
 #[cfg(feature = "pythonmodule")]
@@ -10,7 +10,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
+pub type Result<T> = anyhow::Result<T>;
 
 #[derive(Debug)]
 pub struct Error(pub String);
@@ -70,12 +70,12 @@ pub enum StyleGuide {
 }
 
 impl FromStr for Locale {
-    type Err = Box<dyn error::Error>;
-    fn from_str(s: &str) -> Result<Self> {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> crate::Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "en" | "English" | "en_en" => Ok(Locale::EN),
             "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
-            _ => Err(Box::new(Error("Invalid input language".into()))),
+            _ => Err(anyhow::Error::new(Error("Invalid input language".into()))),
         }
     }
 }
@@ -99,14 +99,14 @@ impl From<&String> for Locale {
 }
 
 impl FromStr for Case {
-    type Err = Box<dyn error::Error>;
-    fn from_str(s: &str) -> Result<Self> {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> crate::Result<Self> {
         match s.to_ascii_lowercase().as_str().trim_end_matches("case") {
             "lower" => Ok(Case::Lower),
             "sentence" => Ok(Case::Sentence),
             "title" => Ok(Case::Title),
             "upper" => Ok(Case::Upper),
-            _ => Err(Box::new(Error("Unknown target case".into()))),
+            _ => Err(anyhow::Error::new(Error("Unknown target case".into()))),
         }
     }
 }
@@ -130,8 +130,8 @@ impl From<&String> for Case {
 }
 
 impl FromStr for StyleGuide {
-    type Err = Box<dyn error::Error>;
-    fn from_str(s: &str) -> Result<Self> {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> crate::Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
@@ -140,7 +140,7 @@ impl FromStr for StyleGuide {
             "default" | "languagedefault" | "language" | "none" | "" => {
                 Ok(StyleGuide::LanguageDefault)
             }
-            _ => Err(Box::new(Error("Invalid style guide".into()))),
+            _ => Err(anyhow::Error::new(Error("Invalid style guide".into()))),
         }
     }
 }
