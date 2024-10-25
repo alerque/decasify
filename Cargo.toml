@@ -44,10 +44,10 @@ wasm = ["dep:wasm-bindgen"]
 lto = true
 
 [dependencies]
-regex = "1.10"
+regex = "1.11"
 strum = "0.26"
 strum_macros = "0.26"
-unicode_titlecase = "2.3"
+unicode_titlecase = "2.4"
 
   [dependencies.anyhow]
   version = "1.0"
