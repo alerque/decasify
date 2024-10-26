@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::types::Result;
 use regex::Regex;
-use std::{borrow::Cow, error, fmt, fmt::Display, str::FromStr};
+use std::{borrow::Cow, fmt, fmt::Display, str::FromStr};
+
+use snafu::prelude::*;
 
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
@@ -12,11 +13,27 @@ pub enum Segment {
     Word(String),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 #[non_exhaustive]
 pub struct Chunk {
     pub segments: Vec<Segment>,
 }
+
+#[derive(Snafu)]
+pub enum Error {
+    #[snafu(display("Unable to cast str to Chunk"))]
+    StrToChunk {},
+}
+
+// Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
+// So we delegate. c.f. https://github.com/shepmaster/snafu/issues/110
+impl std::fmt::Debug for Error {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        std::fmt::Display::fmt(self, fmt)
+    }
+}
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 fn split_chunk(s: &str) -> Chunk {
     let mut segments: Vec<Segment> = Vec::new();
@@ -56,7 +73,7 @@ impl From<&Cow<'_, str>> for Chunk {
 }
 
 impl FromStr for Chunk {
-    type Err = Box<dyn error::Error>;
+    type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
         Ok(split_chunk(s))
     }

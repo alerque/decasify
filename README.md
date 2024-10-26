@@ -32,15 +32,6 @@ The AP style is largely unimplemented.
 
 Contributions are welcome for better style guide support or further languages.
 
-``` console
-$ decasify -l tr ILIK SU VE İTEN RÜZGARLAR
-Ilık Su ve İten Rüzgarlar
-$ echo ILIK SU VE İTEN RÜZGARLAR | decasify -l tr
-Ilık Su ve İten Rüzgarlar
-$ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
-Foo BAR and Baz: An Alter Ego
-```
-
 [tdk]: https://tdk.gov.tr/icerik/yazim-kurallari/buyuk-harflerin-kullanildigi-yerler/
 [titlecase_crate]: https://crates.io/crates/titlecase
 
@@ -48,27 +39,23 @@ Foo BAR and Baz: An Alter Ego
 
 Use of the CLI is pretty simple.
 Input may be either shell arguments or STDIN.
+Arguments can control the various options.
+For full usage information check `decasify --help` or `man decasify`.
 
-```console
-$ decasify --help
-A CLI tool to convert all-caps strings to title-case or other less aggressive tones that supports
-Turkish input
+``` console
+$ decasify -l tr ILIK SU VE İTEN RÜZGARLAR
+Ilık Su ve İten Rüzgarlar
 
-Usage: decasify [OPTIONS] [INPUT]...
+$ echo ILIK SU VE İTEN RÜZGARLAR | decasify -l tr
+Ilık Su ve İten Rüzgarlar
 
-Arguments:
-  [INPUT]...  Input string
-
-Options:
-  -l, --locale <LOCALE>  Locale [default: EN] [possible values: EN, TR]
-  -c, --case <CASE>      Target case [default: Title] [possible values: Lower, Sentence, Title,
-                         Upper]
-  -s, --style <STYLE>    Style Guide [possible values: ap, cmos, gruber]
-  -h, --help             Print help
-  -V, --version          Print version
+$ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
+Foo BAR and Baz: An Alter Ego
 ```
 
-First, check your distro for packages, e.g. for Arch Linux get it [from the AUR](https://aur.archlinux.org/packages/decasify).
+### Installation
+
+To install, first check your distro for packages, e.g. for [Arch Linux](https://archlinux.org/packages/extra/x86_64/decasify/) just install via `pacman -S decasify`.
 
 Otherwise for many platforms you can run it directly or install it to a shell using Nix Flakes:
 
