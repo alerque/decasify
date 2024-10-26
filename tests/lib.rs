@@ -21,6 +21,22 @@ fn cast_from_legacy_option() {
     assert_eq!(res, "Fist");
 }
 
+#[cfg(feature = "unstable-trait")]
+#[test]
+fn trait_chery() {
+    use decasify::Decasify;
+    let s = "WHY THE LONG FACE?";
+    assert_eq!(s.to_case("sentence", "en", None), "Why the long face?");
+    assert_eq!(
+        <str as Decasify>::to_lowercase(s, "en"),
+        "why the long face?"
+    );
+    assert_eq!(
+        s.to_owned().to_case("sentence", "en", None),
+        "Why the long face?"
+    );
+}
+
 macro_rules! case {
     ($name:ident, $case:expr, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
         #[test]

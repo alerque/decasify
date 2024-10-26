@@ -5,9 +5,12 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod content;
+mod traits;
 mod types;
 
 pub use content::Chunk;
+#[cfg(feature = "unstable-trait")]
+pub use traits::Decasify;
 pub use types::{Case, Locale, StyleGuide};
 
 #[cfg(feature = "cli")]
