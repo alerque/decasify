@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::types::{Case, Locale, StyleGuide};
+use crate::{Case, Locale, StyleGuide};
 
+#[allow(dead_code)]
+#[cfg_attr(docsrs, doc(cfg(feature = "unstable-trait")))]
 pub trait Decasify {
     fn to_case(
         &self,
@@ -16,6 +18,8 @@ pub trait Decasify {
     fn to_sentencecase(&self, locale: impl Into<Locale>) -> String;
 }
 
+#[cfg(feature = "unstable-trait")]
+#[cfg_attr(docsrs, doc(cfg(feature = "unstable-trait")))]
 impl Decasify for str {
     fn to_case(
         &self,
