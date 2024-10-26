@@ -1,3 +1,31 @@
+## [0.8.0] - 2024-10-26
+
+### Features
+
+- *(crate)* Implement `From<String>` for option types
+- Promote only TR implementation to 'TDK' style guide
+- *(crate)* Specify new `Decasify` trait
+- *(crate)* Implement `Decasify` trait for commonn types
+- *(lua)* Implement `FromLua` for relevant crate types
+- *(cli)* Improve console error message output with Snafu
+
+### Bug Fixes
+
+- *(lua)* Make sure LuaRock identifies its version even when sideloaded
+
+### Chore
+
+- *(crate)* [**breaking**] Stop exporting `Segment` type
+
+### Refactor
+
+- *(crate)* [**breaking**] Change out anyhow for snafu errors in library
+- *(crate)* [**breaking**] Flatten modules to simplify public API
+
+### Refator
+
+- [**breaking**] Rename `to_*()` functions as just `*()`
+
 ## [0.7.6] - 2024-10-22
 
 ### Bug Fixes
