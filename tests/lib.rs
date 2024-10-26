@@ -31,6 +31,10 @@ fn trait_chery() {
         <str as Decasify>::to_lowercase(s, "en"),
         "why the long face?"
     );
+    assert_eq!(
+        s.to_owned().to_case("sentence", "en", None),
+        "Why the long face?"
+    );
 }
 
 macro_rules! case {
