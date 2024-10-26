@@ -106,6 +106,10 @@ predicates = "3.1"
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
 
+[package.metadata.docs.rs]
+features = ["luamodule", "luajit", "pythonmodule", "wasm"]
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.git-cliff.git]
 protect_breaking_commits = true
 commit_parsers = [

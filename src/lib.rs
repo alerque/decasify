@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #![doc = include_str!("../README.md")]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod content;
 mod types;
@@ -10,15 +11,19 @@ pub use content::Chunk;
 pub use types::{Case, Locale, StyleGuide};
 
 #[cfg(feature = "cli")]
+#[doc(hidden)]
 pub mod cli;
 
 #[cfg(feature = "luamodule")]
+#[doc(hidden)]
 pub mod lua;
 
 #[cfg(feature = "pythonmodule")]
+#[doc(hidden)]
 pub mod python;
 
 #[cfg(feature = "wasm")]
+#[doc(hidden)]
 pub mod wasm;
 
 mod en;
