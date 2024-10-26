@@ -37,8 +37,8 @@ release semver: pristine keys
 	wasm-pack publish
 
 post-release semver: keys
-	wget https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
-	wget https://luarocks.org/manifests/alerque/decasify{,.nvim,.sile}-{{semver}}-1.src.rock
+	wget --backups 0 https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
+	wget --backups 0 https://luarocks.org/manifests/alerque/decasify{,.nvim,.sile}-{{semver}}-1.src.rock
 	gh release download v{{semver}}
 	ls decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl decasify{,.nvim,.sile}-{{semver}}-1.src.rock decasify-{{semver}}.{tar.zst,zip} | xargs -n1 gpg -a --detach-sign
 	gh release upload v{{semver}} decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim,.sile}-{{semver}}-1.src.rock{,.asc} decasify-{{semver}}.{tar.zst,zip}.asc
