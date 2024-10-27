@@ -31,16 +31,16 @@ fn titlecase_cmos(chunk: Chunk) -> String {
         if let Segment::Word(s) = segment {
             *s = if !done_first {
                 done_first = true;
-                s.to_string().to_titlecase_lower_rest()
+                s.to_titlecase_lower_rest()
             } else if segments.peek().is_none() {
-                // TODO: I think a bug is hiding here since peek() might give use a separator
+                // TODO: I think a bug is hiding here since peek() might give us a separator
                 // that happens to be a trailing trivia. We need a custom iterator or peeker
                 // that knows how to answer about first/last *word* segments.
-                s.to_string().to_titlecase_lower_rest()
+                s.to_titlecase_lower_rest()
             } else {
-                match is_reserved(s.to_string()) {
-                    true => s.to_string().to_lowercase(),
-                    false => s.to_string().to_titlecase_lower_rest(),
+                match is_reserved(s) {
+                    true => s.to_lowercase(),
+                    false => s.to_titlecase_lower_rest(),
                 }
             }
         }
@@ -65,7 +65,7 @@ fn titlecase_gruber(chunk: Chunk) -> String {
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
-fn is_reserved(word: String) -> bool {
+fn is_reserved(word: &str) -> bool {
     let word = word.to_lowercase();
     let word = word.as_str();
     let article = Regex::new(r"^(a|an|the)$").unwrap();
@@ -78,7 +78,7 @@ pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
-            *s = s.to_string().to_lowercase()
+            *s = s.to_lowercase()
         }
     });
     chunk.to_string()
@@ -88,7 +88,7 @@ pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
-            *s = s.to_string().to_uppercase()
+            *s = s.to_uppercase()
         }
     });
     chunk.to_string()
@@ -101,9 +101,9 @@ pub fn sentencecase(chunk: Chunk) -> String {
         if let Segment::Word(s) = segment {
             *s = if !done_first {
                 done_first = true;
-                s.to_string().to_titlecase_lower_rest()
+                s.to_titlecase_lower_rest()
             } else {
-                s.to_string().to_lowercase()
+                s.to_lowercase()
             }
         }
     });

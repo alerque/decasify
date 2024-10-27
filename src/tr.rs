@@ -23,10 +23,10 @@ fn titlecase_tdk(chunk: Chunk) -> String {
         if let Segment::Word(s) = segment {
             *s = if !done_first {
                 done_first = true;
-                s.to_string().to_titlecase_tr_or_az_lower_rest()
+                s.to_titlecase_tr_or_az_lower_rest()
             } else {
-                match is_reserved(s.to_string()) {
-                    true => s.to_string().to_lowercase_tr_az(),
+                match is_reserved(s) {
+                    true => s.to_lowercase_tr_az(),
                     false => s.to_titlecase_tr_or_az_lower_rest(),
                 }
             }
@@ -35,13 +35,12 @@ fn titlecase_tdk(chunk: Chunk) -> String {
     chunk.to_string()
 }
 
-fn is_reserved(word: String) -> bool {
+fn is_reserved(word: &str) -> bool {
     let baglac = Regex::new(
         r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
     )
     .unwrap();
     let soruek = Regex::new(r"^([Mm][İiIıUuÜü])([Dd][İiIıUuÜü][Rr]([Ll][AaEe][Rr])?|[Ss][İiIıUuÜü][Nn]|[Yy][İiIıUuÜü][Zz]|[Ss][İiIıUuÜü][Nn][İiIıUuÜü][Zz]|[Ll][AaEe][Rr])?$").unwrap();
-    let word = word.as_str();
     baglac.is_match(word) || soruek.is_match(word)
 }
 
@@ -49,7 +48,7 @@ pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
-            *s = s.to_string().to_lowercase_tr_az()
+            *s = s.to_lowercase_tr_az()
         }
     });
     chunk.to_string()
@@ -59,7 +58,7 @@ pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(s) = segment {
-            *s = s.to_string().to_uppercase_tr_az()
+            *s = s.to_uppercase_tr_az()
         }
     });
     chunk.to_string()
@@ -72,9 +71,9 @@ pub fn sentencecase(chunk: Chunk) -> String {
         if let Segment::Word(s) = segment {
             *s = if !done_first {
                 done_first = true;
-                s.to_string().to_titlecase_tr_or_az_lower_rest()
+                s.to_titlecase_tr_or_az_lower_rest()
             } else {
-                s.to_string().to_lowercase_tr_az()
+                s.to_lowercase_tr_az()
             }
         }
     });
