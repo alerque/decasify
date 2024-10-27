@@ -87,6 +87,16 @@ impl FromStr for Chunk {
     }
 }
 
+impl From<Chunk> for String {
+    fn from(c: Chunk) -> Self {
+        let mut s = String::new();
+        for segment in c.segments {
+            s.push_str(segment.to_string().as_ref());
+        }
+        s
+    }
+}
+
 impl Display for Chunk {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         for segment in &self.segments {

@@ -20,7 +20,7 @@ pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
 
 fn titlecase_ap(chunk: Chunk) -> String {
     eprintln!("AP style guide not implemented, string returned as-is!");
-    chunk.to_string()
+    chunk.into()
 }
 
 fn titlecase_cmos(chunk: Chunk) -> String {
@@ -45,7 +45,7 @@ fn titlecase_cmos(chunk: Chunk) -> String {
             }
         }
     }
-    chunk.to_string()
+    chunk.into()
 }
 
 fn titlecase_gruber(chunk: Chunk) -> String {
@@ -61,7 +61,7 @@ fn titlecase_gruber(chunk: Chunk) -> String {
     } else {
         String::from("")
     };
-    let titilized = gruber_titlecase(&chunk.to_string());
+    let titilized = gruber_titlecase(chunk.to_string().as_ref());
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
@@ -81,7 +81,7 @@ pub fn lowercase(chunk: Chunk) -> String {
             word.word = word.word.to_lowercase()
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 pub fn uppercase(chunk: Chunk) -> String {
@@ -91,7 +91,7 @@ pub fn uppercase(chunk: Chunk) -> String {
             word.word = word.word.to_uppercase()
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 pub fn sentencecase(chunk: Chunk) -> String {
@@ -107,5 +107,5 @@ pub fn sentencecase(chunk: Chunk) -> String {
             }
         }
     });
-    chunk.to_string()
+    chunk.into()
 }

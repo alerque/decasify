@@ -32,7 +32,7 @@ fn titlecase_tdk(chunk: Chunk) -> String {
             }
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 fn is_reserved(word: &str) -> bool {
@@ -51,7 +51,7 @@ pub fn lowercase(chunk: Chunk) -> String {
             word.word = word.word.to_lowercase_tr_az()
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 pub fn uppercase(chunk: Chunk) -> String {
@@ -61,7 +61,7 @@ pub fn uppercase(chunk: Chunk) -> String {
             word.word = word.word.to_uppercase_tr_az()
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 pub fn sentencecase(chunk: Chunk) -> String {
@@ -77,5 +77,5 @@ pub fn sentencecase(chunk: Chunk) -> String {
             }
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
