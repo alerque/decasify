@@ -20,14 +20,14 @@ fn titlecase_tdk(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = if !done_first {
+        if let Segment::Word(word) = segment {
+            word.word = if !done_first {
                 done_first = true;
-                s.to_titlecase_tr_or_az_lower_rest()
+                word.word.to_titlecase_tr_or_az_lower_rest()
             } else {
-                match is_reserved(s) {
-                    true => s.to_lowercase_tr_az(),
-                    false => s.to_titlecase_tr_or_az_lower_rest(),
+                match is_reserved(word.word.as_ref()) {
+                    true => word.word.to_lowercase_tr_az(),
+                    false => word.word.to_titlecase_tr_or_az_lower_rest(),
                 }
             }
         }
@@ -47,8 +47,8 @@ fn is_reserved(word: &str) -> bool {
 pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = s.to_lowercase_tr_az()
+        if let Segment::Word(word) = segment {
+            word.word = word.word.to_lowercase_tr_az()
         }
     });
     chunk.to_string()
@@ -57,8 +57,8 @@ pub fn lowercase(chunk: Chunk) -> String {
 pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = s.to_uppercase_tr_az()
+        if let Segment::Word(word) = segment {
+            word.word = word.word.to_uppercase_tr_az()
         }
     });
     chunk.to_string()
@@ -68,12 +68,12 @@ pub fn sentencecase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = if !done_first {
+        if let Segment::Word(word) = segment {
+            word.word = if !done_first {
                 done_first = true;
-                s.to_titlecase_tr_or_az_lower_rest()
+                word.word.to_titlecase_tr_or_az_lower_rest()
             } else {
-                s.to_lowercase_tr_az()
+                word.word.to_lowercase_tr_az()
             }
         }
     });
