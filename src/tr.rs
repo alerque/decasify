@@ -38,10 +38,9 @@ fn titlecase_tdk(chunk: Chunk) -> String {
 fn is_reserved(word: &Word) -> bool {
     let word = word.to_string();
     let word = word.as_ref();
-    let baglac = Regex::new(
-        r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
-    )
-    .unwrap();
+    let baglac =
+        Regex::new(r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$")
+            .unwrap();
     let soruek = Regex::new(r"^([Mm][İiIıUuÜü])([Dd][İiIıUuÜü][Rr]([Ll][AaEe][Rr])?|[Ss][İiIıUuÜü][Nn]|[Yy][İiIıUuÜü][Zz]|[Ss][İiIıUuÜü][Nn][İiIıUuÜü][Zz]|[Ll][AaEe][Rr])?$").unwrap();
     baglac.is_match(word) || soruek.is_match(word)
 }
