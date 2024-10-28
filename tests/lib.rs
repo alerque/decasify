@@ -65,6 +65,24 @@ case!(
     "a b c"
 );
 
+case!(
+    trivia_en,
+    Case::Title,
+    Locale::EN,
+    StyleGuide::LanguageDefault,
+    "  foo  bar  ",
+    "  Foo  Bar  "
+);
+
+case!(
+    trivia_tr,
+    Case::Title,
+    Locale::TR,
+    StyleGuide::LanguageDefault,
+    "  foo  bar  ",
+    "  Foo  Bar  "
+);
+
 macro_rules! titlecase {
     ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
         #[test]
