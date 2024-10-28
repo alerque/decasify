@@ -24,26 +24,26 @@ fn titlecase_ap(chunk: Chunk) -> String {
 }
 
 fn titlecase_cmos(chunk: Chunk) -> String {
-    let mut done_first = false;
     let mut chunk = chunk.clone();
-    let mut segments = chunk.segments.iter_mut().peekable();
-    while let Some(segment) = segments.next() {
-        if let Segment::Word(word) = segment {
-            word.word = if !done_first {
-                done_first = true;
-                word.to_titlecase_lower_rest()
-            } else if segments.peek().is_none() {
-                // TODO: I think a bug is hiding here since peek() might give us a separator
-                // that happens to be a trailing trivia. We need a custom iterator or peeker
-                // that knows how to answer about first/last *word* segments.
-                word.to_titlecase_lower_rest()
-            } else {
-                match is_reserved(word) {
-                    true => word.to_lowercase(),
-                    false => word.to_titlecase_lower_rest(),
-                }
-            }
-        }
+    let mut words = chunk
+        .segments
+        .iter_mut()
+        .filter_map(|segment| match segment {
+            Segment::Word(word) => Some(word),
+            _ => None,
+        })
+        .peekable();
+    if let Some(word) = words.next() {
+        word.word = word.to_titlecase_lower_rest();
+    }
+    while let Some(word) = words.next() {
+        word.word = match words.peek().is_none() {
+            true => word.to_titlecase_lower_rest(),
+            false => match is_reserved(word) {
+                true => word.to_lowercase(),
+                false => word.to_titlecase_lower_rest(),
+            },
+        };
     }
     chunk.into()
 }
