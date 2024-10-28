@@ -213,6 +213,38 @@ titlecase!(
     "  Serbest  Serseri\n  Boşluk  "
 );
 
+titlecase!(
+    french_def,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "le triangle rouge",
+    "Le Triangle Rouge"
+);
+
+titlecase!(
+    french_def2,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "loki, le détective mythique",
+    "Loki, le Détective Mythique"
+);
+
+titlecase!(
+    french_coordinating,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "il est studieux mais turbulent",
+    "Il Est Studieux mais Turbulent"
+);
+
+titlecase!(
+    french_coordinating2,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "mais comment font-ils?",
+    "Mais Comment Font-Ils?"
+);
+
 macro_rules! lowercase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
