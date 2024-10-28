@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::{Chunk, Segment};
+use crate::content::{Chunk, Segment, Word};
 use crate::types::StyleGuide;
 
 use regex::Regex;
@@ -31,16 +31,16 @@ fn titlecase_cmos(chunk: Chunk) -> String {
         if let Segment::Word(word) = segment {
             word.word = if !done_first {
                 done_first = true;
-                word.word.to_titlecase_lower_rest()
+                word.to_titlecase_lower_rest()
             } else if segments.peek().is_none() {
                 // TODO: I think a bug is hiding here since peek() might give us a separator
                 // that happens to be a trailing trivia. We need a custom iterator or peeker
                 // that knows how to answer about first/last *word* segments.
-                word.word.to_titlecase_lower_rest()
+                word.to_titlecase_lower_rest()
             } else {
-                match is_reserved(word.word.as_ref()) {
-                    true => word.word.to_lowercase(),
-                    false => word.word.to_titlecase_lower_rest(),
+                match is_reserved(word) {
+                    true => word.to_lowercase(),
+                    false => word.to_titlecase_lower_rest(),
                 }
             }
         }
@@ -65,7 +65,7 @@ fn titlecase_gruber(chunk: Chunk) -> String {
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
-fn is_reserved(word: &str) -> bool {
+fn is_reserved(word: &Word) -> bool {
     let word = word.to_lowercase();
     let word = word.as_str();
     let article = Regex::new(r"^(a|an|the)$").unwrap();
@@ -78,7 +78,7 @@ pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(word) = segment {
-            word.word = word.word.to_lowercase()
+            word.word = word.to_lowercase()
         }
     });
     chunk.into()
@@ -88,7 +88,7 @@ pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(word) = segment {
-            word.word = word.word.to_uppercase()
+            word.word = word.to_uppercase()
         }
     });
     chunk.into()
@@ -101,9 +101,9 @@ pub fn sentencecase(chunk: Chunk) -> String {
         if let Segment::Word(word) = segment {
             word.word = if !done_first {
                 done_first = true;
-                word.word.to_titlecase_lower_rest()
+                word.to_titlecase_lower_rest()
             } else {
-                word.word.to_lowercase()
+                word.to_lowercase()
             }
         }
     });

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::{Chunk, Segment};
+use crate::content::{Chunk, Segment, Word};
 use crate::types::StyleGuide;
 
 use regex::Regex;
@@ -23,9 +23,9 @@ fn titlecase_tdk(chunk: Chunk) -> String {
         if let Segment::Word(word) = segment {
             word.word = if !done_first {
                 done_first = true;
-                word.word.to_titlecase_tr_or_az_lower_rest()
+                word.to_titlecase_tr_or_az_lower_rest()
             } else {
-                match is_reserved(word.word.as_ref()) {
+                match is_reserved(word) {
                     true => word.word.to_lowercase_tr_az(),
                     false => word.word.to_titlecase_tr_or_az_lower_rest(),
                 }
@@ -35,7 +35,9 @@ fn titlecase_tdk(chunk: Chunk) -> String {
     chunk.into()
 }
 
-fn is_reserved(word: &str) -> bool {
+fn is_reserved(word: &Word) -> bool {
+    let word = word.to_string();
+    let word = word.as_ref();
     let baglac = Regex::new(
         r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
     )

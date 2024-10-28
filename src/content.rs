@@ -3,6 +3,7 @@
 
 use regex::Regex;
 use std::{borrow::Cow, fmt, fmt::Display, str::FromStr};
+use unicode_titlecase::StrTitleCase;
 
 use snafu::prelude::*;
 
@@ -113,6 +114,42 @@ impl Display for Segment {
             Segment::Word(word) => fmt.write_str(word.to_string().as_ref())?,
         };
         Ok(())
+    }
+}
+
+impl Word {
+    pub fn to_lowercase(&self) -> String {
+        self.word.to_lowercase()
+    }
+    pub fn to_uppercase(&self) -> String {
+        self.word.to_uppercase()
+    }
+}
+
+impl From<String> for Word {
+    fn from(word: String) -> Self {
+        Self { word }
+    }
+}
+
+impl StrTitleCase for Word {
+    fn to_titlecase(&self) -> String {
+        self.word.to_titlecase()
+    }
+    fn to_titlecase_lower_rest(&self) -> String {
+        self.word.to_titlecase_lower_rest()
+    }
+    fn to_titlecase_tr_or_az(&self) -> String {
+        self.word.to_titlecase_tr_or_az()
+    }
+    fn to_titlecase_tr_or_az_lower_rest(&self) -> String {
+        self.word.to_titlecase_tr_or_az_lower_rest()
+    }
+    fn starts_titlecase(&self) -> bool {
+        self.word.starts_titlecase()
+    }
+    fn starts_titlecase_rest_lower(&self) -> bool {
+        self.word.starts_titlecase_rest_lower()
     }
 }
 
