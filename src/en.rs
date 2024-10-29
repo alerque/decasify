@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::{Chunk, Segment};
+use crate::content::{Chunk, Segment, Word};
 use crate::types::StyleGuide;
 
 use regex::Regex;
@@ -20,32 +20,32 @@ pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
 
 fn titlecase_ap(chunk: Chunk) -> String {
     eprintln!("AP style guide not implemented, string returned as-is!");
-    chunk.to_string()
+    chunk.into()
 }
 
 fn titlecase_cmos(chunk: Chunk) -> String {
-    let mut done_first = false;
     let mut chunk = chunk.clone();
-    let mut segments = chunk.segments.iter_mut().peekable();
-    while let Some(segment) = segments.next() {
-        if let Segment::Word(s) = segment {
-            *s = if !done_first {
-                done_first = true;
-                s.to_string().to_titlecase_lower_rest()
-            } else if segments.peek().is_none() {
-                // TODO: I think a bug is hiding here since peek() might give use a separator
-                // that happens to be a trailing trivia. We need a custom iterator or peeker
-                // that knows how to answer about first/last *word* segments.
-                s.to_string().to_titlecase_lower_rest()
-            } else {
-                match is_reserved(s.to_string()) {
-                    true => s.to_string().to_lowercase(),
-                    false => s.to_string().to_titlecase_lower_rest(),
-                }
-            }
-        }
+    let mut words = chunk
+        .segments
+        .iter_mut()
+        .filter_map(|segment| match segment {
+            Segment::Word(word) => Some(word),
+            _ => None,
+        })
+        .peekable();
+    if let Some(word) = words.next() {
+        word.word = word.to_titlecase_lower_rest();
     }
-    chunk.to_string()
+    while let Some(word) = words.next() {
+        word.word = match words.peek().is_none() {
+            true => word.to_titlecase_lower_rest(),
+            false => match is_reserved(word) {
+                true => word.to_lowercase(),
+                false => word.to_titlecase_lower_rest(),
+            },
+        };
+    }
+    chunk.into()
 }
 
 fn titlecase_gruber(chunk: Chunk) -> String {
@@ -61,11 +61,11 @@ fn titlecase_gruber(chunk: Chunk) -> String {
     } else {
         String::from("")
     };
-    let titilized = gruber_titlecase(&chunk.to_string());
+    let titilized = gruber_titlecase(chunk.to_string().as_ref());
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
-fn is_reserved(word: String) -> bool {
+fn is_reserved(word: &Word) -> bool {
     let word = word.to_lowercase();
     let word = word.as_str();
     let article = Regex::new(r"^(a|an|the)$").unwrap();
@@ -77,35 +77,35 @@ fn is_reserved(word: String) -> bool {
 pub fn lowercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = s.to_string().to_lowercase()
+        if let Segment::Word(word) = segment {
+            word.word = word.to_lowercase()
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 pub fn uppercase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = s.to_string().to_uppercase()
+        if let Segment::Word(word) = segment {
+            word.word = word.to_uppercase()
         }
     });
-    chunk.to_string()
+    chunk.into()
 }
 
 pub fn sentencecase(chunk: Chunk) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(s) = segment {
-            *s = if !done_first {
+        if let Segment::Word(word) = segment {
+            word.word = if !done_first {
                 done_first = true;
-                s.to_string().to_titlecase_lower_rest()
+                word.to_titlecase_lower_rest()
             } else {
-                s.to_string().to_lowercase()
+                word.to_lowercase()
             }
         }
     });
-    chunk.to_string()
+    chunk.into()
 }

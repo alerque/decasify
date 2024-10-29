@@ -84,8 +84,8 @@ impl FromStr for Locale {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "en" | "English" | "en_en" => Ok(Locale::EN),
-            "tr" | "Turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
+            "en" | "english" | "en_en" => Ok(Locale::EN),
+            "tr" | "turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
             input => LocaleSnafu { input }.fail()?,
         }
     }
