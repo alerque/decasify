@@ -19,6 +19,21 @@ pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
 }
 
 fn titlecase_fr(chunk: Chunk) -> String {
+    let mut segments: Vec<Segment> = Vec::new();
+    chunk.clone().segments.into_iter().for_each(|segment| {
+        match segment {
+            Segment::Separator(_) => segments.push(segment),
+            Segment::Word(ref word) => {
+                let mut segs = word.word.split("-").peekable();
+                while let Some(s) = segs.next() {
+                    segments.push(Segment::Word(Word { word: s.into() }));
+                    if segs.peek().is_some() {
+                        segments.push(Segment::Separator("-".into()));
+                    }
+                }
+            }
+        };
+    });
     let mut chunk = chunk.clone();
     let mut words = chunk
         .segments
