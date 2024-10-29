@@ -100,7 +100,7 @@ busted: install-luarock
 	set -f; IFS=';'
 	packagepath=($${LUA_PATH})
 	packagecpath=($${LUA_CPATH})
-	$(BUSTED) -c -v --lpath="$${packagepath[*]};;" --cpath="$${packagecpath[*]};;" $(BUSTEDFLAGS) .
+	$(BUSTED) -v --lpath="$${packagepath[*]};;" --cpath="$${packagecpath[*]};;" $(BUSTEDFLAGS) .
 
 pytest:
 	$(UV) venv
