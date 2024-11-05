@@ -25,7 +25,7 @@ Where possible the APIs currently default to English rules and (for English) the
 
 The Turkish style follows the Turkish Language Institute's [guidelines][tdk].
 
-For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
+For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Gruber's Daring Fireball (Gruber).
 The Gruber style is by far the most complete, being implemented by the [titlecase crate][titlecase_crate].
 The CMOS style handles a number of parts of speech but has punctuation related issues.
 The AP style is largely unimplemented.
