@@ -55,6 +55,7 @@ Foo BAR and Baz: An Alter Ego
 
 ### Installation
 
+<a href="https://repology.org/project/decasify/versions"><img src="https://repology.org/badge/vertical-allrepos/decasify.svg" align="right" alt="Packaging status"></a>
 To install, first check your distro for packages, e.g. for [Arch Linux](https://archlinux.org/packages/extra/x86_64/decasify/) just install via `pacman -S decasify`.
 
 Otherwise for many platforms you can run it directly or install it to a shell using Nix Flakes:
