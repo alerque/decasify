@@ -12,13 +12,16 @@ license = "LGPL-3.0-only"
 build = "build-aux/build.rs"
 include = ["*.rs"]
 
+[[bin]]
+name = "decasify"
+required-features = ["cli"]
+
 [lib]
 name = "decasify"
 crate-type = ["rlib", "cdylib"]
 
-[[bin]]
-name = "decasify"
-required-features = ["cli"]
+[profile.release]
+lto = true
 
 [features]
 default = []
@@ -41,9 +44,6 @@ pythonmodule = ["dep:pyo3"]
 unstable-trait = []
 wasm = ["dep:wasm-bindgen"]
 
-[profile.release]
-lto = true
-
 [dependencies]
 regex = "1.11"
 snafu = "0.8"
@@ -51,54 +51,54 @@ strum = "0.26"
 strum_macros = "0.26"
 unicode_titlecase = "2.4"
 
-  [dependencies.clap]
-  version = "4.5"
-  optional = true
-  features = ["derive", "wrap_help"]
+[dependencies.clap]
+version = "4.5"
+optional = true
+features = ["derive", "wrap_help"]
 
-  [dependencies.mlua]
-  version = "0.10.0"
-  optional = true
-  features = ["module"]
+[dependencies.mlua]
+version = "0.10.0"
+optional = true
+features = ["module"]
 
-  [dependencies.pyo3]
-  version = "0.22"
-  optional = true
-  features = [ "extension-module" ]
+[dependencies.pyo3]
+version = "0.22"
+optional = true
+features = ["extension-module"]
 
-  [dependencies.titlecase]
-  version = "3.3"
-  features = [ "perf" ]
+[dependencies.titlecase]
+version = "3.3"
+features = ["perf"]
 
-  [dependencies.wasm-bindgen]
-  version = "0.2"
-  optional = true
+[dependencies.wasm-bindgen]
+version = "0.2"
+optional = true
 
 [build-dependencies]
 snafu = "0.8"
 strum = "0.26"
 strum_macros = "0.26"
 
-  [build-dependencies.clap_complete]
-  version = "4.5"
-  optional = true
+[build-dependencies.clap_complete]
+version = "4.5"
+optional = true
 
-  [build-dependencies.clap_mangen]
-  version = "0.2"
-  optional = true
+[build-dependencies.clap_mangen]
+version = "0.2"
+optional = true
 
-  [build-dependencies.clap]
-  version = "4.5"
-  optional = true
-  features = ["derive"]
+[build-dependencies.clap]
+version = "4.5"
+optional = true
+features = ["derive"]
 
-  [build-dependencies.anyhow]
-  version = "1.0"
+[build-dependencies.anyhow]
+version = "1.0"
 
-  [build-dependencies.vergen-gix]
-  version = "1.0"
-  default-features = false
-  features = [ "build", "cargo", "rustc" ]
+[build-dependencies.vergen-gix]
+version = "1.0"
+default-features = false
+features = ["build", "cargo", "rustc"]
 
 [dev-dependencies]
 assert_cmd = "2.0"
@@ -114,10 +114,10 @@ rustdoc-args = ["--cfg", "docsrs"]
 [package.metadata.git-cliff.git]
 protect_breaking_commits = true
 commit_parsers = [
-    { message = "^feat", group = "<!-- 0 -->Features" },
-    { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
-    { message = "^perf", group = "<!-- 2 -->Performance" },
-    { message = ".*", skip = true },
+  { message = "^feat", group = "<!-- 0 -->Features" },
+  { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
+  { message = "^perf", group = "<!-- 2 -->Performance" },
+  { message = ".*", skip = true },
 ]
 commit_preprocessors = [
   { pattern = '.*', replace_command = 'typos --quiet --write-changes -' },
@@ -125,9 +125,7 @@ commit_preprocessors = [
 
 [package.metadata.typos.default]
 locale = "en-us"
-extend-ignore-identifiers-re = [
-  "[bB][aA][zZ]"
-]
+extend-ignore-identifiers-re = ["[bB][aA][zZ]"]
 
 [package.metadata.typos.default.extend-words]
 runing = "running"
