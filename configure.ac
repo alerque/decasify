@@ -27,7 +27,9 @@ AM_COND_IF([DEVELOPER_MODE], [
     QUE_PROGVAR([npm])
     QUE_PROGVAR([wasmpack], [wasm-pack])
     # Release tooling
+    QUE_PROGVAR([cargosetversion], [cargo-set-version])
     QUE_PROGVAR([gitcliff], [git-cliff])
+    QUE_PROGVAR([taplo])
     QUE_PROGVAR([typos])
 ])
 
