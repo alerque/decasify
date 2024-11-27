@@ -109,6 +109,13 @@ impl From<&String> for Locale {
     }
 }
 
+impl From<&[u8]> for Locale {
+    fn from(s: &[u8]) -> Self {
+        let s = String::from_utf8(s.to_vec()).unwrap();
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
 impl FromStr for Case {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
@@ -136,6 +143,13 @@ impl From<String> for Case {
 
 impl From<&String> for Case {
     fn from(s: &String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
+impl From<&[u8]> for Case {
+    fn from(s: &[u8]) -> Self {
+        let s = String::from_utf8(s.to_vec()).unwrap();
         Self::from_str(s.as_ref()).unwrap()
     }
 }
@@ -170,6 +184,13 @@ impl From<String> for StyleGuide {
 
 impl From<&String> for StyleGuide {
     fn from(s: &String) -> Self {
+        Self::from_str(s.as_ref()).unwrap()
+    }
+}
+
+impl From<&[u8]> for StyleGuide {
+    fn from(s: &[u8]) -> Self {
+        let s = String::from_utf8(s.to_vec()).unwrap();
         Self::from_str(s.as_ref()).unwrap()
     }
 }
