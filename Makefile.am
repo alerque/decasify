@@ -66,6 +66,19 @@ REL_ROCK_SILE := $(PACKAGE_NAME).sile-$(SEMVER)-$(ROCKREV).src.rock
 EXTRA_DIST += decasify.rockspec.in decasify.nvim.rockspec.in decasify.sile.rockspec.in
 EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
 
+typst-universe: typst/decasify.wasm typst/example.pdf
+
+typst/decasify.wasm: CARGO_TARGET_TRIPLE = wasm32-unknown-unknown
+typst/decasify.wasm: CARGO_WASM_DIR = @builddir@/target/$(CARGO_TARGET_TRIPLE)
+typst/decasify.wasm: CARGO_FEATURE_ARGS =
+typst/decasify.wasm: CARGO_RELEASE_ARGS = --release --locked
+typst/decasify.wasm: typst/src/lib.rs
+	$(CARGO_ENV) $(CARGO) build $(CARGO_VERBOSE) $(CARGO_FEATURE_ARGS) $(CARGO_RELEASE_ARGS) --target $(CARGO_TARGET_TRIPLE) -p typst
+	$(WASMOPT) -Oz $(CARGO_WASM_DIR)/release/typst.wasm -o typst/$(TRANSFORMED_PACKAGE_NAME).wasm
+
+typst/example.pdf: typst/example.typ typst/decasify.wasm
+	$(TYPST) compile $<
+
 check: busted pytest
 
 PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview

@@ -26,6 +26,9 @@ AM_COND_IF([DEVELOPER_MODE], [
     # WASM build and testing dependencies
     QUE_PROGVAR([npm])
     QUE_PROGVAR([wasmpack], [wasm-pack])
+    # Typst build and testing dependencies
+    QUE_PROGVAR([typst])
+    QUE_PROGVAR([wasmopt], [wasm-opt])
     # Release tooling
     QUE_PROGVAR([gitcliff], [git-cliff])
     QUE_PROGVAR([typos])
