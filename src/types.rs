@@ -43,6 +43,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 pub enum Locale {
     #[default]
     EN,
+    FR,
     TR,
 }
 
@@ -85,6 +86,7 @@ impl FromStr for Locale {
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "en" | "english" | "en_en" => Ok(Locale::EN),
+            "fr" | "french" | "fr_fr" | "français" => Ok(Locale::FR),
             "tr" | "turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
             input => LocaleSnafu { input }.fail()?,
         }
