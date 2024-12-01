@@ -36,7 +36,7 @@ DISTCLEANFILES = @AMINCLUDE@
 # functionality and hence can use conditionals in included makefile fragments.
 include $(top_srcdir)/aminclude.am
 
-SEMVER := $(shell $(AWK) -F\" '/^version/ { print $$2 }' $(top_srcdir)/Cargo.toml)
+SEMVER := $(shell $(CARGO) read-manifest | $(JQ) -r .version)
 ROCKREV = 1
 TAG := v$(SEMVER)
 
