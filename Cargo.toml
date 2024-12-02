@@ -108,6 +108,23 @@ predicates = "3.1"
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
 
+[package.metadata.bacon]
+default_job = "build"
+
+[package.metadata.bacon.jobs.build]
+command = [
+  "cargo", "build",
+  "--features", "full",
+  "--color", "always"
+]
+
+[package.metadata.bacon.jobs.build-modules]
+command = [
+  "cargo", "build",
+  "--features", "modules,luajit",
+  "--color", "always"
+]
+
 [package.metadata.docs.rs]
 features = ["luamodule", "luajit", "pythonmodule", "wasm", "unstable-trait"]
 rustdoc-args = ["--cfg", "docsrs"]
