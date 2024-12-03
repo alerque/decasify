@@ -79,6 +79,17 @@ typst/decasify.wasm: typst/src/lib.rs
 typst/example.pdf: typst/example.typ typst/decasify.wasm
 	$(TYPST) compile $<
 
+typst/readme_%.svg: typst/readme_%.typ typst/decasify.wasm
+	$(TYPST) compile -f svg $< $@
+	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
+
+CODEBLOCK_FILTER = build-aux/extract_codeblocks.lua
+EXTRA_DIST += $(CODEBLOCK_FILTER)
+
+typst/readme_%.typ: typst/README.md $(CODEBLOCK_FILTER)
+	env 'OUTPUT_PATTERN=typst/readme_%s.typ' \
+		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
+
 check: busted pytest
 
 PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview

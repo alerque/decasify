@@ -26,4 +26,4 @@ Now switch languages and show Turkish titlecasing:
 #titlecase("ilk ışıltı")
 ```
 
-![example](./example.png)
+![](./readme_1.svg)
