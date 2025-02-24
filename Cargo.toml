@@ -112,17 +112,16 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
 default_job = "build"
 
 [package.metadata.bacon.jobs.build]
-command = [
-  "cargo", "build",
-  "--features", "full",
-  "--color", "always"
-]
+command = ["cargo", "build", "--features", "full", "--color", "always"]
 
 [package.metadata.bacon.jobs.build-modules]
 command = [
-  "cargo", "build",
-  "--features", "modules,luajit",
-  "--color", "always"
+  "cargo",
+  "build",
+  "--features",
+  "modules,luajit",
+  "--color",
+  "always",
 ]
 
 [package.metadata.docs.rs]
