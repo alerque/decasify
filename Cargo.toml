@@ -26,6 +26,7 @@ lto = true
 [features]
 default = []
 full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
+modules = ["luamodule", "pythonmodule", "wasm"]
 completions = ["cli", "dep:clap_complete"]
 cli = ["dep:clap"]
 bash = ["completions"]
@@ -34,7 +35,7 @@ fish = ["completions"]
 manpage = ["dep:clap_mangen"]
 powershell = ["completions"]
 zsh = ["completions"]
-luamodule = []
+luamodule = ["mlua"]
 lua54 = ["luamodule", "mlua/lua54"]
 lua53 = ["luamodule", "mlua/lua53"]
 lua52 = ["luamodule", "mlua/lua52"]
@@ -106,6 +107,23 @@ predicates = "3.1"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
+
+[package.metadata.bacon]
+default_job = "build"
+
+[package.metadata.bacon.jobs.build]
+command = [
+  "cargo", "build",
+  "--features", "full",
+  "--color", "always"
+]
+
+[package.metadata.bacon.jobs.build-modules]
+command = [
+  "cargo", "build",
+  "--features", "modules,luajit",
+  "--color", "always"
+]
 
 [package.metadata.docs.rs]
 features = ["luamodule", "luajit", "pythonmodule", "wasm", "unstable-trait"]
