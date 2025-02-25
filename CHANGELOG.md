@@ -1,3 +1,17 @@
+## [0.9.0] - 2025-02-25
+
+### Features
+
+- *(crate)* Impl From<Chunk> for String
+- *(typst)* Setup Typst package manifest
+- *(typst)* Introduce Cargo workspace to split out Typst crate
+
+### Bug Fixes
+
+- *(crate)* Accept input languages as string in any case
+- *(build)* Correct semver derivation to avoid autotools race
+- *(build)* Set correct final permissions on intermediary shell completion artifacts (#37)
+
 ## [0.8.0] - 2024-10-26
 
 ### Features

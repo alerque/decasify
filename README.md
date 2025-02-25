@@ -92,7 +92,7 @@ In your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-decasify = "0.8"
+decasify = "0.9"
 ```
 
 Then use the crate functions and types in your project something like this:
