@@ -152,9 +152,9 @@ pytest:
 
 define rockpec_template =
 	$(SED) -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
-		-e "s/@SEMVER@/$(SEMVER)/g" \
-		-e "s/@ROCKREV@/$(ROCKREV)/g" \
-		-e "s/@TAG@/$(TAG)/g" \
+		-e "s/@""SEMVER""@/$(SEMVER)/g" \
+		-e "s/@""ROCKREV""@/$(ROCKREV)/g" \
+		-e "s/@""TAG""@/$(TAG)/g" \
 		$< > $@
 endef
 
