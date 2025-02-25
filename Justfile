@@ -34,7 +34,7 @@ release semver: pristine keys
 	taplo format Cargo.toml
 	sed -i -e "/^decasify =/s/\".*\"/\"${${:-{{semver}}}%\.*}\"/" README.md
 	make SEMVER={{semver}} rockspecs CHANGELOG.md decasify-{{semver}}.md -B
-	git add Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim,.sile}-{{semver}}-1.rockspec
+	git add -f Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim,.sile}-{{semver}}-1.rockspec
 	git commit -m "chore: Release v{{semver}}"
 	git tag -s v{{semver}} -F decasify-{{semver}}.md
 	cargo build
