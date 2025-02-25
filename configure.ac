@@ -32,7 +32,9 @@ AM_COND_IF([DEVELOPER_MODE], [
     QUE_PROGVAR([typst])
     QUE_PROGVAR([wasmopt], [wasm-opt])
     # Release tooling
+    QUE_PROGVAR([cargosetversion], [cargo-set-version])
     QUE_PROGVAR([gitcliff], [git-cliff])
+    QUE_PROGVAR([taplo])
     QUE_PROGVAR([typos])
 ])
 

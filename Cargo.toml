@@ -25,34 +25,13 @@ rust-version = "1.73.0"
 resolver = "2"
 members = [".", "typst"]
 
-[lib]
-name = "decasify"
-crate-type = ["rlib", "cdylib"]
-
 [[bin]]
 name = "decasify"
 required-features = ["cli"]
 
-[features]
-default = []
-full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
-completions = ["cli", "dep:clap_complete"]
-cli = ["dep:clap"]
-bash = ["completions"]
-elvish = ["completions"]
-fish = ["completions"]
-manpage = ["dep:clap_mangen"]
-powershell = ["completions"]
-zsh = ["completions"]
-luamodule = []
-lua54 = ["luamodule", "mlua/lua54"]
-lua53 = ["luamodule", "mlua/lua53"]
-lua52 = ["luamodule", "mlua/lua52"]
-lua51 = ["luamodule", "mlua/lua51"]
-luajit = ["luamodule", "mlua/luajit"]
-pythonmodule = ["dep:pyo3"]
-unstable-trait = []
-wasm = ["dep:wasm-bindgen"]
+[lib]
+name = "decasify"
+crate-type = ["rlib", "cdylib"]
 
 [profile.release]
 lto = true
@@ -61,6 +40,28 @@ lto = true
 inherits = "release"
 opt-level = "z"
 strip = true
+
+[features]
+default = []
+full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
+modules = ["luamodule", "pythonmodule", "wasm"]
+completions = ["cli", "dep:clap_complete"]
+cli = ["dep:clap"]
+bash = ["completions"]
+elvish = ["completions"]
+fish = ["completions"]
+manpage = ["dep:clap_mangen"]
+powershell = ["completions"]
+zsh = ["completions"]
+luamodule = ["mlua"]
+lua54 = ["luamodule", "mlua/lua54"]
+lua53 = ["luamodule", "mlua/lua53"]
+lua52 = ["luamodule", "mlua/lua52"]
+lua51 = ["luamodule", "mlua/lua51"]
+luajit = ["luamodule", "mlua/luajit"]
+pythonmodule = ["dep:pyo3"]
+unstable-trait = []
+wasm = ["dep:wasm-bindgen"]
 
 [workspace.dependencies.decasify]
 path = "."
@@ -128,6 +129,22 @@ predicates = "3.1"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
+
+[package.metadata.bacon]
+default_job = "build"
+
+[package.metadata.bacon.jobs.build]
+command = ["cargo", "build", "--features", "full", "--color", "always"]
+
+[package.metadata.bacon.jobs.build-modules]
+command = [
+  "cargo",
+  "build",
+  "--features",
+  "modules,luajit",
+  "--color",
+  "always",
+]
 
 [package.metadata.docs.rs]
 features = ["luamodule", "luajit", "pythonmodule", "wasm", "unstable-trait"]
