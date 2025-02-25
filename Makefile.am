@@ -71,11 +71,12 @@ TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 $(TYPSTDIR):
 	mkdir -p $@
 
-.PHONY: typst
-typst: typst/decasify.wasm typst/example.pdf
+TYPSTASSETS = typst/decasify.wasm typst/example.pdf typst/readme_1.svg
+.PHONY: typst-universe
+typst-universe: $(TYPSTASSETS)
 
 .PHONY: typst-release
-typst-release: typst/decasify.wasm typst/decasify.typ typst/typst.toml typst/README.md typst/example.pdf typst/example.typ typst/readme_1.svg | $(TYPSTDIR)
+typst-release: $(TYPSTASSETS) typst/decasify.typ typst/typst.toml typst/README.md typst/example.typ | $(TYPSTDIR)
 	cp $^ $(TYPSTDIR)
 	$(SED) -i -e '/^#import/s#".*"#"@preview/decasify:$(SEMVER)"#g' \
 		$(TYPSTDIR)/README.md \
