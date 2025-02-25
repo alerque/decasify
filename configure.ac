@@ -26,6 +26,11 @@ AM_COND_IF([DEVELOPER_MODE], [
     # WASM build and testing dependencies
     QUE_PROGVAR([npm])
     QUE_PROGVAR([wasmpack], [wasm-pack])
+    # Typst build and testing dependencies
+    QUE_PROGVAR([pandoc])
+    QUE_PROGVAR([svgo])
+    QUE_PROGVAR([typst])
+    QUE_PROGVAR([wasmopt], [wasm-opt])
     # Release tooling
     QUE_PROGVAR([cargosetversion], [cargo-set-version])
     QUE_PROGVAR([gitcliff], [git-cliff])
@@ -36,6 +41,7 @@ AM_COND_IF([DEVELOPER_MODE], [
 QUE_RUST_BOILERPLATE
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([typst/typst.toml])
 
 AC_OUTPUT
 

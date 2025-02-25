@@ -16,6 +16,9 @@ AC_DEFUN_ONCE([QUE_GIT_VERSION], [
 
         AM_COND_IF([SOURCE_IS_DIST], [], [QUE_PROGVAR([cmp])])
 
+        SEMVER=${VERSION%.r*}
+        AC_SUBST(SEMVER)
+
         AC_REQUIRE([AX_AM_MACROS])
         AX_ADD_AM_MACRO([dnl
 EXTRA_DIST += build-aux/que_git_version.am

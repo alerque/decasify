@@ -15,6 +15,15 @@ pristine:
 	git diff-files --quiet || exit 1
 
 [private]
+[doc('Block execution if Git working tree for Typst packages for isn’t pristine.')]
+[working-directory: "../typst/packages"]
+typst-pristine:
+	# Ensure there are no changes in staging
+	git diff-index --quiet --cached HEAD || exit 1
+	# Ensure there are no changes in the working tree
+	git diff-files --quiet || exit 1
+
+[private]
 [doc('Block execution if we don’t have access to private keys.')]
 keys:
 	gpg -a --sign > /dev/null <<< "test"
@@ -31,6 +40,7 @@ release semver: pristine keys
 	cargo build
 	git diff-files --quiet || exit 1
 	./config.status && make
+	make typst-universe
 	maturin build --frozen
 	wasm-pack build --features wasm
 	git push --atomic origin master v{{semver}}
@@ -38,11 +48,22 @@ release semver: pristine keys
 	cargo publish --locked
 	wasm-pack publish
 
-post-release semver: keys
+post-release semver: keys (release-typst semver)
 	wget --backups 0 https://files.pythonhosted.org/packages/cp312/d/decasify/decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl
 	wget --backups 0 https://luarocks.org/manifests/alerque/decasify{,.nvim,.sile}-{{semver}}-1.src.rock
 	gh release download v{{semver}}
 	ls decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl decasify{,.nvim,.sile}-{{semver}}-1.src.rock decasify-{{semver}}.{tar.zst,zip} | xargs -n1 gpg -a --detach-sign
 	gh release upload v{{semver}} decasify-{{semver}}-cp312-cp312-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim,.sile}-{{semver}}-1.src.rock{,.asc} decasify-{{semver}}.{tar.zst,zip}.asc
+
+[private]
+typst-release semver: pristine keys
+	make SEMVER={{semver}} typst-release
+
+[working-directory: "../typst/packages/packages/"]
+release-typst semver: typst-pristine keys (typst-release semver)
+	mkdir -p preview/decasify/{{semver}}
+	rsync -av --delete {../../../decasify/,}preview/decasify/{{semver}}/
+	git add preview/decasify/{{semver}}
+	git commit -m "decasify:{{semver}}"
 
 # vim: set ft=just

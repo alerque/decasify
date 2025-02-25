@@ -36,7 +36,7 @@ DISTCLEANFILES = @AMINCLUDE@
 # functionality and hence can use conditionals in included makefile fragments.
 include $(top_srcdir)/aminclude.am
 
-SEMVER := $(shell $(AWK) -F\" '/^version/ { print $$2 }' $(top_srcdir)/Cargo.toml)
+SEMVER := $(shell $(CARGO) read-manifest | $(JQ) -r .version)
 ROCKREV = 1
 TAG := v$(SEMVER)
 
@@ -65,6 +65,44 @@ REL_ROCK_SILE := $(PACKAGE_NAME).sile-$(SEMVER)-$(ROCKREV).src.rock
 
 EXTRA_DIST += decasify.rockspec.in decasify.nvim.rockspec.in decasify.sile.rockspec.in
 EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
+
+TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
+
+$(TYPSTDIR):
+	mkdir -p $@
+
+TYPSTASSETS = typst/decasify.wasm typst/example.pdf typst/readme_1.svg
+.PHONY: typst-universe
+typst-universe: $(TYPSTASSETS)
+
+.PHONY: typst-release
+typst-release: $(TYPSTASSETS) typst/decasify.typ typst/typst.toml typst/README.md typst/example.typ | $(TYPSTDIR)
+	cp $^ $(TYPSTDIR)
+	$(SED) -i -e '/^#import/s#".*"#"@preview/decasify:$(SEMVER)"#g' \
+		$(TYPSTDIR)/README.md \
+		$(TYPSTDIR)/example.typ
+
+typst/decasify.wasm: CARGO_TARGET_TRIPLE = wasm32-unknown-unknown
+typst/decasify.wasm: CARGO_WASM_DIR = @builddir@/target/$(CARGO_TARGET_TRIPLE)
+typst/decasify.wasm: CARGO_FEATURE_ARGS =
+typst/decasify.wasm: CARGO_RELEASE_ARGS = --release --locked
+typst/decasify.wasm: typst/src/lib.rs
+	$(CARGO_ENV) $(CARGO) build $(CARGO_VERBOSE) $(CARGO_FEATURE_ARGS) $(CARGO_RELEASE_ARGS) --target $(CARGO_TARGET_TRIPLE) -p typst
+	$(WASMOPT) -Oz $(CARGO_WASM_DIR)/release/typst.wasm -o typst/$(TRANSFORMED_PACKAGE_NAME).wasm
+
+typst/example.pdf: typst/example.typ typst/decasify.wasm
+	$(TYPST) compile $<
+
+typst/readme_%.svg: typst/readme_%.typ typst/decasify.wasm
+	$(TYPST) compile -f svg $< $@
+	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
+
+CODEBLOCK_FILTER = build-aux/extract_codeblocks.lua
+EXTRA_DIST += $(CODEBLOCK_FILTER)
+
+typst/readme_%.typ: typst/README.md $(CODEBLOCK_FILTER)
+	env 'OUTPUT_PATTERN=typst/readme_%s.typ' \
+		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
 
 check: busted pytest
 
