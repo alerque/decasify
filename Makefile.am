@@ -66,7 +66,20 @@ REL_ROCK_SILE := $(PACKAGE_NAME).sile-$(SEMVER)-$(ROCKREV).src.rock
 EXTRA_DIST += decasify.rockspec.in decasify.nvim.rockspec.in decasify.sile.rockspec.in
 EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
 
-typst-universe: typst/decasify.wasm typst/example.pdf
+TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
+
+$(TYPSTDIR):
+	mkdir -p $@
+
+.PHONY: typst
+typst: typst/decasify.wasm typst/example.pdf
+
+.PHONY: typst-release
+typst-release: typst/decasify.wasm typst/decasify.typ typst/typst.toml typst/README.md typst/example.pdf typst/example.typ typst/readme_1.svg | $(TYPSTDIR)
+	cp $^ $(TYPSTDIR)
+	$(SED) -i -e '/^#import/s#".*"#"@preview/decasify:$(SEMVER)"#g' \
+		$(TYPSTDIR)/README.md \
+		$(TYPSTDIR)/example.typ
 
 typst/decasify.wasm: CARGO_TARGET_TRIPLE = wasm32-unknown-unknown
 typst/decasify.wasm: CARGO_WASM_DIR = @builddir@/target/$(CARGO_TARGET_TRIPLE)
