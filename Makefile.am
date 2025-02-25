@@ -71,9 +71,12 @@ TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 $(TYPSTDIR):
 	mkdir -p $@
 
-TYPSTASSETS = typst/decasify.wasm typst/example.pdf typst/readme_1.svg
+TYPSTASSETS = typst/decasify.wasm typst/example.pdf typst/readme_1.svg typst/LICENSE
 .PHONY: typst-universe
 typst-universe: $(TYPSTASSETS)
+
+typst/LICENSE: LICENSE.md
+	$(PANDOC) $< -t plain -o $@
 
 .PHONY: typst-release
 typst-release: $(TYPSTASSETS) typst/decasify.typ typst/typst.toml typst/README.md typst/example.typ | $(TYPSTDIR)
