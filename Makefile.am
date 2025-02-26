@@ -71,7 +71,7 @@ TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 $(TYPSTDIR):
 	mkdir -p $@
 
-TYPSTASSETS = typst/decasify.wasm typst/example.pdf typst/readme_1.svg typst/LICENSE
+TYPSTASSETS = typst/decasify.wasm typst/readme_1.svg typst/readme_2.svg typst/LICENSE
 .PHONY: typst-universe
 typst-universe: $(TYPSTASSETS)
 
@@ -79,11 +79,9 @@ typst/LICENSE: LICENSE.md
 	$(PANDOC) $< -t plain -o $@
 
 .PHONY: typst-release
-typst-release: $(TYPSTASSETS) typst/decasify.typ typst/typst.toml typst/README.md typst/example.typ | $(TYPSTDIR)
+typst-release: $(TYPSTASSETS) typst/decasify.typ typst/typst.toml typst/README.md | $(TYPSTDIR)
 	cp $^ $(TYPSTDIR)
-	$(SED) -i -e '/^#import/s#".*"#"@preview/decasify:$(SEMVER)"#g' \
-		$(TYPSTDIR)/README.md \
-		$(TYPSTDIR)/example.typ
+	$(SED) -i -e '/^#import/s#".*"#"@preview/decasify:$(SEMVER)"#g' $(TYPSTDIR)/README.md
 
 typst/decasify.wasm: CARGO_TARGET_TRIPLE = wasm32-unknown-unknown
 typst/decasify.wasm: CARGO_WASM_DIR = @builddir@/target/$(CARGO_TARGET_TRIPLE)
@@ -93,7 +91,7 @@ typst/decasify.wasm: typst/src/lib.rs
 	$(CARGO_ENV) $(CARGO) build $(CARGO_VERBOSE) $(CARGO_FEATURE_ARGS) $(CARGO_RELEASE_ARGS) --target $(CARGO_TARGET_TRIPLE) -p typst
 	$(WASMOPT) -Oz $(CARGO_WASM_DIR)/release/typst.wasm -o typst/$(TRANSFORMED_PACKAGE_NAME).wasm
 
-typst/example.pdf: typst/example.typ typst/decasify.wasm
+typst/readme_%.pdf: typst/readme_%.typ typst/decasify.wasm
 	$(TYPST) compile $<
 
 typst/readme_%.svg: typst/readme_%.typ typst/decasify.wasm
