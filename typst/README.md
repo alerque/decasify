@@ -1,8 +1,14 @@
-# Decasify package for Typst
+# Decasify Package for Typst
 
 A thin wrapper around the [decasify](https://github.com/alerque/decasify) library providing Typst functions for locale and style guide aware text casing functions.
-Provides functionns for title-case (and other cases) that adapt to the language of the current document context.
+Provides functions for title-case (and other cases) that adapt to the language of the current document context.
 Includes support for Turkish and multiple style guides.
+
+## Example One
+
+* The heading in this example will automatically be converted to title case.
+* The body text is untouched, but a manual command is used to sentence case a whole phrase.
+* Changing the text language, we show using the functions again will follow the new language rules.
 
 ```typst
 #import "decasify.typ": *
@@ -26,7 +32,12 @@ Now switch languages and show Turkish titlecasing:
 #titlecase("ilk ışıltı")
 ```
 
-![](./readme_1.svg)
+<img src="readme_1.svg" alt="Rendered output of Example One" width="100%" />
+
+## Example Two
+
+* Using the same input samples, iterate all four possible output cases.
+* Use language specific rules for each sample highlighting how character handling is different.
 
 ```typst
 #import "decasify.typ": *
@@ -69,4 +80,4 @@ Now switch languages and show Turkish titlecasing:
 ]
 ```
 
-![](./readme_2.svg)
+<img src="readme_2.svg" alt="Rendered output of Example Two" width="100%" />
