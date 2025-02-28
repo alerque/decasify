@@ -2,7 +2,7 @@
 name = "@PACKAGE_NAME@"
 version = "@SEMVER@"
 entrypoint = "decasify.typ"
-authors = ["Caleb Maclennan <caleb@alerque.com>"]
+authors = ["Caleb Maclennan <@alerque>"]
 license = "LGPL-3.0-only"
 description = "Locale and style-guide aware text casing functions for natural language prose"
 repository = "https://github.com/alerque/decasify"
