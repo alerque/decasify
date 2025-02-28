@@ -26,9 +26,12 @@ AM_COND_IF([DEVELOPER_MODE], [
     # WASM build and testing dependencies
     QUE_PROGVAR([npm])
     QUE_PROGVAR([wasmpack], [wasm-pack])
+    # SILE build and testing dependencies
+    QUE_PROGVAR([pdf2svg])
+    QUE_PROGVAR([sile])
+    QUE_PROGVAR([svgo])
     # Typst build and testing dependencies
     QUE_PROGVAR([pandoc])
-    QUE_PROGVAR([svgo])
     QUE_PROGVAR([typst])
     QUE_PROGVAR([wasmopt], [wasm-opt])
     # Release tooling

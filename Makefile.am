@@ -72,7 +72,19 @@ TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 $(TYPSTDIR):
 	mkdir -p $@
 
+CODEBLOCK_FILTER = build-aux/extract_codeblocks.lua
+EXTRA_DIST += $(CODEBLOCK_FILTER)
+
+typst/readme_%.typ: typst/README.md $(CODEBLOCK_FILTER)
+	env 'OUTPUT_PATTERN=typst/readme_%s.typ' \
+		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
+
+sile/readme_%.sil: sile/README.md $(CODEBLOCK_FILTER)
+	env 'OUTPUT_PATTERN=sile/readme_%s.sil' \
+		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
+
 TYPSTASSETS = typst/decasify.wasm typst/readme_1.svg typst/readme_2.svg typst/LICENSE
+
 .PHONY: typst-universe
 typst-universe: $(TYPSTASSETS)
 
@@ -92,19 +104,30 @@ typst/decasify.wasm: typst/src/lib.rs
 	$(CARGO_ENV) $(CARGO) build $(CARGO_VERBOSE) $(CARGO_FEATURE_ARGS) $(CARGO_RELEASE_ARGS) --target $(CARGO_TARGET_TRIPLE) -p typst
 	$(WASMOPT) -Oz $(CARGO_WASM_DIR)/release/typst.wasm -o typst/$(TRANSFORMED_PACKAGE_NAME).wasm
 
-typst/readme_%.pdf: typst/readme_%.typ typst/decasify.wasm
+%.pdf: %.typ typst/decasify.wasm
 	$(TYPST) compile $<
 
-typst/readme_%.svg: typst/readme_%.typ typst/decasify.wasm
+%.svg: %.typ typst/decasify.wasm
 	$(TYPST) compile -f svg $< $@
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 
-CODEBLOCK_FILTER = build-aux/extract_codeblocks.lua
-EXTRA_DIST += $(CODEBLOCK_FILTER)
+SILEASSETS = sile/readme_1.svg sile/readme_2.svg
 
-typst/readme_%.typ: typst/README.md $(CODEBLOCK_FILTER)
-	env 'OUTPUT_PATTERN=typst/readme_%s.typ' \
-		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
+.PHONY: sile-docs
+sile-docs: $(SILEASSETS)
+
+# The path to the SILE module sources in this repository hijacks loading the
+# C module of the same name from the system; to avoid this we run SILE from
+# somewhere other than $(top_srcdir)...
+%.pdf: %.sil
+	cp $< target/
+	cd target
+	$(SILE) $(<F) -o ../$@
+
+%.svg: %.pdf
+	$(PDF2SVG) $< $@
+	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
+	$(SED) -i -e '/\/defs/a   <rect width="100%" height="100%" fill="white" />' $@
 
 check: busted pytest
 
