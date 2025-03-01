@@ -9,10 +9,8 @@ function package.decasify (node, _, options)
    if type(node) == "table" then
       return node
    end
-   local case = options.case or nil
    local locale = options.locale or SILE.settings:get("document.language") or nil
-   local style = options.style or nil
-   return decasify.case(node, case, locale, style)
+   return decasify.case(node, options.case, locale, options.style)
 end
 
 function package:_init ()

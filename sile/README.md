@@ -57,7 +57,7 @@ local examples = {
    { "İLK IŞILTI", lang = "tr" },
 }
 
-for _, case in ipairs { "title", "lower", "upper", "sentence" } do
+for _, case in ipairs({ "title", "lower", "upper", "sentence" }) do
    SILE.call("bigskip")
    SILE.call("font", { size = "22pt", weight = 800 }, function ()
       SILE.call("decasify", { case = "title" }, { case .. "case" })
