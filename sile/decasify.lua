@@ -5,20 +5,14 @@ package._name = "decasify"
 
 local decasify = require("decasify")
 
-function package:decasify (input, extraArgs)
-   if type(self) ~= "table" or (self.type ~= "class" and self.type ~= "package") then
-      input, extraArgs = self, input
+function package.decasify (node, _, options)
+   if type(node) == "table" then
+      return node
    end
-   if not extraArgs then
-      extraArgs = {}
-   end
-   if not extraArgs.options then
-      extraArgs.options = {}
-   end
-   local case = extraArgs.options.case or nil
-   local locale = extraArgs.options.locale or SILE.settings:get("document.language") or nil
-   local style = extraArgs.options.style or nil
-   return decasify.case(input, case, locale, style)
+   local case = options.case or nil
+   local locale = options.locale or SILE.settings:get("document.language") or nil
+   local style = options.style or nil
+   return decasify.case(node, case, locale, style)
 end
 
 function package:_init ()
