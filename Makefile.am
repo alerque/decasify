@@ -102,7 +102,7 @@ typst/decasify.wasm: CARGO_FEATURE_ARGS =
 typst/decasify.wasm: CARGO_RELEASE_ARGS = --release --locked
 typst/decasify.wasm: typst/src/lib.rs
 	$(CARGO_ENV) $(CARGO) build $(CARGO_VERBOSE) $(CARGO_FEATURE_ARGS) $(CARGO_RELEASE_ARGS) --target $(CARGO_TARGET_TRIPLE) -p typst
-	$(WASMOPT) -Oz $(CARGO_WASM_DIR)/release/typst.wasm -o typst/$(TRANSFORMED_PACKAGE_NAME).wasm
+	$(WASM_OPT) -Oz $(CARGO_WASM_DIR)/release/typst.wasm -o typst/$(TRANSFORMED_PACKAGE_NAME).wasm
 
 %.pdf: %.typ typst/decasify.wasm
 	$(TYPST) compile $<
@@ -137,10 +137,10 @@ PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest
 if DEVELOPER_MODE
 
 release-preview:
-	$(GITCLIFF) --unreleased
+	$(GIT_CLIFF) --unreleased
 
 CHANGELOG.md:
-	$(GITCLIFF) -p $@ --unreleased -t $(TAG)
+	$(GIT_CLIFF) -p $@ --unreleased -t $(TAG)
 
 decasify-%.md: CHANGELOG.md
 	$(SED) -e '/^## \[$*\]/,/^## \[/!d' $< | \
