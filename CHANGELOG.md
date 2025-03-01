@@ -1,3 +1,10 @@
+## [0.9.1] - 2025-03-01
+
+### Bug Fixes
+
+- *(build)* Package Typst sources in source dist so Rust workspace is complete
+- *(sile)* Correctly pass desired case to generic conversion function
+
 ## [0.9.0] - 2025-02-25
 
 ### Features
