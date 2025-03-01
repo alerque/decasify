@@ -27,6 +27,7 @@ jobs:
               BUSTED=: \
               CARGO_SET_VERSION=: \
               GIT_CLIFF=: \
+              JUST=: \
               LUAROCKS=: \
               MATURIN=: \
               NPM: \

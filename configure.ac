@@ -18,6 +18,7 @@ AC_PROG_SED
 AM_COND_IF([DEVELOPER_MODE], [
     # Lua build and testing dependencies
     AX_REQUIRE_PROG([busted])
+    AX_REQUIRE_PROG([just])
     AX_REQUIRE_PROG([luarocks])
     # Python build and testing dependencies
     AX_REQUIRE_PROG([maturin])
