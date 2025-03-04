@@ -129,7 +129,7 @@ sile-docs: $(SILEASSETS)
 %.pdf: %.sil
 	cp $< target/
 	cd target
-	$(SILE) $(<F) -o ../$@
+	$(SILE) -o ../$@ $(<F)
 
 %.svg: %.pdf
 	$(PDF2SVG) $< $@
@@ -139,7 +139,8 @@ sile-docs: $(SILEASSETS)
 %.txt: %.sil sile-docs
 	cp $< target/
 	cd target
-	$(SILE) $(<F) -o ../$@
+	$(SILE) -b debug -o ../$@ $(<F)
+	$(SILE) $(<F)
 
 check: busted pytest sile-test typst-test
 
