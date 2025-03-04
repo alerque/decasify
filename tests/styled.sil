@@ -1,0 +1,18 @@
+\begin{document}
+\nofolios
+\neverindent
+\language[main=en]
+\use[module=packages.rules]
+\use[module=packages.decasify]
+\define[command=sample]{this sample \strong{has bold} and \em{italic \underline{underlined}} bits.}
+\define[command=group]{\bigskip\font[size=16pt,weight=800]{\process}\par}
+
+\sample
+
+\group{Sentencecase}
+\decasify[case=sentence]{this sample \strong{has bold} and \em{italic \underline{underlined}} bits.}
+
+\group{Titlecase}
+\decasify[case=title]{this sample \strong{has bold} and \em{italic \underline{underlined}} bits.}
+
+\end{document}
