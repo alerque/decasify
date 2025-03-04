@@ -85,6 +85,8 @@ sile/readme_%.sil: sile/README.md $(CODEBLOCK_FILTER)
 
 TYPSTASSETS = typst/decasify.wasm typst/readme_1.svg typst/readme_2.svg typst/LICENSE
 
+TYPST_EXPECTATIONS = tests/styled.html
+
 .PHONY: typst-universe
 typst-universe: $(TYPSTASSETS)
 
@@ -111,6 +113,9 @@ typst/decasify.wasm: typst/src/lib.rs
 	$(TYPST) compile -f svg $< $@
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 
+%.html: %.typ typst-universe
+	$(TYPST) compile --root $(top_srcdir) --features html --format html $<
+
 SILEASSETS = sile/readme_1.svg sile/readme_2.svg
 
 .PHONY: sile-docs
@@ -129,9 +134,9 @@ sile-docs: $(SILEASSETS)
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 	$(SED) -i -e '/\/defs/a   <rect width="100%" height="100%" fill="white" />' $@
 
-check: busted pytest
+check: busted pytest typst-test
 
-PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest typst-test release-preview
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
 
 if DEVELOPER_MODE
@@ -171,6 +176,9 @@ pytest:
 	source .venv/bin/activate
 	$(MATURIN) develop
 	env PYTHONPATH=.venv/lib/python3.12/site-packages/decasify $(PYTEST)
+
+typst-test: $(TYPST_EXPECTATIONS)
+	$(GIT) diff-files --quiet -- $^
 
 define rockpec_template =
 	$(SED) -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
