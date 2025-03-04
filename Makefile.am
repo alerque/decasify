@@ -118,6 +118,8 @@ typst/decasify.wasm: typst/src/lib.rs
 
 SILEASSETS = sile/readme_1.svg sile/readme_2.svg
 
+SILE_EXPECTATIONS = tests/styled.txt
+
 .PHONY: sile-docs
 sile-docs: $(SILEASSETS)
 
@@ -127,16 +129,22 @@ sile-docs: $(SILEASSETS)
 %.pdf: %.sil
 	cp $< target/
 	cd target
-	$(SILE) $(<F) -o ../$@
+	$(SILE) -o ../$@ $(<F)
 
 %.svg: %.pdf
 	$(PDF2SVG) $< $@
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 	$(SED) -i -e '/\/defs/a   <rect width="100%" height="100%" fill="white" />' $@
 
-check: busted pytest typst-test
+%.txt: %.sil sile-docs
+	cp $< target/
+	cd target
+	$(SILE) -b debug -o ../$@ $(<F)
+	$(SILE) $(<F)
 
-PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest typst-test release-preview
+check: busted pytest sile-test typst-test
+
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest sile-test typst-test release-preview
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
 
 if DEVELOPER_MODE
@@ -176,6 +184,9 @@ pytest:
 	source .venv/bin/activate
 	$(MATURIN) develop
 	env PYTHONPATH=.venv/lib/python3.12/site-packages/decasify $(PYTEST)
+
+sile-test: $(SILE_EXPECTATIONS)
+	$(GIT) diff-files --quiet -- $^
 
 typst-test: $(TYPST_EXPECTATIONS)
 	$(GIT) diff-files --quiet -- $^
