@@ -10,9 +10,9 @@
 \sample
 
 \group{Sentencecase}
-\decasify[case=sentence]{\sample}
+\decasify[case=sentence]{this sample \strong{has bold} and \em{italic \underline{underlined}} bits.}
 
 \group{Titlecase}
-\decasify[case=title]{\sample}
+\decasify[case=title]{this sample \strong{has bold} and \em{italic \underline{underlined}} bits.}
 
 \end{document}
