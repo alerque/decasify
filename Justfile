@@ -8,20 +8,32 @@ _default:
 
 [private]
 [doc('Block execution if Git working tree isn’t pristine.')]
-pristine:
+pristine: sile-package typst-package
+	# Make sure Git's status cache is warmed up
+	git diff --shortstat
 	# Ensure there are no changes in staging
 	git diff-index --quiet --cached HEAD || exit 1
 	# Ensure there are no changes in the working tree
 	git diff-files --quiet || exit 1
 
 [private]
-[doc('Block execution if Git working tree for Typst packages for isn’t pristine.')]
+[doc('Block execution if Git working tree for Typst packages isn’t pristine.')]
 [working-directory: "../typst/packages"]
 typst-pristine:
 	# Ensure there are no changes in staging
 	git diff-index --quiet --cached HEAD || exit 1
 	# Ensure there are no changes in the working tree
 	git diff-files --quiet || exit 1
+
+[private]
+[doc('Rebuild SILE package (makes sure tracked documentation is up to date).')]
+sile-package:
+	make sile-package
+
+[private]
+[doc('Rebuild Typst package (makes sure tracked documentation is up to date).')]
+typst-package:
+	make typst-package
 
 [private]
 [doc('Block execution if we don’t have access to private keys.')]
