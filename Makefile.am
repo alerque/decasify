@@ -142,6 +142,8 @@ sile-docs: $(SILEASSETS)
 	$(SILE) -b debug -o ../$@ $(<F)
 	$(SILE) $(<F)
 
+TESTS = tests/style.html
+
 check: busted pytest sile-test typst-test
 
 PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest sile-test typst-test release-preview
