@@ -67,6 +67,9 @@ EXTRA_DIST += decasify.rockspec.in decasify.nvim.rockspec.in decasify.sile.rocks
 EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
 
 EXTRA_DIST += typst/Cargo.toml typst/README.md typst/decasify.typ typst/src/lib.rs
+
+all-local: sile-package typst-package
+
 TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 
 $(TYPSTDIR):
@@ -85,8 +88,8 @@ sile/readme_%.sil: sile/README.md $(CODEBLOCK_FILTER)
 
 TYPSTASSETS = typst/decasify.wasm typst/readme_1.svg typst/readme_2.svg typst/LICENSE
 
-.PHONY: typst-universe
-typst-universe: $(TYPSTASSETS)
+.PHONY: typst-package
+typst-package: $(TYPSTASSETS)
 
 typst/LICENSE: LICENSE.md
 	$(PANDOC) $< -t plain -o $@
@@ -113,8 +116,8 @@ typst/decasify.wasm: typst/src/lib.rs
 
 SILEASSETS = sile/readme_1.svg sile/readme_2.svg
 
-.PHONY: sile-docs
-sile-docs: $(SILEASSETS)
+.PHONY: sile-package
+sile-package: $(SILEASSETS)
 
 # The path to the SILE module sources in this repository hijacks loading the
 # C module of the same name from the system; to avoid this we run SILE from

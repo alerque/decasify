@@ -40,7 +40,7 @@ release semver: pristine keys
 	cargo build
 	git diff-files --quiet || exit 1
 	./config.status && make
-	make typst-universe
+	make typst-package
 	maturin build --frozen
 	wasm-pack build --features wasm
 	git push --atomic origin master v{{semver}}
