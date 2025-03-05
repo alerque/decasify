@@ -129,7 +129,7 @@ sile-docs: $(SILEASSETS)
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 	$(SED) -i -e '/\/defs/a   <rect width="100%" height="100%" fill="white" />' $@
 
-check: busted pytest
+check-local: busted pytest
 
 PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
