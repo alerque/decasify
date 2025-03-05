@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2024 Caleb Maclennan <caleb@alerque.com>
+// SPDX-License-Identifier: LGPL-3.0-only
+
 use anyhow::Result;
 use decasify::{Case, Locale, StyleGuide};
 use wasm_minimal_protocol::{initiate_protocol, wasm_func};

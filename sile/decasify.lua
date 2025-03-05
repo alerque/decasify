@@ -1,3 +1,6 @@
+-- SPDX-FileCopyrightText: © 2024 Caleb Maclennan <caleb@alerque.com>
+-- SPDX-License-Identifier: LGPL-3.0-only
+
 local base = require("packages.base")
 
 local package = pl.class(base)

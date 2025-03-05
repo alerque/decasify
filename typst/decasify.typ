@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2024 Caleb Maclennan <caleb@alerque.com>
+// SPDX-License-Identifier: LGPL-3.0-only
+
 #let _plugin = plugin("decasify.wasm")
 
 #let decasify-string(text, case, lang, style) = {
