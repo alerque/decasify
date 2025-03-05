@@ -166,11 +166,10 @@ busted: install-luarock
 	$(BUSTED) -v --lpath="$${packagepath[*]};;" --cpath="$${packagecpath[*]};;" $(BUSTEDFLAGS) .
 
 pytest:
-	$(UV) venv
-	$(UV) pip install pip
+	$(UV) venv --python 3.13.2
 	source .venv/bin/activate
 	$(MATURIN) develop
-	env PYTHONPATH=.venv/lib/python3.12/site-packages/decasify $(PYTEST)
+	env PYTHONPATH=.venv/lib/python3.13/site-packages/decasify $(PYTEST)
 
 define rockpec_template =
 	$(SED) -e "s/@""PACKAGE_NAME""@/$(PACKAGE_NAME)/g" \
