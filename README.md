@@ -222,7 +222,7 @@ The [decasify](https://typst.app/universe/package/decasify) package can be added
 The exact version must be specified explicitly:
 
 ```typst
-#import "@preview/decasify:0.8.0": *
+#import "@preview/decasify:0.9.1": *
 ```
 
 Specific functions for each case should be available throughout the document.
