@@ -30,6 +30,7 @@ pub mod python;
 pub mod wasm;
 
 mod en;
+mod fr;
 mod tr;
 
 /// Convert a string to a specific case following typesetting conventions for a target locale
@@ -62,6 +63,7 @@ pub fn titlecase(
     let style: StyleGuide = style.into();
     match locale {
         Locale::EN => en::titlecase(chunk, style),
+        Locale::FR => fr::titlecase(chunk, style),
         Locale::TR => tr::titlecase(chunk, style),
     }
 }
@@ -72,6 +74,7 @@ pub fn lowercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let locale: Locale = locale.into();
     match locale {
         Locale::EN => en::lowercase(chunk),
+        Locale::FR => fr::lowercase(chunk),
         Locale::TR => tr::lowercase(chunk),
     }
 }
@@ -82,6 +85,7 @@ pub fn uppercase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> String {
     let locale: Locale = locale.into();
     match locale {
         Locale::EN => en::uppercase(chunk),
+        Locale::FR => fr::uppercase(chunk),
         Locale::TR => tr::uppercase(chunk),
     }
 }
@@ -92,6 +96,7 @@ pub fn sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> Strin
     let locale: Locale = locale.into();
     match locale {
         Locale::EN => en::sentencecase(chunk),
+        Locale::FR => fr::sentencecase(chunk),
         Locale::TR => tr::sentencecase(chunk),
     }
 }
