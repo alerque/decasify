@@ -61,23 +61,77 @@ pub enum Case {
 }
 
 /// Style guide selector to change grammar and context rules used for title casing.
-#[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
+#[derive(Display, VariantNames, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
-    AssociatedPress,
+    AssociatedPress(Option<StyleGuideOptions>),
     #[strum(serialize = "cmos")]
-    ChicagoManualOfStyle,
+    ChicagoManualOfStyle(Option<StyleGuideOptions>),
     #[strum(serialize = "gruber")]
-    DaringFireball,
+    DaringFireball(Option<StyleGuideOptions>),
     #[strum(serialize = "default")]
-    #[default]
-    LanguageDefault,
+    LanguageDefault(Option<StyleGuideOptions>),
     #[strum(serialize = "tdk")]
-    TurkishLanguageInstitute,
+    TurkishLanguageInstitute(Option<StyleGuideOptions>),
+}
+
+impl Default for StyleGuide {
+    fn default() -> Self {
+        Self::LanguageDefault(None)
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct StyleGuideOptions {}
+
+impl Default for StyleGuideOptions {
+    fn default() -> Self {
+        Self {}
+    }
+}
+
+#[derive(Debug)]
+pub struct StyleGuideBuilder {
+    base: StyleGuide,
+}
+
+impl StyleGuide {
+    pub fn with_options(&self, options: StyleGuideOptions) -> Self {
+        match self {
+            StyleGuide::AssociatedPress(_) => StyleGuide::AssociatedPress(Some(options)),
+            StyleGuide::ChicagoManualOfStyle(_) => StyleGuide::ChicagoManualOfStyle(Some(options)),
+            StyleGuide::DaringFireball(_) => StyleGuide::DaringFireball(Some(options)),
+            StyleGuide::LanguageDefault(_) => StyleGuide::LanguageDefault(Some(options)),
+            StyleGuide::TurkishLanguageInstitute(_) => {
+                StyleGuide::TurkishLanguageInstitute(Some(options))
+            }
+        }
+    }
+
+    pub fn options(&self) -> Option<&StyleGuideOptions> {
+        match self {
+            StyleGuide::AssociatedPress(opts) => opts.as_ref(),
+            StyleGuide::ChicagoManualOfStyle(opts) => opts.as_ref(),
+            StyleGuide::DaringFireball(opts) => opts.as_ref(),
+            StyleGuide::LanguageDefault(opts) => opts.as_ref(),
+            StyleGuide::TurkishLanguageInstitute(opts) => opts.as_ref(),
+        }
+    }
+}
+
+impl StyleGuideBuilder {
+    pub fn new(base: impl Into<StyleGuide>) -> Self {
+        Self { base: base.into() }
+    }
+
+    pub fn build(self) -> StyleGuide {
+        let options = StyleGuideOptions {};
+        self.base.with_options(options)
+    }
 }
 
 impl FromStr for Locale {
@@ -158,12 +212,14 @@ impl FromStr for StyleGuide {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
-            "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
-            "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
-            "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
+            "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball(None)),
+            "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress(None)),
+            "chicagoManualofstyle" | "chicago" | "cmos" => {
+                Ok(StyleGuide::ChicagoManualOfStyle(None))
+            }
+            "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute(None)),
             "default" | "languagedefault" | "language" | "none" | "" => {
-                Ok(StyleGuide::LanguageDefault)
+                Ok(StyleGuide::LanguageDefault(None))
             }
             input => StyleGuideSnafu { input }.fail()?,
         }
@@ -199,7 +255,7 @@ impl From<Option<StyleGuide>> for StyleGuide {
     fn from(style: Option<StyleGuide>) -> Self {
         match style {
             Some(style) => style,
-            None => StyleGuide::LanguageDefault,
+            None => StyleGuide::LanguageDefault(None),
         }
     }
 }

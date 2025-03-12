@@ -77,7 +77,7 @@ fn process<I: IntoIterator<Item = String>>(
 ) {
     for string in strings {
         let output = match case {
-            Case::Title => titlecase(string, locale, style),
+            Case::Title => titlecase(string, locale, style.clone()),
             Case::Lower => lowercase(string, locale),
             Case::Upper => uppercase(string, locale),
             Case::Sentence => sentencecase(string, locale),
