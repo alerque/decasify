@@ -19,7 +19,7 @@ homepage = "https://github.com/alerque/decasify"
 repository = "https://github.com/alerque/decasify"
 license = "LGPL-3.0-only"
 edition = "2021"
-rust-version = "1.74.1"
+rust-version = "1.80.1"
 
 [workspace]
 resolver = "2"
