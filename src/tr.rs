@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use crate::content::{Chunk, Segment, Word};
+use crate::get_override;
 use crate::types::{StyleGuide, StyleGuideOptions};
 
 use regex::Regex;
@@ -18,12 +19,16 @@ pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
     }
 }
 
-fn titlecase_tdk(chunk: Chunk, _opts: StyleGuideOptions) -> String {
+fn titlecase_tdk(chunk: Chunk, opts: StyleGuideOptions) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(word) = segment {
-            word.word = if !done_first {
+            word.word = if let Some(word) =
+                get_override(word, &opts.overrides, |w| w.to_lowercase_tr_az())
+            {
+                word.to_string()
+            } else if !done_first {
                 done_first = true;
                 word.to_titlecase_tr_or_az_lower_rest()
             } else {

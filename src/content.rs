@@ -126,6 +126,14 @@ impl Word {
     }
 }
 
+impl From<&str> for Word {
+    fn from(word: &str) -> Self {
+        Self {
+            word: word.to_string(),
+        }
+    }
+}
+
 impl From<String> for Word {
     fn from(word: String) -> Self {
         Self { word }

@@ -21,6 +21,20 @@ fn cast_from_legacy_option() {
     assert_eq!(res, "Fist");
 }
 
+#[test]
+fn custom_style_guide() {
+    let my_tr_style = StyleGuideBuilder::new(StyleGuide::LanguageDefault(None))
+        .overrides(vec!["fOO"])
+        .build();
+    let res = titlecase("foo bar", "tr", Some(my_tr_style));
+    assert_eq!(res, "fOO Bar");
+    let my_en_style = StyleGuideBuilder::new(StyleGuide::DaringFireball(None))
+        .overrides(vec!["fOO"])
+        .build();
+    let res = titlecase("foo bar", "en", Some(my_en_style));
+    assert_eq!(res, "fOO Bar");
+}
+
 #[cfg(feature = "unstable-trait")]
 #[test]
 fn trait_chery() {

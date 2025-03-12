@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use crate::content::{Chunk, Segment, Word};
+use crate::get_override;
 use crate::types::{StyleGuide, StyleGuideOptions};
 
 use regex::Regex;
@@ -48,7 +49,7 @@ fn titlecase_cmos(chunk: Chunk, _opts: StyleGuideOptions) -> String {
     chunk.into()
 }
 
-fn titlecase_gruber(chunk: Chunk, _opts: StyleGuideOptions) -> String {
+fn titlecase_gruber(chunk: Chunk, opts: StyleGuideOptions) -> String {
     // The titlecase crate we are going to delegate to here trims the input. We need to restore
     // leading and trailing whitespace ourselves.
     let leading_trivia = if let Some(Segment::Separator(s)) = chunk.segments.first() {
@@ -61,7 +62,21 @@ fn titlecase_gruber(chunk: Chunk, _opts: StyleGuideOptions) -> String {
     } else {
         String::from("")
     };
-    let titilized = gruber_titlecase(chunk.to_string().as_ref());
+    let mut titilized = gruber_titlecase(chunk.to_string().as_ref());
+    if opts.overrides.is_some() {
+        let mut chunk: Chunk = titilized.into();
+        chunk.segments.iter_mut().for_each(|segment| {
+            if let Segment::Word(word) = segment {
+                word.word =
+                    if let Some(word) = get_override(word, &opts.overrides, |w| w.to_lowercase()) {
+                        word.to_string()
+                    } else {
+                        word.to_string()
+                    }
+            }
+        });
+        titilized = chunk.to_string();
+    }
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 
