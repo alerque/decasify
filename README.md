@@ -103,10 +103,10 @@ use decasify::{Locale, StyleGuide};
 
 fn demo() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
-    let output = titlecase(input, Locale::TR, StyleGuide::LanguageDefault);
+    let output = titlecase(input, Locale::TR, StyleGuide::LanguageDefault(None));
     eprintln! {"{output}"};
     let input = "title with a twist: a colon";
-    let output = titlecase(input, Locale::EN, StyleGuide::DaringFireball);
+    let output = titlecase(input, Locale::EN, StyleGuide::DaringFireball(None));
     eprintln! {"{output}"};
 }
 ```

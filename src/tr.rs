@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use crate::content::{Chunk, Segment, Word};
-use crate::types::StyleGuide;
+use crate::types::{StyleGuide, StyleGuideOptions};
 
 use regex::Regex;
 use unicode_titlecase::tr_az::StrTrAzCasing;
@@ -10,13 +10,15 @@ use unicode_titlecase::StrTitleCase;
 
 pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
     match style {
-        StyleGuide::LanguageDefault => titlecase_tdk(chunk),
-        StyleGuide::TurkishLanguageInstitute => titlecase_tdk(chunk),
+        StyleGuide::LanguageDefault(opts) => titlecase_tdk(chunk, opts.unwrap_or_default()),
+        StyleGuide::TurkishLanguageInstitute(opts) => {
+            titlecase_tdk(chunk, opts.unwrap_or_default())
+        }
         _ => todo!("Turkish implementation doesn't support different style guides."),
     }
 }
 
-fn titlecase_tdk(chunk: Chunk) -> String {
+fn titlecase_tdk(chunk: Chunk, _opts: StyleGuideOptions) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
