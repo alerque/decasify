@@ -70,8 +70,8 @@ version = "0.9.1"
 [dependencies]
 regex = "1.11"
 snafu = "0.8"
-strum = "0.26"
-strum_macros = "0.26"
+strum = "0.27"
+strum_macros = "0.27"
 unicode_titlecase = "2.4"
 
 [dependencies.clap]
@@ -85,7 +85,7 @@ optional = true
 features = ["module"]
 
 [dependencies.pyo3]
-version = "0.22"
+version = "0.24"
 optional = true
 features = ["extension-module"]
 
@@ -99,8 +99,8 @@ optional = true
 
 [build-dependencies]
 snafu = "0.8"
-strum = "0.26"
-strum_macros = "0.26"
+strum = "0.27"
+strum_macros = "0.27"
 
 [build-dependencies.clap_complete]
 version = "4.5"
