@@ -8,7 +8,7 @@ mod content;
 mod traits;
 mod types;
 
-pub use content::Chunk;
+pub use content::{Chunk, Word};
 #[cfg(feature = "unstable-trait")]
 pub use traits::Decasify;
 pub use types::{Case, Locale, StyleGuide, StyleGuideBuilder};
@@ -94,4 +94,17 @@ pub fn sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> Strin
         Locale::EN => en::sentencecase(chunk),
         Locale::TR => tr::sentencecase(chunk),
     }
+}
+
+fn get_override<F>(word: &Word, overrides: &Option<Vec<Word>>, case_fn: F) -> Option<Word>
+where
+    F: Fn(&String) -> String,
+{
+    let word_lower = case_fn(&word.word);
+    overrides.as_ref().and_then(|words| {
+        words
+            .iter()
+            .find(|w| case_fn(&w.word) == word_lower)
+            .cloned()
+    })
 }

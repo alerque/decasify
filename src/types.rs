@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
+use crate::content::Word;
+
 use std::str::FromStr;
 use strum_macros::{Display, VariantNames};
 
@@ -85,18 +87,15 @@ impl Default for StyleGuide {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct StyleGuideOptions {}
-
-impl Default for StyleGuideOptions {
-    fn default() -> Self {
-        Self {}
-    }
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct StyleGuideOptions {
+    pub overrides: Option<Vec<Word>>,
 }
 
 #[derive(Debug)]
 pub struct StyleGuideBuilder {
     base: StyleGuide,
+    overrides: Option<Vec<Word>>,
 }
 
 impl StyleGuide {
@@ -125,11 +124,22 @@ impl StyleGuide {
 
 impl StyleGuideBuilder {
     pub fn new(base: impl Into<StyleGuide>) -> Self {
-        Self { base: base.into() }
+        Self {
+            base: base.into(),
+            overrides: None,
+        }
+    }
+
+    pub fn overrides(mut self, words: Vec<impl Into<Word>>) -> Self {
+        let words: Vec<Word> = words.into_iter().map(|w| w.into()).collect();
+        self.overrides = Some(words);
+        self
     }
 
     pub fn build(self) -> StyleGuide {
-        let options = StyleGuideOptions {};
+        let options = StyleGuideOptions {
+            overrides: self.overrides,
+        };
         self.base.with_options(options)
     }
 }
