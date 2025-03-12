@@ -21,6 +21,20 @@ describe("decasify", function ()
       assert.is_function(sentencecase)
    end)
 
+   describe("module", function ()
+      it("is callable", function ()
+         assert.no.error(function ()
+            decasify("foo")
+         end)
+      end)
+
+      it("should not balk at passing all options through", function ()
+         local text = "foo: a baz"
+         assert.equal("Foo: A Baz", decasify(text, "title", "en", "gruber"))
+         assert.equal("FOO: A BAZ", decasify(text, "upper", "en", "gruber"))
+      end)
+   end)
+
    describe("case", function ()
       it("should not balk at nil values for optional args", function ()
          assert.no.error(function ()
