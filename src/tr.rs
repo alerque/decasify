@@ -3,23 +3,21 @@
 
 use crate::content::{Chunk, Segment};
 use crate::get_override;
-use crate::types::{StyleGuide, StyleGuideOptions, Word};
+use crate::types::{StyleGuide, StyleOptions, Word};
 
 use regex::Regex;
 use unicode_titlecase::tr_az::StrTrAzCasing;
 use unicode_titlecase::StrTitleCase;
 
-pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
+pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String {
     match style {
-        StyleGuide::LanguageDefault(opts) => titlecase_tdk(chunk, opts.unwrap_or_default()),
-        StyleGuide::TurkishLanguageInstitute(opts) => {
-            titlecase_tdk(chunk, opts.unwrap_or_default())
-        }
+        StyleGuide::LanguageDefault => titlecase_tdk(chunk, opts),
+        StyleGuide::TurkishLanguageInstitute => titlecase_tdk(chunk, opts),
         _ => todo!("Turkish implementation doesn't support different style guides."),
     }
 }
 
-fn titlecase_tdk(chunk: Chunk, opts: StyleGuideOptions) -> String {
+fn titlecase_tdk(chunk: Chunk, opts: StyleOptions) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {

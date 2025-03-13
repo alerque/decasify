@@ -9,8 +9,7 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<Case>()?;
     module.add_class::<Locale>()?;
     module.add_class::<StyleGuide>()?;
-    module.add_class::<Word>()?;
-    module.add_class::<StyleGuideOptions>()?;
+    module.add_class::<StyleOptions>()?;
     module.add_function(wrap_pyfunction!(self::case, module)?)?;
     module.add_function(wrap_pyfunction!(self::titlecase, module)?)?;
     module.add_function(wrap_pyfunction!(self::lowercase, module)?)?;
@@ -22,7 +21,7 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
 }
 
 #[pyfunction]
-#[pyo3(signature = (input, case, locale, style=StyleGuide::LanguageDefault(None), overrides=None))]
+#[pyo3(signature = (input, case, locale, style=StyleGuide::LanguageDefault, overrides=None))]
 fn case(
     input: String,
     case: Case,
@@ -30,32 +29,26 @@ fn case(
     style: StyleGuide,
     overrides: Option<Vec<String>>,
 ) -> PyResult<String> {
-    let style = if let Some(words) = overrides {
-        StyleGuideBuilder::new(style)
-            .overrides(words.into_iter().map(Word::from).collect())
-            .build()
-    } else {
-        style
+    let opts = match overrides {
+        Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
+        None => StyleOptions::default(),
     };
-    Ok(crate::case(&input, case, locale, style))
+    Ok(crate::case(&input, case, locale, style, opts))
 }
 
 #[pyfunction]
-#[pyo3(signature = (input, locale, style=StyleGuide::LanguageDefault(None), overrides=None))]
+#[pyo3(signature = (input, locale, style=StyleGuide::LanguageDefault, overrides=None))]
 fn titlecase(
     input: String,
     locale: Locale,
     style: StyleGuide,
     overrides: Option<Vec<String>>,
 ) -> PyResult<String> {
-    let style = if let Some(words) = overrides {
-        StyleGuideBuilder::new(style)
-            .overrides(words.into_iter().map(Word::from).collect())
-            .build()
-    } else {
-        style
+    let opts = match overrides {
+        Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
+        None => StyleOptions::default(),
     };
-    Ok(crate::titlecase(&input, locale, style))
+    Ok(crate::titlecase(&input, locale, style, opts))
 }
 
 #[pyfunction]

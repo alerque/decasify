@@ -11,7 +11,7 @@ mod types;
 pub use content::Chunk;
 #[cfg(feature = "unstable-trait")]
 pub use traits::Decasify;
-pub use types::{Case, Locale, StyleGuide, StyleGuideBuilder, Word};
+pub use types::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder, Word};
 
 #[cfg(feature = "cli")]
 #[doc(hidden)]
@@ -38,16 +38,18 @@ pub fn case(
     case: impl Into<Case>,
     locale: impl Into<Locale>,
     style: impl Into<StyleGuide>,
+    opts: impl Into<StyleOptions>,
 ) -> String {
     let chunk: Chunk = chunk.into();
     let case: Case = case.into();
     let locale: Locale = locale.into();
     let style: StyleGuide = style.into();
+    let opts: StyleOptions = opts.into();
     match case {
         Case::Lower => lowercase(chunk, locale),
         Case::Upper => uppercase(chunk, locale),
         Case::Sentence => sentencecase(chunk, locale),
-        Case::Title => titlecase(chunk, locale, style),
+        Case::Title => titlecase(chunk, locale, style, opts),
     }
 }
 
@@ -56,13 +58,15 @@ pub fn titlecase(
     chunk: impl Into<Chunk>,
     locale: impl Into<Locale>,
     style: impl Into<StyleGuide>,
+    opts: impl Into<StyleOptions>,
 ) -> String {
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
     let style: StyleGuide = style.into();
+    let opts: StyleOptions = opts.into();
     match locale {
-        Locale::EN => en::titlecase(chunk, style),
-        Locale::TR => tr::titlecase(chunk, style),
+        Locale::EN => en::titlecase(chunk, style, opts),
+        Locale::TR => tr::titlecase(chunk, style, opts),
     }
 }
 

@@ -26,12 +26,12 @@ def test_isfuction():
 class TestCase:
     def test_optional_arguments(self):
         assert case("foo", Case.Title, Locale.EN) == "Foo"
-        assert case("foo", Case.Title, Locale.EN, StyleGuide.DaringFireball(None)) == "Foo"
+        assert case("foo", Case.Title, Locale.EN, StyleGuide.DaringFireball) == "Foo"
         assert case("foo", Case.Upper, Locale.EN) == "FOO"
         assert case("foo", Case.Upper, Locale.EN) == "FOO"
 
     def test_style_overrides(self):
-        assert case("foo bar", Case.Title, Locale.EN, StyleGuide.DaringFireball(None), overrides=["fOO"]) == "fOO Bar"
+        assert case("foo bar", Case.Title, Locale.EN, StyleGuide.DaringFireball, overrides=["fOO"]) == "fOO Bar"
 
 
 class TestTitlecase:
@@ -42,11 +42,11 @@ class TestTitlecase:
         text = "foo: a baz"
         cmos = "Foo: a Baz"
         grub = "Foo: A Baz"
-        assert titlecase(text, Locale.EN, StyleGuide.ChicagoManualOfStyle(None)) == cmos
-        assert titlecase(text, Locale.EN, StyleGuide.DaringFireball(None)) == grub
+        assert titlecase(text, Locale.EN, StyleGuide.ChicagoManualOfStyle) == cmos
+        assert titlecase(text, Locale.EN, StyleGuide.DaringFireball) == grub
 
     def test_style_overrides(self):
-        assert titlecase("foo bar", Locale.EN, StyleGuide.DaringFireball(None), overrides=["fOO"]) == "fOO Bar"
+        assert titlecase("foo bar", Locale.EN, StyleGuide.DaringFireball, overrides=["fOO"]) == "fOO Bar"
 
     def test_turkish_characters(self):
         text = "İLKİ ILIK ÖĞLEN"
