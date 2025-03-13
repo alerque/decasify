@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::{Chunk, Segment, Word};
+use crate::content::{Chunk, Segment};
 use crate::get_override;
-use crate::types::{StyleGuide, StyleGuideOptions};
+use crate::types::{StyleGuide, StyleGuideOptions, Word};
 
 use regex::Regex;
 use titlecase::titlecase as gruber_titlecase;

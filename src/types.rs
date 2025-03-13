@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::Word;
-
 use std::str::FromStr;
 use strum_macros::{Display, VariantNames};
 
@@ -35,6 +33,13 @@ impl std::fmt::Debug for Error {
 }
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
+
+/// Just a single word
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct Word {
+    pub word: String,
+}
 
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]

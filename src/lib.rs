@@ -8,10 +8,10 @@ mod content;
 mod traits;
 mod types;
 
-pub use content::{Chunk, Word};
+pub use content::Chunk;
 #[cfg(feature = "unstable-trait")]
 pub use traits::Decasify;
-pub use types::{Case, Locale, StyleGuide, StyleGuideBuilder};
+pub use types::{Case, Locale, StyleGuide, StyleGuideBuilder, Word};
 
 #[cfg(feature = "cli")]
 #[doc(hidden)]
