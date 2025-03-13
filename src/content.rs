@@ -134,6 +134,14 @@ impl From<&str> for Word {
     }
 }
 
+impl From<&std::string::String> for Word {
+    fn from(word: &std::string::String) -> Self {
+        Self {
+            word: word.to_string(),
+        }
+    }
+}
+
 impl From<String> for Word {
     fn from(word: String) -> Self {
         Self { word }

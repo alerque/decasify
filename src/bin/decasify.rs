@@ -3,7 +3,7 @@
 
 use decasify::cli::Cli;
 use decasify::{lowercase, sentencecase, titlecase, uppercase};
-use decasify::{Case, Locale, StyleGuide};
+use decasify::{Case, Locale, StyleGuide, StyleGuideBuilder};
 
 use snafu::prelude::*;
 
@@ -45,10 +45,15 @@ fn main() -> Result<()> {
         .get_one::<Case>("case")
         .context(CaseSnafu)?
         .to_owned();
-    let style = matches
+    let mut style = matches
         .get_one::<StyleGuide>("style")
         .context(StyleGuideSnafu)?
         .to_owned();
+    if let Some(overrides) = matches.get_many::<String>("overrides") {
+        style = StyleGuideBuilder::new(style)
+            .overrides(overrides.collect())
+            .build();
+    }
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches
