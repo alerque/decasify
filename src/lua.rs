@@ -9,11 +9,11 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table()?;
     exports.set(
         "case",
-        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide)>(case),
+        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide, StyleOptions)>(case),
     )?;
     exports.set(
         "titlecase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide)>(titlecase),
+        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide, StyleOptions)>(titlecase),
     )?;
     exports.set(
         "lowercase",
@@ -30,13 +30,22 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let mt = lua.create_table()?;
     let decasify = lua.create_function(
         move |_,
-              (_, chunk, case_, locale, styleguide): (
+              (_, chunk, case_, locale, styleguide, opts): (
             LuaTable,
             Chunk,
             Case,
             Locale,
             StyleGuide,
-        )| { Ok(case(chunk, case_, locale, styleguide)) },
+            Option<StyleOptions>,
+        )| {
+            Ok(case(
+                chunk,
+                case_,
+                locale,
+                styleguide,
+                opts.unwrap_or_default(),
+            ))
+        },
     )?;
     mt.set("__call", decasify)?;
     exports.set_metatable(Some(mt));
@@ -83,6 +92,29 @@ impl FromLua for StyleGuide {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
         match value {
             LuaValue::String(s) => Ok(s.to_string_lossy().into()),
+            LuaValue::Nil => Ok(Self::default()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+#[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
+impl FromLua for StyleOptions {
+    fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
+        match value {
+            LuaValue::Table(t) => {
+                let mut builder = StyleOptionsBuilder::new();
+                if let Ok(overrides_table) = t.get::<LuaTable>("overrides") {
+                    let overrides: Vec<Word> = overrides_table
+                        .sequence_values::<String>()
+                        .collect::<LuaResult<Vec<_>>>()?
+                        .into_iter()
+                        .map(|s| s.into())
+                        .collect();
+                    builder = builder.overrides(overrides);
+                }
+                Ok(builder.build())
+            }
             LuaValue::Nil => Ok(Self::default()),
             _ => unimplemented!(),
         }
