@@ -22,6 +22,9 @@ pub enum Error {
 
     #[snafu(display("Invalid preferred style guide {}", input))]
     StyleGuide { input: String },
+
+    #[snafu(display("Invalid style options {}", input))]
+    StyleOptions { input: String },
 }
 
 // Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
@@ -75,65 +78,59 @@ pub enum Case {
 #[non_exhaustive]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
-    AssociatedPress(Option<StyleGuideOptions>),
+    AssociatedPress,
     #[strum(serialize = "cmos")]
-    ChicagoManualOfStyle(Option<StyleGuideOptions>),
+    ChicagoManualOfStyle,
     #[strum(serialize = "gruber")]
-    DaringFireball(Option<StyleGuideOptions>),
+    DaringFireball,
     #[strum(serialize = "default")]
-    LanguageDefault(Option<StyleGuideOptions>),
+    LanguageDefault,
     #[strum(serialize = "tdk")]
-    TurkishLanguageInstitute(Option<StyleGuideOptions>),
+    TurkishLanguageInstitute,
 }
 
 impl Default for StyleGuide {
     fn default() -> Self {
-        Self::LanguageDefault(None)
+        Self::LanguageDefault
     }
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq))]
-pub struct StyleGuideOptions {
+pub struct StyleOptions {
     pub overrides: Option<Vec<Word>>,
 }
 
+impl From<&str> for StyleOptions {
+    fn from(s: &str) -> Self {
+        Self::from_str(s).unwrap()
+    }
+}
+
+impl FromStr for StyleOptions {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
+        match s.to_ascii_lowercase().as_str() {
+            "default" | "none" | "" => Ok(StyleOptions::default()),
+            input => StyleOptionsSnafu { input }.fail()?,
+        }
+    }
+}
+
 #[derive(Debug)]
-pub struct StyleGuideBuilder {
-    base: StyleGuide,
+pub struct StyleOptionsBuilder {
     overrides: Option<Vec<Word>>,
 }
 
-impl StyleGuide {
-    pub fn with_options(&self, options: StyleGuideOptions) -> Self {
-        match self {
-            StyleGuide::AssociatedPress(_) => StyleGuide::AssociatedPress(Some(options)),
-            StyleGuide::ChicagoManualOfStyle(_) => StyleGuide::ChicagoManualOfStyle(Some(options)),
-            StyleGuide::DaringFireball(_) => StyleGuide::DaringFireball(Some(options)),
-            StyleGuide::LanguageDefault(_) => StyleGuide::LanguageDefault(Some(options)),
-            StyleGuide::TurkishLanguageInstitute(_) => {
-                StyleGuide::TurkishLanguageInstitute(Some(options))
-            }
-        }
-    }
-
-    pub fn options(&self) -> Option<&StyleGuideOptions> {
-        match self {
-            StyleGuide::AssociatedPress(opts) => opts.as_ref(),
-            StyleGuide::ChicagoManualOfStyle(opts) => opts.as_ref(),
-            StyleGuide::DaringFireball(opts) => opts.as_ref(),
-            StyleGuide::LanguageDefault(opts) => opts.as_ref(),
-            StyleGuide::TurkishLanguageInstitute(opts) => opts.as_ref(),
-        }
+impl Default for StyleOptionsBuilder {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
-impl StyleGuideBuilder {
-    pub fn new(base: impl Into<StyleGuide>) -> Self {
-        Self {
-            base: base.into(),
-            overrides: None,
-        }
+impl StyleOptionsBuilder {
+    pub fn new() -> Self {
+        Self { overrides: None }
     }
 
     pub fn overrides(mut self, words: Vec<impl Into<Word>>) -> Self {
@@ -142,11 +139,10 @@ impl StyleGuideBuilder {
         self
     }
 
-    pub fn build(self) -> StyleGuide {
-        let options = StyleGuideOptions {
+    pub fn build(self) -> StyleOptions {
+        StyleOptions {
             overrides: self.overrides,
-        };
-        self.base.with_options(options)
+        }
     }
 }
 
@@ -228,14 +224,12 @@ impl FromStr for StyleGuide {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball(None)),
-            "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress(None)),
-            "chicagoManualofstyle" | "chicago" | "cmos" => {
-                Ok(StyleGuide::ChicagoManualOfStyle(None))
-            }
-            "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute(None)),
+            "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
+            "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
+            "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
             "default" | "languagedefault" | "language" | "none" | "" => {
-                Ok(StyleGuide::LanguageDefault(None))
+                Ok(StyleGuide::LanguageDefault)
             }
             input => StyleGuideSnafu { input }.fail()?,
         }
@@ -271,7 +265,7 @@ impl From<Option<StyleGuide>> for StyleGuide {
     fn from(style: Option<StyleGuide>) -> Self {
         match style {
             Some(style) => style,
-            None => StyleGuide::LanguageDefault(None),
+            None => StyleGuide::LanguageDefault,
         }
     }
 }
