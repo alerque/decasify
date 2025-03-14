@@ -213,6 +213,38 @@ titlecase!(
     "  Serbest  Serseri\n  Boşluk  "
 );
 
+titlecase!(
+    french_def,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "le triangle rouge",
+    "Le Triangle Rouge"
+);
+
+titlecase!(
+    french_def2,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "loki, le détective mythique",
+    "Loki, le Détective Mythique"
+);
+
+titlecase!(
+    french_coordinating,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "il est studieux mais turbulent",
+    "Il Est Studieux mais Turbulent"
+);
+
+titlecase!(
+    french_coordinating2,
+    Locale::FR,
+    StyleGuide::LanguageDefault,
+    "mais comment font-ils?",
+    "Mais Comment Font-Ils?"
+);
+
 macro_rules! lowercase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
@@ -224,6 +256,8 @@ macro_rules! lowercase {
 }
 
 lowercase!(lower_en, Locale::EN, "foo BAR BaZ BIKE", "foo bar baz bike");
+
+lowercase!(lower_fr, Locale::FR, "foo BAR BaZ BIKE", "foo bar baz bike");
 
 lowercase!(
     lower_tr,
@@ -243,6 +277,8 @@ macro_rules! uppercase {
 }
 
 uppercase!(upper_en, Locale::EN, "foo BAR BaZ bike", "FOO BAR BAZ BIKE");
+
+uppercase!(upper_fr, Locale::FR, "foo BAR BaZ bike", "FOO BAR BAZ BIKE");
 
 uppercase!(
     upper_tr,
@@ -264,6 +300,13 @@ macro_rules! sentencecase {
 sentencecase!(
     sentence_en,
     Locale::EN,
+    "insert BIKE here",
+    "Insert bike here"
+);
+
+sentencecase!(
+    sentence_fr,
+    Locale::FR,
     "insert BIKE here",
     "Insert bike here"
 );
