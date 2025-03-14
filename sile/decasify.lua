@@ -13,7 +13,12 @@ function package.decasify (node, _, options)
       return node
    end
    local locale = options.locale or SILE.settings:get("document.language") or nil
-   return decasify.case(node, options.case, locale, options.style)
+   local opts = {
+      overrides = options.overrides
+            and (type(options.overrides) == "table" and options.overrides or pl.stringx.split(options.overrides, ","))
+         or {},
+   }
+   return decasify.case(node, options.case, locale, options.style, opts)
 end
 
 function package:_init ()
