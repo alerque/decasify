@@ -11,7 +11,7 @@ Includes support for Turkish and multiple style guides.
 * Changing the text language, we show using the functions again will follow the new language rules.
 
 ```sile
-\begin[papersize=12cm x 4cm]{document}
+\begin[papersize=148mm x 4cm]{document}
 \nofolios
 \neverindent
 \language[main=en]
@@ -43,8 +43,8 @@ Now switch languages and show Turkish titlecasing:
 * Using the same input samples, iterate all four possible output cases.
 * Use language specific rules for each sample highlighting how character handling is different.
 
-```typst
-\begin[papersize=8cm x 13cm]{document}
+```sile
+\begin[papersize=148mm x 13cm]{document}
 \nofolios
 \neverindent
 \use[module=packages.decasify]
