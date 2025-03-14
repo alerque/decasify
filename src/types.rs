@@ -40,6 +40,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 /// Just a single word
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
 pub struct Word {
     pub word: String,
 }
@@ -97,6 +98,7 @@ impl Default for StyleGuide {
 
 #[derive(Clone, Debug, Default, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
 pub struct StyleOptions {
     pub overrides: Option<Vec<Word>>,
 }
