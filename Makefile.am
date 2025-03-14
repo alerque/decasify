@@ -114,7 +114,7 @@ typst/decasify.wasm: typst/src/lib.rs
 	$(TYPST) compile -f svg $< $@
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 
-SILEASSETS = sile/readme_1.svg sile/readme_2.svg
+SILEASSETS = sile/readme_1.svg sile/readme_2.svg sile/readme_3.svg
 
 .PHONY: sile-package
 sile-package: $(SILEASSETS)

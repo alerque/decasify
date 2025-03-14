@@ -78,3 +78,27 @@ end
 ```
 
 <img src="readme_2.svg" alt="Rendered output of Example Two" width="100%" />
+
+## Style Options
+
+Extra options can be passed to modify the case transformation style.
+For example you can pass an array of words in the exact case you want them output to override the normal casing rules.
+
+```sile
+\begin[papersize=8cm x 3cm]{document}
+\nofolios
+\neverindent
+\use[module=packages.decasify]
+\font[size=22pt,weight=800]{Titlecase options}
+
+% From SIL markup
+\decasify[overrides="fOO,BAR"]{foo bar}
+
+% As a Lua table
+\begin{lua}
+SILE.call("decasify", { overrides = { "fOO", "BAR" } }, { "foo bar" })
+\end{lua}
+\end{document}
+```
+
+<img src="readme_3.svg" alt="Rendered output of Example Two" width="100%" />
