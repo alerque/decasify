@@ -39,6 +39,17 @@ fn main_help() {
 
 #[cfg(feature = "cli")]
 #[test]
+fn main_overrides() {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args(["-l", "en", "-O", "fOO", "--", "foo bar"])
+        .assert()
+        .success()
+        .stdout("fOO Bar\n")
+        .stderr("");
+}
+
+#[cfg(feature = "cli")]
+#[test]
 fn main_lang() {
     let mut en_cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     en_cmd

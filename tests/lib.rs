@@ -5,20 +5,32 @@ use decasify::*;
 
 #[test]
 fn cast_from_str() {
-    let res = titlecase("FIST", "en", "gruber");
+    let res = titlecase("FIST", "en", "gruber", "default");
     assert_eq!(res, "Fist");
-    let res = titlecase("FIST", "tr", "");
+    let res = titlecase("FIST", "tr", "", "default");
     assert_eq!(res, "Fıst");
-    let res = titlecase("FIST", "tr", "default");
+    let res = titlecase("FIST", "tr", "default", "default");
     assert_eq!(res, "Fıst");
 }
 
 #[test]
 fn cast_from_legacy_option() {
-    let res = titlecase("FIST", "en", Some(StyleGuide::DaringFireball));
+    let res = titlecase(
+        "FIST",
+        "en",
+        Some(StyleGuide::DaringFireball),
+        StyleOptions::default(),
+    );
     assert_eq!(res, "Fist");
-    let res = titlecase("FIST", "en", None);
+    let res = titlecase("FIST", "en", None, StyleOptions::default());
     assert_eq!(res, "Fist");
+}
+
+#[test]
+fn custom_style_guide() {
+    let options: StyleOptions = StyleOptionsBuilder::new().overrides(vec!["fOO"]).build();
+    let res = titlecase("foo bar", "tr", StyleGuide::LanguageDefault, options);
+    assert_eq!(res, "fOO Bar");
 }
 
 #[cfg(feature = "unstable-trait")]
@@ -38,10 +50,10 @@ fn trait_chery() {
 }
 
 macro_rules! case {
-    ($name:ident, $case:expr, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
+    ($name:ident, $case:expr, $locale:expr, $style:expr, $opts:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = case($input, $case, $locale, $style);
+            let actual = case($input, $case, $locale, $style, $opts);
             assert_eq!(actual, $expected);
         }
     };
@@ -52,6 +64,7 @@ case!(
     Case::Title,
     Locale::EN,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "a b c",
     "A B C"
 );
@@ -61,6 +74,7 @@ case!(
     Case::Lower,
     Locale::EN,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "A B C",
     "a b c"
 );
@@ -70,6 +84,7 @@ case!(
     Case::Title,
     Locale::EN,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "  foo  bar  ",
     "  Foo  Bar  "
 );
@@ -79,15 +94,16 @@ case!(
     Case::Title,
     Locale::TR,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "  foo  bar  ",
     "  Foo  Bar  "
 );
 
 macro_rules! titlecase {
-    ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
+    ($name:ident, $locale:expr, $style:expr, $opts:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = titlecase($input, $locale, $style);
+            let actual = titlecase($input, $locale, $style, $opts);
             assert_eq!(actual, $expected);
         }
     };
@@ -97,6 +113,7 @@ titlecase!(
     abc_none,
     Locale::EN,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "a b c",
     "A B C"
 );
@@ -105,6 +122,7 @@ titlecase!(
     abc_cmos,
     Locale::EN,
     StyleGuide::ChicagoManualOfStyle,
+    StyleOptions::default(),
     "a b c",
     "A B C"
 );
@@ -113,6 +131,7 @@ titlecase!(
     abc_gruber,
     Locale::EN,
     StyleGuide::DaringFireball,
+    StyleOptions::default(),
     "a b c",
     "A B C"
 );
@@ -121,6 +140,7 @@ titlecase!(
     simple_cmos,
     Locale::EN,
     StyleGuide::ChicagoManualOfStyle,
+    StyleOptions::default(),
     "Once UPON A time",
     "Once upon a Time"
 );
@@ -129,6 +149,7 @@ titlecase!(
     simple_gruber,
     Locale::EN,
     StyleGuide::DaringFireball,
+    StyleOptions::default(),
     "Once UPON A time",
     "Once UPON a Time"
 );
@@ -137,6 +158,7 @@ titlecase!(
     colon_cmos,
     Locale::EN,
     StyleGuide::ChicagoManualOfStyle,
+    StyleOptions::default(),
     "foo: a baz",
     "Foo: a Baz"
 );
@@ -145,6 +167,7 @@ titlecase!(
     colon_gruber,
     Locale::EN,
     StyleGuide::DaringFireball,
+    StyleOptions::default(),
     "foo: a baz",
     "Foo: A Baz"
 );
@@ -161,6 +184,7 @@ titlecase!(
     qna_gruber,
     Locale::EN,
     StyleGuide::DaringFireball,
+    StyleOptions::default(),
     "Q&A with Steve Jobs: 'That's what happens in technology'",
     "Q&A With Steve Jobs: 'That's What Happens in Technology'"
 );
@@ -169,6 +193,7 @@ titlecase!(
     ws_gruber,
     Locale::EN,
     StyleGuide::DaringFireball,
+    StyleOptions::default(),
     "  free  trolling\n  space  ",
     "  Free  Trolling\n  Space  "
 );
@@ -177,6 +202,7 @@ titlecase!(
     turkish_question,
     Locale::TR,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "aç mısın",
     "Aç mısın"
 );
@@ -185,6 +211,7 @@ titlecase!(
     turkish_question_false,
     Locale::TR,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "dualarımızda minnettarlık",
     "Dualarımızda Minnettarlık"
 );
@@ -193,6 +220,7 @@ titlecase!(
     turkish_chars,
     Locale::TR,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "İLKİ ILIK ÖĞLEN",
     "İlki Ilık Öğlen"
 );
@@ -201,6 +229,7 @@ titlecase!(
     turkish_blockwords,
     Locale::TR,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "Sen VE ben ile o",
     "Sen ve Ben ile O"
 );
@@ -209,6 +238,7 @@ titlecase!(
     turkish_ws,
     Locale::TR,
     StyleGuide::LanguageDefault,
+    StyleOptions::default(),
     "  serbest  serseri\n  boşluk  ",
     "  Serbest  Serseri\n  Boşluk  "
 );

@@ -67,6 +67,15 @@ describe("decasify", function ()
          assert.equal("Foo: A Baz", case(text, "title", "en", "gruber"))
          assert.equal("FOO: A BAZ", case(text, "upper", "en", "gruber"))
       end)
+
+      it("should correctly handle passing style options", function ()
+         local text = "foo bar"
+         local opts = {
+            overrides = { "fOO" },
+         }
+         assert.equal("fOO Bar", case(text, "title", "en", "gruber", opts))
+         assert.equal("fOO Bar", case(text, "title", "tr", "default", opts))
+      end)
    end)
 
    describe("titlecase", function ()
@@ -91,6 +100,15 @@ describe("decasify", function ()
          local grub = "Foo: A Baz"
          assert.equal(cmos, titlecase(text, "en", "cmos"))
          assert.equal(grub, titlecase(text, "en", "gruber"))
+      end)
+
+      it("should correctly handle passing style options", function ()
+         local text = "foo bar"
+         local opts = {
+            overrides = { "fOO" },
+         }
+         assert.equal("fOO Bar", titlecase(text, "en", "gruber", opts))
+         assert.equal("fOO Bar", titlecase(text, "tr", "default", opts))
       end)
 
       it("should be at peace with Turkish characters", function ()

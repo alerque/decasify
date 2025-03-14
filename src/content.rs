@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
+pub use crate::types::Word;
+
 use regex::Regex;
 use std::{borrow::Cow, fmt, fmt::Display, str::FromStr};
 use unicode_titlecase::StrTitleCase;
@@ -18,12 +20,6 @@ pub struct Chunk {
 pub enum Segment {
     Separator(String),
     Word(Word),
-}
-
-#[derive(Clone, Debug, PartialEq)]
-#[non_exhaustive]
-pub struct Word {
-    pub word: String,
 }
 
 #[derive(Snafu)]
@@ -123,6 +119,22 @@ impl Word {
     }
     pub fn to_uppercase(&self) -> String {
         self.word.to_uppercase()
+    }
+}
+
+impl From<&str> for Word {
+    fn from(word: &str) -> Self {
+        Self {
+            word: word.to_string(),
+        }
+    }
+}
+
+impl From<&std::string::String> for Word {
+    fn from(word: &std::string::String) -> Self {
+        Self {
+            word: word.to_string(),
+        }
     }
 }
 

@@ -1,29 +1,30 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::{Chunk, Segment, Word};
-use crate::types::StyleGuide;
+use crate::content::{Chunk, Segment};
+use crate::get_override;
+use crate::types::{StyleGuide, StyleOptions, Word};
 
 use regex::Regex;
 use titlecase::titlecase as gruber_titlecase;
 use unicode_titlecase::StrTitleCase;
 
-pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
+pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String {
     match style {
-        StyleGuide::LanguageDefault => titlecase_gruber(chunk),
-        StyleGuide::AssociatedPress => titlecase_ap(chunk),
-        StyleGuide::ChicagoManualOfStyle => titlecase_cmos(chunk),
-        StyleGuide::DaringFireball => titlecase_gruber(chunk),
+        StyleGuide::LanguageDefault => titlecase_gruber(chunk, opts),
+        StyleGuide::AssociatedPress => titlecase_ap(chunk, opts),
+        StyleGuide::ChicagoManualOfStyle => titlecase_cmos(chunk, opts),
+        StyleGuide::DaringFireball => titlecase_gruber(chunk, opts),
         _ => todo!("English implementation doesn't support this style guide."),
     }
 }
 
-fn titlecase_ap(chunk: Chunk) -> String {
+fn titlecase_ap(chunk: Chunk, _opts: StyleOptions) -> String {
     eprintln!("AP style guide not implemented, string returned as-is!");
     chunk.into()
 }
 
-fn titlecase_cmos(chunk: Chunk) -> String {
+fn titlecase_cmos(chunk: Chunk, _opts: StyleOptions) -> String {
     let mut chunk = chunk.clone();
     let mut words = chunk
         .segments
@@ -48,7 +49,7 @@ fn titlecase_cmos(chunk: Chunk) -> String {
     chunk.into()
 }
 
-fn titlecase_gruber(chunk: Chunk) -> String {
+fn titlecase_gruber(chunk: Chunk, opts: StyleOptions) -> String {
     // The titlecase crate we are going to delegate to here trims the input. We need to restore
     // leading and trailing whitespace ourselves.
     let leading_trivia = if let Some(Segment::Separator(s)) = chunk.segments.first() {
@@ -61,7 +62,21 @@ fn titlecase_gruber(chunk: Chunk) -> String {
     } else {
         String::from("")
     };
-    let titilized = gruber_titlecase(chunk.to_string().as_ref());
+    let mut titilized = gruber_titlecase(chunk.to_string().as_ref());
+    if opts.overrides.is_some() {
+        let mut chunk: Chunk = titilized.into();
+        chunk.segments.iter_mut().for_each(|segment| {
+            if let Segment::Word(word) = segment {
+                word.word =
+                    if let Some(word) = get_override(word, &opts.overrides, |w| w.to_lowercase()) {
+                        word.to_string()
+                    } else {
+                        word.to_string()
+                    }
+            }
+        });
+        titilized = chunk.to_string();
+    }
     format!("{}{}{}", leading_trivia, titilized, trailing_trivia)
 }
 

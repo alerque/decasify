@@ -99,14 +99,14 @@ Then use the crate functions and types in your project something like this:
 
 ```rust
 use decasify::titlecase;
-use decasify::{Locale, StyleGuide};
+use decasify::{Locale, StyleGuide, StyleOptions};
 
 fn demo() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
-    let output = titlecase(input, Locale::TR, StyleGuide::LanguageDefault);
+    let output = titlecase(input, Locale::TR, StyleGuide::LanguageDefault, StyleOptions::default());
     eprintln! {"{output}"};
     let input = "title with a twist: a colon";
-    let output = titlecase(input, Locale::EN, StyleGuide::DaringFireball);
+    let output = titlecase(input, Locale::EN, StyleGuide::DaringFireball, StyleOptions::default());
     eprintln! {"{output}"};
 }
 ```
