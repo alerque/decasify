@@ -41,8 +41,11 @@ vim.api.nvim_create_user_command("Decasify", function (args)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
    local locale = args.fargs[2] or vim.b.decasify_locale or vim.g.decasify_locale or nil
    local style = args.fargs[3] or vim.b.decasify_style or vim.g.decasify_style or nil
+   local opts = {
+      overrides = args.fargs[4] and vim.split(args.fargs[4], ",") or {},
+   }
    local decase = function (input)
-      return decasify.case(input, case, locale, style)
+      return decasify.case(input, case, locale, style, opts)
    end
    -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
    local smark = vim.api.nvim_buf_get_mark(0, "<")[2]
