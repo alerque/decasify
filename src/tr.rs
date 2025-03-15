@@ -1,27 +1,32 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::content::{Chunk, Segment, Word};
-use crate::types::StyleGuide;
+use crate::content::{Chunk, Segment};
+use crate::get_override;
+use crate::types::{StyleGuide, StyleOptions, Word};
 
 use regex::Regex;
 use unicode_titlecase::tr_az::StrTrAzCasing;
 use unicode_titlecase::StrTitleCase;
 
-pub fn titlecase(chunk: Chunk, style: StyleGuide) -> String {
+pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String {
     match style {
-        StyleGuide::LanguageDefault => titlecase_tdk(chunk),
-        StyleGuide::TurkishLanguageInstitute => titlecase_tdk(chunk),
+        StyleGuide::LanguageDefault => titlecase_tdk(chunk, opts),
+        StyleGuide::TurkishLanguageInstitute => titlecase_tdk(chunk, opts),
         _ => todo!("Turkish implementation doesn't support different style guides."),
     }
 }
 
-fn titlecase_tdk(chunk: Chunk) -> String {
+fn titlecase_tdk(chunk: Chunk, opts: StyleOptions) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
         if let Segment::Word(word) = segment {
-            word.word = if !done_first {
+            word.word = if let Some(word) =
+                get_override(word, &opts.overrides, |w| w.to_lowercase_tr_az())
+            {
+                word.to_string()
+            } else if !done_first {
                 done_first = true;
                 word.to_titlecase_tr_or_az_lower_rest()
             } else {

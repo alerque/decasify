@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::*;
+use crate::types::*;
 use pyo3::prelude::*;
 
 #[pymodule]
@@ -9,6 +9,7 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<Case>()?;
     module.add_class::<Locale>()?;
     module.add_class::<StyleGuide>()?;
+    module.add_class::<StyleOptions>()?;
     module.add_function(wrap_pyfunction!(self::case, module)?)?;
     module.add_function(wrap_pyfunction!(self::titlecase, module)?)?;
     module.add_function(wrap_pyfunction!(self::lowercase, module)?)?;
@@ -20,15 +21,34 @@ fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
 }
 
 #[pyfunction]
-#[pyo3(signature = (input, case, locale, style=StyleGuide::LanguageDefault))]
-fn case(input: String, case: Case, locale: Locale, style: StyleGuide) -> PyResult<String> {
-    Ok(crate::case(&input, case, locale, style))
+#[pyo3(signature = (input, case, locale, style=StyleGuide::LanguageDefault, overrides=None))]
+fn case(
+    input: String,
+    case: Case,
+    locale: Locale,
+    style: StyleGuide,
+    overrides: Option<Vec<String>>,
+) -> PyResult<String> {
+    let opts = match overrides {
+        Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
+        None => StyleOptions::default(),
+    };
+    Ok(crate::case(&input, case, locale, style, opts))
 }
 
 #[pyfunction]
-#[pyo3(signature = (input, locale, style=StyleGuide::LanguageDefault))]
-fn titlecase(input: String, locale: Locale, style: StyleGuide) -> PyResult<String> {
-    Ok(crate::titlecase(&input, locale, style))
+#[pyo3(signature = (input, locale, style=StyleGuide::LanguageDefault, overrides=None))]
+fn titlecase(
+    input: String,
+    locale: Locale,
+    style: StyleGuide,
+    overrides: Option<Vec<String>>,
+) -> PyResult<String> {
+    let opts = match overrides {
+        Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
+        None => StyleOptions::default(),
+    };
+    Ok(crate::titlecase(&input, locale, style, opts))
 }
 
 #[pyfunction]

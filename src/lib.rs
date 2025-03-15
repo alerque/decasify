@@ -11,7 +11,7 @@ mod types;
 pub use content::Chunk;
 #[cfg(feature = "unstable-trait")]
 pub use traits::Decasify;
-pub use types::{Case, Locale, StyleGuide};
+pub use types::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder, Word};
 
 #[cfg(feature = "cli")]
 #[doc(hidden)]
@@ -38,16 +38,18 @@ pub fn case(
     case: impl Into<Case>,
     locale: impl Into<Locale>,
     style: impl Into<StyleGuide>,
+    opts: impl Into<StyleOptions>,
 ) -> String {
     let chunk: Chunk = chunk.into();
     let case: Case = case.into();
     let locale: Locale = locale.into();
     let style: StyleGuide = style.into();
+    let opts: StyleOptions = opts.into();
     match case {
         Case::Lower => lowercase(chunk, locale),
         Case::Upper => uppercase(chunk, locale),
         Case::Sentence => sentencecase(chunk, locale),
-        Case::Title => titlecase(chunk, locale, style),
+        Case::Title => titlecase(chunk, locale, style, opts),
     }
 }
 
@@ -56,13 +58,15 @@ pub fn titlecase(
     chunk: impl Into<Chunk>,
     locale: impl Into<Locale>,
     style: impl Into<StyleGuide>,
+    opts: impl Into<StyleOptions>,
 ) -> String {
     let chunk: Chunk = chunk.into();
     let locale: Locale = locale.into();
     let style: StyleGuide = style.into();
+    let opts: StyleOptions = opts.into();
     match locale {
-        Locale::EN => en::titlecase(chunk, style),
-        Locale::TR => tr::titlecase(chunk, style),
+        Locale::EN => en::titlecase(chunk, style, opts),
+        Locale::TR => tr::titlecase(chunk, style, opts),
     }
 }
 
@@ -94,4 +98,17 @@ pub fn sentencecase(chunk: impl Into<Chunk>, locale: impl Into<Locale>) -> Strin
         Locale::EN => en::sentencecase(chunk),
         Locale::TR => tr::sentencecase(chunk),
     }
+}
+
+fn get_override<F>(word: &Word, overrides: &Option<Vec<Word>>, case_fn: F) -> Option<Word>
+where
+    F: Fn(&String) -> String,
+{
+    let word_lower = case_fn(&word.word);
+    overrides.as_ref().and_then(|words| {
+        words
+            .iter()
+            .find(|w| case_fn(&w.word) == word_lower)
+            .cloned()
+    })
 }

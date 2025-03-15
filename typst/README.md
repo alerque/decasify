@@ -81,3 +81,25 @@ Now switch languages and show Turkish titlecasing:
 ```
 
 <img src="readme_2.svg" alt="Rendered output of Example Two" width="100%" />
+
+## Style Options
+
+Extra options can be passed to modify the case transformation style.
+For example you can pass an array of words in the exact case you want them output to override the normal casing rules.
+
+```typst
+#import "decasify.typ": *
+
+#set page(width: 148mm, height: auto, margin: 1cm)
+
+#let input = "foo bar"
+
+= Titlecase options
+
+Intput: #input
+
+- `overrides("fOO")` → #titlecase(input, overrides: ("fOO",))
+- `overrides("BAR")` → #titlecase(input, overrides: ("BAR",))
+```
+
+<img src="readme_3.svg" alt="Rendered output of Example Three" width="100%" />

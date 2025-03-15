@@ -3,21 +3,23 @@
 
 #let _plugin = plugin("decasify.wasm")
 
-#let decasify-string(text, case, lang, style) = {
-  str(_plugin.case(bytes(text), bytes(case), bytes(lang), bytes(style)))
+#let decasify-string(text, case, lang, style, overrides: none) = {
+  let overrides = if overrides != none { bytes(overrides.join(",")) } else { bytes("") }
+  str(_plugin.case(bytes(text), bytes(case), bytes(lang), bytes(style), overrides))
 }
 
-#let decasify(body, case, style: "default") = {
-  show regex(".+"): it => decasify(it.text, case, text.lang, style)
+#let decasify(body, case, style: "default", overrides: none) = {
+  show regex(".+"): it => decasify-string(it.text, case, text.lang, style, overrides: overrides)
   body
 }
 
-#let titlecase-string(text, lang, style) = {
-  str(_plugin.titlecase(bytes(text), bytes(lang), bytes(style)))
+#let titlecase-string(text, lang, style, overrides: none) = {
+  let overrides = if overrides != none { bytes(overrides.join(",")) } else { bytes("") }
+  str(_plugin.titlecase(bytes(text), bytes(lang), bytes(style), overrides))
 }
 
-#let titlecase(body, style: "default") = {
-  show regex(".+"): it => titlecase-string(it.text, text.lang, style)
+#let titlecase(body, style: "default", overrides: none) = {
+  show regex(".+"): it => titlecase-string(it.text, text.lang, style, overrides: overrides)
   body
 }
 

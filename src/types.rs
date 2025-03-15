@@ -22,6 +22,9 @@ pub enum Error {
 
     #[snafu(display("Invalid preferred style guide {}", input))]
     StyleGuide { input: String },
+
+    #[snafu(display("Invalid style options {}", input))]
+    StyleOptions { input: String },
 }
 
 // Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
@@ -34,9 +37,17 @@ impl std::fmt::Debug for Error {
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
+/// Just a single word
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+pub struct Word {
+    pub word: String,
+}
+
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
@@ -48,7 +59,7 @@ pub enum Locale {
 
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
@@ -61,8 +72,8 @@ pub enum Case {
 }
 
 /// Style guide selector to change grammar and context rules used for title casing.
-#[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq, eq_int))]
+#[derive(Display, VariantNames, Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
@@ -74,10 +85,67 @@ pub enum StyleGuide {
     #[strum(serialize = "gruber")]
     DaringFireball,
     #[strum(serialize = "default")]
-    #[default]
     LanguageDefault,
     #[strum(serialize = "tdk")]
     TurkishLanguageInstitute,
+}
+
+impl Default for StyleGuide {
+    fn default() -> Self {
+        Self::LanguageDefault
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+pub struct StyleOptions {
+    pub overrides: Option<Vec<Word>>,
+}
+
+impl From<&str> for StyleOptions {
+    fn from(s: &str) -> Self {
+        Self::from_str(s).unwrap()
+    }
+}
+
+impl FromStr for StyleOptions {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
+        match s.to_ascii_lowercase().as_str() {
+            "default" | "none" | "" => Ok(StyleOptions::default()),
+            input => StyleOptionsSnafu { input }.fail()?,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct StyleOptionsBuilder {
+    overrides: Option<Vec<Word>>,
+}
+
+impl Default for StyleOptionsBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl StyleOptionsBuilder {
+    pub fn new() -> Self {
+        Self { overrides: None }
+    }
+
+    pub fn overrides(mut self, words: Vec<impl Into<Word>>) -> Self {
+        let words: Vec<Word> = words.into_iter().map(|w| w.into()).collect();
+        self.overrides = Some(words);
+        self
+    }
+
+    pub fn build(self) -> StyleOptions {
+        StyleOptions {
+            overrides: self.overrides,
+        }
+    }
 }
 
 impl FromStr for Locale {
