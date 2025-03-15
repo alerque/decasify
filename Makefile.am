@@ -119,13 +119,8 @@ SILEASSETS = sile/readme_1.svg sile/readme_2.svg
 .PHONY: sile-package
 sile-package: $(SILEASSETS)
 
-# The path to the SILE module sources in this repository hijacks loading the
-# C module of the same name from the system; to avoid this we run SILE from
-# somewhere other than $(top_srcdir)...
 %.pdf: %.sil
-	cp $< target/
-	cd target
-	$(SILE) $(<F) -o ../$@
+	$(SILE) $< -o $@
 
 %.svg: %.pdf
 	$(PDF2SVG) $< $@
