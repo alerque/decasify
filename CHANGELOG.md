@@ -1,3 +1,10 @@
+## [0.10.1] - 2025-03-15
+
+### Bug Fixes
+
+- *(tooling)* Package image assets used in READMEs
+- *(tooling)* Don't force rebuild of SILE and Typst packages when building default target
+
 ## [0.10.0] - 2025-03-15
 
 ### Features
