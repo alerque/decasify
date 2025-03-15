@@ -1,6 +1,6 @@
 [package]
 name = "decasify"
-version = "0.9.1"
+version = "0.10.0"
 description = "A CLI utility and library to cast strings to title-case according to locale specific style guides including Turkish support"
 readme = "README.md"
 build = "build-aux/build.rs"
@@ -13,7 +13,7 @@ repository.workspace = true
 license.workspace = true
 
 [workspace.package]
-version = "0.9.1"
+version = "0.10.0"
 authors = ["Caleb Maclennan <caleb@alerque.com>"]
 homepage = "https://github.com/alerque/decasify"
 repository = "https://github.com/alerque/decasify"
@@ -65,7 +65,7 @@ wasm = ["dep:wasm-bindgen"]
 
 [workspace.dependencies.decasify]
 path = "."
-version = "0.9.1"
+version = "0.10.0"
 
 [dependencies]
 regex = "1.11"

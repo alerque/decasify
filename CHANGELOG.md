@@ -1,3 +1,18 @@
+## [0.10.0] - 2025-03-15
+
+### Features
+
+- *(lua)* Make Lua module callable for more idiomatic usage
+- *(crate)* Implement builder pattern for style options
+- *(crate)* Implement overriding case output for specific words
+- *(cli)* Implement word override as new option flag
+- *(python)* Bring casing override options to Python module
+- *(lua)* Bring casing override options to Lua module
+- *(typst)* Bring casing override options to Typst package
+- *(wasm)* Bring casing override options to JavaScript module
+- *(sile)* Bring casing override options to SILE package
+- *(nvim)* Bring casing override options to NeoVIM plugin
+
 ## [0.9.1] - 2025-03-01
 
 ### Bug Fixes

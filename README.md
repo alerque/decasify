@@ -92,7 +92,7 @@ In your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-decasify = "0.9"
+decasify = "0.10"
 ```
 
 Then use the crate functions and types in your project something like this:
@@ -222,7 +222,7 @@ The [decasify](https://typst.app/universe/package/decasify) package can be added
 The exact version must be specified explicitly:
 
 ```typst
-#import "@preview/decasify:0.9.1": *
+#import "@preview/decasify:0.10.0": *
 ```
 
 Specific functions for each case should be available throughout the document.
