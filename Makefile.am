@@ -68,8 +68,6 @@ EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
 
 EXTRA_DIST += typst/Cargo.toml typst/README.md typst/decasify.typ typst/src/lib.rs
 
-all-local: sile-package typst-package
-
 TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 
 $(TYPSTDIR):
