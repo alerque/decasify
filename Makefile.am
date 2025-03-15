@@ -14,7 +14,7 @@ decasify_SOURCES  = src/bin/decasify.rs src/content.rs src/cli.rs src/lib.rs src
 decasify_SOURCES += src/lua.rs src/python.rs src/wasm.rs
 decasify_SOURCES += src/en.rs src/tr.rs
 EXTRA_decasify_SOURCES = tests/cli.rs tests/lib.rs
-EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py plugin/decasify.lua sile/decasify.lua
+EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py plugin/decasify.lua sile/packages/decasify.lua
 dist_doc_DATA = README.md CHANGELOG.md
 dist_license_DATA = LICENSE.md
 nodist_man_MANS =
@@ -119,13 +119,8 @@ SILEASSETS = sile/readme_1.svg sile/readme_2.svg sile/readme_3.svg
 .PHONY: sile-package
 sile-package: $(SILEASSETS)
 
-# The path to the SILE module sources in this repository hijacks loading the
-# C module of the same name from the system; to avoid this we run SILE from
-# somewhere other than $(top_srcdir)...
 %.pdf: %.sil
-	cp $< target/
-	cd target
-	$(SILE) $(<F) -o ../$@
+	$(SILE) $< -o $@
 
 %.svg: %.pdf
 	$(PDF2SVG) $< $@

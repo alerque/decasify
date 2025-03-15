@@ -13,7 +13,7 @@ Includes support for Turkish and multiple style guides.
 ```typst
 #import "decasify.typ": *
 
-#set page(width: auto, height: auto, margin: 1cm)
+#set page(width: 148mm, height: auto, margin: 1cm)
 
 #set text(lang: "en")
 
@@ -42,7 +42,7 @@ Now switch languages and show Turkish titlecasing:
 ```typst
 #import "decasify.typ": *
 
-#set page(width: auto, height: auto, margin: 1cm)
+#set page(width: 148mm, height: auto, margin: 1cm)
 
 #let examples = (
   (str: "first impulse", lang: "en"),
