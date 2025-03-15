@@ -86,7 +86,9 @@ sile/readme_%.sil: sile/README.md $(CODEBLOCK_FILTER)
 	env 'OUTPUT_PATTERN=sile/readme_%s.sil' \
 		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
 
-TYPSTASSETS = typst/decasify.wasm typst/readme_1.svg typst/readme_2.svg typst/readme_3.svg typst/LICENSE
+TYPSTASSETS_TRACKED = typst/readme_1.svg typst/readme_2.svg typst/readme_3.svg
+TYPSTASSETS = typst/decasify.wasm $(TYPSTASSETS_TRACKED) typst/LICENSE
+EXTRA_DIST += $(TYPSTASSETS_TRACKED)
 
 .PHONY: typst-package
 typst-package: $(TYPSTASSETS)
@@ -115,6 +117,7 @@ typst/decasify.wasm: typst/src/lib.rs
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 
 SILEASSETS = sile/readme_1.svg sile/readme_2.svg sile/readme_3.svg
+EXTRA_DIST += $(SILEASSETS)
 
 .PHONY: sile-package
 sile-package: $(SILEASSETS)
