@@ -203,6 +203,8 @@ vim.g.decasify_case = "title"
 vim.b.decasify_locale = "tr"
 -- Change the default style guide globally
 vim.g.decasify_style = "gruber"
+-- Override casing of specific words
+vim.g.decasify_overrides = { "NASA", "SpaceX" }
 ```
 
 ## Use as a SILE package
