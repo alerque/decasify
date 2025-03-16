@@ -41,8 +41,9 @@ vim.api.nvim_create_user_command("Decasify", function (args)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
    local locale = args.fargs[2] or vim.b.decasify_locale or vim.g.decasify_locale or nil
    local style = args.fargs[3] or vim.b.decasify_style or vim.g.decasify_style or nil
+   local overrides = vim.b.decasify_overrides or vim.g.decasify_overrides or {}
    local opts = {
-      overrides = args.fargs[4] and vim.split(args.fargs[4], ",") or {},
+      overrides = args.fargs[4] and vim.split(args.fargs[4], ",") or overrides,
    }
    local decase = function (input)
       return decasify.case(input, case, locale, style, opts)
