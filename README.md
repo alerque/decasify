@@ -211,10 +211,15 @@ vim.g.decasify_overrides = { "NASA", "SpaceX" }
 
 [The SILE Typesetter](https://sile-typesetter.org/) leverages LuaRocks to manage 3rd party packages.
 The [decasify.sile][rock.sile] rock can be installed with `luarocks install decasify.sile`.
-Typically you'll want to adjust the Lua version to match your SILE installation, perhaps with `luarocks --lua $(sile -q <<< SILE.lua_version) install decasify.sile`.
-Additionally you make want to use `--local` to install to your user account instead of the system root, or `--tree lua_modules` to install locally inside a single project.
-Loading it in a SILE document uses the usual `\use[module=package.decasify]` (see notes in the SILE manual about setting package paths if you installed via `--local`).
-Once loaded the package exposes a `\decasify{}` function that can take any combination of `case`, `locale`, and `style` settings and applies the appropriate transformation to the content.
+Typically you'll want to adjust the Lua version to match your SILE installation, something like:
+
+```console
+$ luarocks --lua $(sile -q <<< SILE.lua_version) install decasify.sile
+```
+
+Additionally you may want to use `--local` to install to your user account instead of the system root, or `--tree lua_modules` to install locally inside a single project.
+Loading the package in a SILE document uses the usual `\use[module=package.decasify]` (see notes in the SILE manual about setting package paths if you installed via `--local`).
+Once loaded, the package exposes a `\decasify{}` function that can take any combination of `case`, `locale`, and `style` settings and applies the appropriate transformation to the content.
 By default it will track the language of the document content.
 
 ## Use as a Typst package
