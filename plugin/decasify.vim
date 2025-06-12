@@ -14,29 +14,21 @@ endif
 function! s:Decasify(startln, endln, ...) range abort
   let l:cmd = printf('%d,%d!decasify', a:startln, a:endln)
 
-  if exists('b:decasify_case') && !empty(b:decasify_case)
-    let l:cmd .= ' --case ' . shellescape(b:decasify_case)
-  elseif exists('g:decasify_case') && !empty(g:decasify_case)
-    let l:cmd .= ' --case ' . shellescape(g:decasify_case)
-  endif
+  let l:opts = ['case','locale','style','overrides']
+  for l:opt in l:opts
+    let l:val = get(b:, 'decasify_' . l:opt, get(g:, 'decasify_' . l:opt, ''))
+    if empty(l:val)
+      continue
+    endif
 
-  if exists('b:decasify_locale') && !empty(b:decasify_locale)
-    let l:cmd .= ' --locale ' . shellescape(b:decasify_locale)
-  elseif exists('g:decasify_locale') && !empty(g:decasify_locale)
-    let l:cmd .= ' --locale ' . shellescape(g:decasify_locale)
-  endif
+    if type(l:val) == v:t_list
+      let l:val_str = join(l:val, ' ')
+    else
+      let l:val_str = l:val
+    endif
 
-  if exists('b:decasify_style') && !empty(b:decasify_style)
-    let l:cmd .= ' --style ' . shellescape(b:decasify_style)
-  elseif exists('g:decasify_style') && !empty(g:decasify_style)
-    let l:cmd .= ' --style ' . shellescape(g:decasify_style)
-  endif
-
-  if exists('b:decasify_overrides') && !empty(b:decasify_overrides)
-    let l:cmd .= ' --overrides ' . shellescape(join(b:decasify_overrides, ' '))
-  elseif exists('g:decasify_overrides') && !empty(g:decasify_overrides)
-    let l:cmd .= ' --overrides ' . shellescape(join(g:decasify_overrides, ' '))
-  endif
+    let l:cmd .= ' --' . l:opt . ' ' . shellescape(l:val_str)
+  endfor
 
   " append any extra args passed by the user
   for l:arg in a:000
