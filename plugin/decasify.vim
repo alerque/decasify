@@ -6,6 +6,10 @@ if has('nvim') && empty(g:decasify_force_cli)
   finish
 endif
 
+if exists('g:loaded_decasify')
+  finish
+endif
+
 if executable('decasify') == 0
   echoerr 'decasify: external command not found in $PATH; plugin disabled'
   finish
@@ -43,3 +47,5 @@ endfunction
 " Visual-select then :Decasify [args]
 " (passes all [args] to `decasify`)
 command! -range -nargs=* Decasify call <SID>Decasify(<line1>, <line2>, <f-args>)
+
+let g:loaded_decasify = v:true
