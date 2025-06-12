@@ -213,12 +213,12 @@ The VIM plugin depends on having the `decasify` CLI tool available in your syste
 This is in contrast to the NeoVIM plugin which loads the Lua Rock directly as a library and never needs to spawn a shell process.
 This does mean you must install the CLI separately on your own.
 
-* Using a plugin manager use this repository.
+* Using a plugin manager such as [vim-plug](https://github.com/junegunn/vim-plug) to enable this repository.
 
-    ```lua
-    -- for packer.nvim
-    use { "alerque/decasify" }
-    ```
+```vim
+" for vim-plug
+Plug 'alerque/decasify'
+```
 
 A new command `:Decasify` will become available that transforms the current line or any range of lines.
 Any arguments passed to the command will be passed through to the CLI tool.
