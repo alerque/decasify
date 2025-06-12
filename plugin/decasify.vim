@@ -2,7 +2,7 @@
 " SPDX-License-Identifier: LGPL-3.0-only
 
 " Ignore this file from NeoVIM which will run the Lua base plugin instead
-if has('nvim')
+if has('nvim') && empty(g:decasify_force_cli)
   finish
 endif
 
