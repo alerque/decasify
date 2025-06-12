@@ -1,6 +1,16 @@
 -- SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 -- SPDX-License-Identifier: LGPL-3.0-only
 
+-- Ignore this Lua file if somebody attempts to load it in VIM instead of NeoVIM
+if not vim then
+   return
+end
+
+-- Ignore this Lua plugin if the vimscript one (that depneds on the CLI instead of a LuaRock) is forced
+if vim.g.decasify_force_cli then
+  return
+end
+
 if vim.g.loaded_decasify then
    return
 end

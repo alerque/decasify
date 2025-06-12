@@ -11,7 +11,7 @@
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 [![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
-A CLI utility, Rust crate, Lua rock, Python module, JavaScript module, Neovim plugin, SILE package, and Typst package to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua rock, Python module, JavaScript module, Neovim or VIM plugin, SILE package, and Typst package to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
 
 This project was born out of frustration with authors and editors leaving ALL CAPS TITLES in Markdown sources.
 No tooling I could find properly supported casting these to title-cased strings (which are more versatile for typesetting purposes).
@@ -205,6 +205,35 @@ vim.b.decasify_locale = "tr"
 vim.g.decasify_style = "gruber"
 -- Override casing of specific words
 vim.g.decasify_overrides = { "NASA", "SpaceX" }
+```
+
+## Use as a VIM plugin
+
+The VIM plugin depends on having the `decasify` CLI tool available in your system $PATH.
+This is in contrast to the NeoVIM plugin which loads the Lua Rock directly as a library and never needs to spawn a shell process.
+This does mean you must install the CLI separately on your own.
+
+* Using a plugin manager use this repository.
+
+    ```lua
+    -- for packer.nvim
+    use { "alerque/decasify" }
+    ```
+
+A new command `:Decasify` will become available that transforms the current line or any range of lines.
+Any arguments passed to the command will be passed through to the CLI tool.
+
+The default case, locale, and style guide can be changed (before or after loading) with global or buffer local variables:
+
+```vim
+" Set the default target case globally
+let g:decasify_case = "title"
+" Change the locale for the current buffer
+let g:decasify_locale = "tr"
+" Change the default style guide globally
+let g:decasify_style = "gruber"
+" Override casing of specific words
+let g:decasify_overrides = "NASA SpaceX"
 ```
 
 ## Use as a SILE package
