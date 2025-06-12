@@ -192,6 +192,7 @@ console.log(output)
     ```
 
 * Using no plugin manager, make sure the [decasify Rock][rock] is installed matching the version of Lua NeoVIM is built with, then copy `plugin/decasify.lua` to wherever your user's plugin directory is.
+  As an alternative to installing the LuaRock, you can also force NeoVIM to use the vimscript plugin that uses the CLI command, in which case you will need to install the CLI tool separately, then `vim.g.decasify_force_cli = true` in your `init.lua`.
 
 A new command `:Decasify` will become available (with optional subcommands for cases other than title case) that transforms the current line or any range of lines.
 The default case, locale, and style guide can be changed (before or after loading) with global or buffer local variables:
