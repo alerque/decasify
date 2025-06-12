@@ -33,9 +33,9 @@ function! s:Decasify(startln, endln, ...) range abort
   endif
 
   if exists('b:decasify_overrides') && !empty(b:decasify_overrides)
-    let l:cmd .= ' --overrides ' . shellescape(b:decasify_overrides)
+    let l:cmd .= ' --overrides ' . shellescape(join(b:decasify_overrides, ' '))
   elseif exists('g:decasify_overrides') && !empty(g:decasify_overrides)
-    let l:cmd .= ' --overrides ' . shellescape(g:decasify_overrides)
+    let l:cmd .= ' --overrides ' . shellescape(join(g:decasify_overrides, ' '))
   endif
 
   " append any extra args passed by the user

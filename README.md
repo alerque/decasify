@@ -234,7 +234,7 @@ let g:decasify_locale = "tr"
 " Change the default style guide globally
 let g:decasify_style = "gruber"
 " Override casing of specific words
-let g:decasify_overrides = "NASA SpaceX"
+let g:decasify_overrides = ['NASA', 'SpaceX']
 ```
 
 ## Use as a SILE package
