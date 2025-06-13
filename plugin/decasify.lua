@@ -1,6 +1,12 @@
 -- SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 -- SPDX-License-Identifier: LGPL-3.0-only
 
+-- Ignore this Lua file if somebody attempts to load it in VIM instead of NeoVIM
+-- or if the vimscript one (that depends on the CLI instead of a LuaRock) is forced
+if not vim or vim.g.decasify_force_cli then
+  return
+end
+
 if vim.g.loaded_decasify then
    return
 end
@@ -41,8 +47,12 @@ vim.api.nvim_create_user_command("Decasify", function (args)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
    local locale = args.fargs[2] or vim.b.decasify_locale or vim.g.decasify_locale or nil
    local style = args.fargs[3] or vim.b.decasify_style or vim.g.decasify_style or nil
+   local overrides = vim.b.decasify_overrides or vim.g.decasify_overrides or {}
+   local opts = {
+      overrides = args.fargs[4] and vim.split(args.fargs[4], ",") or overrides,
+   }
    local decase = function (input)
-      return decasify.case(input, case, locale, style)
+      return decasify.case(input, case, locale, style, opts)
    end
    -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
    local smark = vim.api.nvim_buf_get_mark(0, "<")[2]

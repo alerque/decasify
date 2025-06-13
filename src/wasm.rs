@@ -7,13 +7,26 @@ use std::result::Result;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn case(input: &str, case: Case, locale: Locale, style: StyleGuide) -> Result<String, JsError> {
-    Ok(crate::case(input, case, locale, style))
+pub fn case(
+    input: &str,
+    case: Case,
+    locale: Locale,
+    style: StyleGuide,
+    opts: Option<StyleOptions>,
+) -> Result<String, JsError> {
+    let opts = opts.unwrap_or_default();
+    Ok(crate::case(input, case, locale, style, opts))
 }
 
 #[wasm_bindgen]
-pub fn titlecase(input: &str, locale: Locale, style: StyleGuide) -> Result<String, JsError> {
-    Ok(crate::titlecase(input, locale, style))
+pub fn titlecase(
+    input: &str,
+    locale: Locale,
+    style: StyleGuide,
+    opts: Option<StyleOptions>,
+) -> Result<String, JsError> {
+    let opts = opts.unwrap_or_default();
+    Ok(crate::titlecase(input, locale, style, opts))
 }
 
 #[wasm_bindgen]

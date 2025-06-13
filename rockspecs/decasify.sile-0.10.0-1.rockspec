@@ -1,10 +1,11 @@
-rockspec_format = "3.0"
-package = "@PACKAGE_NAME@.sile"
-version = "@SEMVER@-@ROCKREV@"
+rockspec_format = "1.0"
+package = "decasify.sile"
+version = "0.10.0-1"
 
 source = {
    url = "git+https://github.com/alerque/decasify.git",
-   tag = "@TAG@",
+   dir = "decasify",
+   tag = "v0.10.0",
 }
 
 description = {
@@ -16,9 +17,6 @@ description = {
    ]],
    license = "LGPL-3.0-only",
    homepage = "https://github.com/alerque/decasify",
-   issues_url = "https://github.com/alerque/decasify/issues",
-   maintainer = "Caleb Maclennan <caleb@alerque.com>",
-   labels = { "i18n" },
 }
 
 dependencies = {

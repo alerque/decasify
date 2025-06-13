@@ -31,6 +31,6 @@ dependencies = {
 build = {
    type = "builtin",
    modules = {
-      ["sile.packages.decasify"] = "sile/decasify.lua",
+      ["sile.packages.decasify"] = "sile/packages/decasify.lua",
    },
 }

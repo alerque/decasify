@@ -47,6 +47,14 @@ pub struct Cli {
     #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(StyleGuide))]
     pub style: StyleGuide,
 
+    /// Override words
+    ///
+    /// Override the output case of specific words regardless of what the casing function or style
+    /// guide would normally do with them. The case used to specify these words is used in the
+    /// output regardless of the target style or input case.
+    #[clap(short = 'O', long, num_args(1..))]
+    pub overrides: Option<Vec<String>>,
+
     /// The input string or strings (note STDIN also accepted)
     ///
     /// Note that all input arguments are processed together joined with a space, and STDIN streams

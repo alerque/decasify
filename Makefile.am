@@ -14,7 +14,7 @@ decasify_SOURCES  = src/bin/decasify.rs src/content.rs src/cli.rs src/lib.rs src
 decasify_SOURCES += src/lua.rs src/python.rs src/wasm.rs
 decasify_SOURCES += src/en.rs src/tr.rs
 EXTRA_decasify_SOURCES = tests/cli.rs tests/lib.rs
-EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py plugin/decasify.lua sile/decasify.lua
+EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py plugin/decasify.lua sile/packages/decasify.lua
 dist_doc_DATA = README.md CHANGELOG.md
 dist_license_DATA = LICENSE.md
 nodist_man_MANS =
@@ -68,8 +68,6 @@ EXTRA_DIST += $(REL_SPEC) $(REL_SPEC_NVIM) $(REL_SPEC_SILE)
 
 EXTRA_DIST += typst/Cargo.toml typst/README.md typst/decasify.typ typst/src/lib.rs
 
-all-local: sile-package typst-package
-
 TYPSTDIR ?= preview/$(TRANSFORMED_PACKAGE_NAME)/$(SEMVER)
 
 $(TYPSTDIR):
@@ -86,7 +84,9 @@ sile/readme_%.sil: sile/README.md $(CODEBLOCK_FILTER)
 	env 'OUTPUT_PATTERN=sile/readme_%s.sil' \
 		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
 
-TYPSTASSETS = typst/decasify.wasm typst/readme_1.svg typst/readme_2.svg typst/LICENSE
+TYPSTASSETS_TRACKED = typst/readme_1.svg typst/readme_2.svg typst/readme_3.svg
+TYPSTASSETS = typst/decasify.wasm $(TYPSTASSETS_TRACKED) typst/LICENSE
+EXTRA_DIST += $(TYPSTASSETS_TRACKED)
 
 .PHONY: typst-package
 typst-package: $(TYPSTASSETS)
@@ -114,18 +114,14 @@ typst/decasify.wasm: typst/src/lib.rs
 	$(TYPST) compile -f svg $< $@
 	$(SVGO) --multipass --precision 2 --pretty --indent 2 $@
 
-SILEASSETS = sile/readme_1.svg sile/readme_2.svg
+SILEASSETS = sile/readme_1.svg sile/readme_2.svg sile/readme_3.svg
+EXTRA_DIST += $(SILEASSETS)
 
 .PHONY: sile-package
 sile-package: $(SILEASSETS)
 
-# The path to the SILE module sources in this repository hijacks loading the
-# C module of the same name from the system; to avoid this we run SILE from
-# somewhere other than $(top_srcdir)...
 %.pdf: %.sil
-	cp $< target/
-	cd target
-	$(SILE) $(<F) -o ../$@
+	$(SILE) $< -o $@
 
 %.svg: %.pdf
 	$(PDF2SVG) $< $@

@@ -3,7 +3,7 @@
 
 use decasify::cli::Cli;
 use decasify::{lowercase, sentencecase, titlecase, uppercase};
-use decasify::{Case, Locale, StyleGuide};
+use decasify::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder};
 
 use snafu::prelude::*;
 
@@ -49,6 +49,13 @@ fn main() -> Result<()> {
         .get_one::<StyleGuide>("style")
         .context(StyleGuideSnafu)?
         .to_owned();
+    let opts = if let Some(overrides) = matches.get_many::<String>("overrides") {
+        StyleOptionsBuilder::new()
+            .overrides(overrides.collect())
+            .build()
+    } else {
+        StyleOptions::default()
+    };
     match matches.contains_id("input") {
         true => {
             let input: Vec<String> = matches
@@ -57,13 +64,20 @@ fn main() -> Result<()> {
                 .cloned()
                 .collect();
             let input: Vec<String> = vec![input.join(" ")];
-            process(input.iter().map(|ln| ln.to_string()), *locale, case, style);
+            process(
+                input.iter().map(|ln| ln.to_string()),
+                *locale,
+                case,
+                style,
+                opts,
+            );
         }
         false => process(
             io::stdin().lock().lines().map(|ln| ln.unwrap()),
             *locale,
             case,
             style,
+            opts,
         ),
     }
     Ok(())
@@ -74,10 +88,11 @@ fn process<I: IntoIterator<Item = String>>(
     locale: Locale,
     case: Case,
     style: StyleGuide,
+    opts: StyleOptions,
 ) {
     for string in strings {
         let output = match case {
-            Case::Title => titlecase(string, locale, style),
+            Case::Title => titlecase(string, locale, style.clone(), opts.clone()),
             Case::Lower => lowercase(string, locale),
             Case::Upper => uppercase(string, locale),
             Case::Sentence => sentencecase(string, locale),
