@@ -164,8 +164,9 @@ busted: install-luarock
 	packagecpath=($${LUA_CPATH})
 	$(BUSTED) -v --lpath="$${packagepath[*]};;" --cpath="$${packagecpath[*]};;" $(BUSTEDFLAGS) .
 
+pytest: export UV_PYTHON ?= 3.13.7
 pytest:
-	$(UV) venv --python 3.13.3
+	$(UV) venv --clear
 	source .venv/bin/activate
 	$(MATURIN) develop
 	env PYTHONPATH=.venv/lib/python3.13/site-packages/decasify $(PYTEST)

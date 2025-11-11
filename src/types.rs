@@ -77,6 +77,7 @@ pub enum Case {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
+#[derive(Default)]
 pub enum StyleGuide {
     #[strum(serialize = "ap")]
     AssociatedPress,
@@ -85,15 +86,10 @@ pub enum StyleGuide {
     #[strum(serialize = "gruber")]
     DaringFireball,
     #[strum(serialize = "default")]
+    #[default]
     LanguageDefault,
     #[strum(serialize = "tdk")]
     TurkishLanguageInstitute,
-}
-
-impl Default for StyleGuide {
-    fn default() -> Self {
-        Self::LanguageDefault
-    }
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
