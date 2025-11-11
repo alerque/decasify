@@ -48,7 +48,7 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
         },
     )?;
     mt.set("__call", decasify)?;
-    exports.set_metatable(Some(mt));
+    exports.set_metatable(Some(mt))?;
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let version = lua.create_string(version)?;
     exports.set("version", version)?;
