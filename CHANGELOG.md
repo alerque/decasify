@@ -1,3 +1,15 @@
+## [0.10.2] - 2025-11-11
+
+### Features
+
+- *(nvim)* Allow override words table to be set ahead of time
+- *(vim)* Initialize non-Lua plugin for plain VIM users
+- *(vim)* Allow override of default options using VIM globals
+- *(nvim)* Allow forcing NeoVIM to load the vimscript plugin and depend on the CLI
+
+### Bug Fixes
+
+- *(tooling)* Fix `uv` usage to allow rebuilds without interactive prompt
 ## [0.10.1] - 2025-03-15
 
 ### Bug Fixes
