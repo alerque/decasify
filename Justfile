@@ -18,7 +18,9 @@ rel-conf: nuke-n-pave
     ./configure --enable-developer-mode
     make
 
-perfect:
+alias perfect := lint
+
+lint:
     make check lint
 
 restyle:
