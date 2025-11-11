@@ -45,3 +45,4 @@ luacov.stats.out
 # Python
 tests/__pycache__
 decasify-*.whl
+.venv
