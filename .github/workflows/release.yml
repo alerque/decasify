@@ -25,6 +25,7 @@ jobs:
           ./bootstrap.sh
           ./configure \
               BUSTED=: \
+              CARGO_DENY=: \
               CARGO_SET_VERSION=: \
               GIT_CLIFF=: \
               JUST=: \
@@ -34,6 +35,7 @@ jobs:
               PANDOC=: \
               PDF2SVG=: \
               PYTEST=: \
+              REUSE=: \
               SILE=: \
               SVGO=: \
               TAPLO=: \
