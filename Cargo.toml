@@ -150,15 +150,6 @@ command = [
 features = ["luamodule", "luajit", "pythonmodule", "wasm", "unstable-trait"]
 rustdoc-args = ["--cfg", "docsrs"]
 
-[package.metadata.bacon.jobs.pytest]
-env.PYTHONPATH =".venv/lib/python3.13/site-packages/decasify"
-command = [
-   "pytest"
-]
-need_stdout = true
-analyzer = "python_pytest"
-watch = ["."]
-
 [package.metadata.git-cliff.git]
 protect_breaking_commits = true
 commit_parsers = [

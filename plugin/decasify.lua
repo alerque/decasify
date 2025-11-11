@@ -4,7 +4,7 @@
 -- Ignore this Lua file if somebody attempts to load it in VIM instead of NeoVIM
 -- or if the vimscript one (that depends on the CLI instead of a LuaRock) is forced
 if not vim or vim.g.decasify_force_cli then
-  return
+   return
 end
 
 if vim.g.loaded_decasify then
