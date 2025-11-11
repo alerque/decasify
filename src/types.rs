@@ -185,10 +185,12 @@ impl TryFrom<&String> for Locale {
     }
 }
 
-impl From<&[u8]> for Locale {
-    fn from(s: &[u8]) -> Self {
-        let s = String::from_utf8(s.to_vec()).unwrap();
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&[u8]> for Locale {
+    type Error = Error;
+
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }
 
@@ -226,10 +228,12 @@ impl TryFrom<&String> for Case {
     }
 }
 
-impl From<&[u8]> for Case {
-    fn from(s: &[u8]) -> Self {
-        let s = String::from_utf8(s.to_vec()).unwrap();
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&[u8]> for Case {
+    type Error = Error;
+
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }
 
@@ -270,18 +274,20 @@ impl TryFrom<&String> for StyleGuide {
     }
 }
 
-impl From<&[u8]> for StyleGuide {
-    fn from(s: &[u8]) -> Self {
-        let s = String::from_utf8(s.to_vec()).unwrap();
-        Self::from_str(s.as_ref()).unwrap()
-    }
-}
-
 impl From<Option<StyleGuide>> for StyleGuide {
     fn from(style: Option<StyleGuide>) -> Self {
         match style {
             Some(style) => style,
             None => StyleGuide::LanguageDefault,
         }
+    }
+}
+
+impl TryFrom<&[u8]> for StyleGuide {
+    type Error = Error;
+
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }
