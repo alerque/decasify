@@ -16,7 +16,7 @@ decasify_SOURCES += src/en.rs src/tr.rs
 EXTRA_decasify_SOURCES = tests/cli.rs tests/lib.rs
 EXTRA_DIST = pyproject.toml spec/decasify_spec.lua tests/test_all.py plugin/decasify.lua sile/packages/decasify.lua
 dist_doc_DATA = README.md CHANGELOG.md
-dist_license_DATA = LICENSE.md
+dist_license_DATA = LICENSES/LGPL-3.0-only.txt
 nodist_man_MANS =
 
 BUILT_SOURCES =
@@ -91,7 +91,7 @@ EXTRA_DIST += $(TYPSTASSETS_TRACKED)
 .PHONY: typst-package
 typst-package: $(TYPSTASSETS)
 
-typst/LICENSE: LICENSE.md
+typst/LICENSE: $(dist_license_DATA)
 	$(PANDOC) $< -t plain -o $@
 
 .PHONY: typst-release
@@ -130,10 +130,15 @@ sile-package: $(SILEASSETS)
 
 check-local: busted pytest
 
-PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview reuse-lint
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
 
 if DEVELOPER_MODE
+
+lint: reuse-lint
+
+reuse-lint:
+	$(REUSE) lint
 
 release-preview:
 	$(GIT_CLIFF) --unreleased

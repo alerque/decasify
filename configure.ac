@@ -39,6 +39,7 @@ AM_COND_IF([DEVELOPER_MODE], [
     AX_REQUIRE_PROG([cargo-deny])
     AX_REQUIRE_PROG([cargo-set-version])
     AX_REQUIRE_PROG([git-cliff])
+    AX_REQUIRE_PROG([reuse])
     AX_REQUIRE_PROG([taplo])
     AX_REQUIRE_PROG([typos])
 ])
