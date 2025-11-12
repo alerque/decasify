@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use snafu::prelude::*;
+use std::convert::{Infallible, TryFrom};
 use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
 use strum_macros::{Display, VariantNames};
@@ -33,6 +34,12 @@ pub enum Error {
 impl Debug for Error {
     fn fmt(&self, fmt: &mut Formatter) -> std::fmt::Result {
         Display::fmt(self, fmt)
+    }
+}
+
+impl From<Infallible> for Error {
+    fn from(_: Infallible) -> Self {
+        unreachable!()
     }
 }
 
@@ -100,12 +107,6 @@ pub struct StyleOptions {
     pub overrides: Option<Vec<Word>>,
 }
 
-impl From<&str> for StyleOptions {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
-    }
-}
-
 impl FromStr for StyleOptions {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
@@ -113,6 +114,13 @@ impl FromStr for StyleOptions {
             "default" | "none" | "" => Ok(StyleOptions::default()),
             input => StyleOptionsSnafu { input }.fail()?,
         }
+    }
+}
+
+impl TryFrom<&str> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
@@ -156,21 +164,24 @@ impl FromStr for Locale {
     }
 }
 
-impl From<&str> for Locale {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
+impl TryFrom<&str> for Locale {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<String> for Locale {
-    fn from(s: String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<String> for Locale {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
     }
 }
 
-impl From<&String> for Locale {
-    fn from(s: &String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&String> for Locale {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
@@ -194,21 +205,24 @@ impl FromStr for Case {
     }
 }
 
-impl From<&str> for Case {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
+impl TryFrom<&str> for Case {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<String> for Case {
-    fn from(s: String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<String> for Case {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
     }
 }
 
-impl From<&String> for Case {
-    fn from(s: &String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&String> for Case {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
@@ -235,21 +249,24 @@ impl FromStr for StyleGuide {
     }
 }
 
-impl From<&str> for StyleGuide {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
+impl TryFrom<&str> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<String> for StyleGuide {
-    fn from(s: String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<String> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
     }
 }
 
-impl From<&String> for StyleGuide {
-    fn from(s: &String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&String> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 

@@ -14,14 +14,13 @@ fn main() -> Result<()> {
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
     let app = Cli::command().version(version);
     let matches = app.get_matches();
-    let case = matches
-        .get_one::<Case>("case")
-        .unwrap_or(&Case::default())
-        .to_owned();
-    eprintln! {"case: {case:?}"};
     let locale = matches
         .get_one::<Locale>("locale")
         .unwrap_or(&Locale::default())
+        .to_owned();
+    let case = matches
+        .get_one::<Case>("case")
+        .unwrap_or(&Case::default())
         .to_owned();
     let style = matches
         .get_one::<StyleGuide>("style")
@@ -44,21 +43,17 @@ fn main() -> Result<()> {
             let input: Vec<String> = vec![input.join(" ")];
             process(
                 input.iter().map(|ln| ln.to_string()),
-                *locale,
+                locale,
                 case,
                 style,
                 opts,
-            );
+            )
         }
-        false => process(
-            io::stdin().lock().lines().map(|ln| ln.unwrap()),
-            *locale,
-            case,
-            style,
-            opts,
-        ),
+        false => {
+            let stdin = io::stdin().lock().lines().map(|ln| ln.unwrap());
+            process(stdin, locale, case, style, opts)
+        }
     }
-    Ok(())
 }
 
 fn process<I: IntoIterator<Item = String>>(
@@ -67,15 +62,16 @@ fn process<I: IntoIterator<Item = String>>(
     case: Case,
     style: StyleGuide,
     opts: StyleOptions,
-) {
+) -> Result<()> {
     for string in strings {
         let output = match case {
-            Case::Title => titlecase(string, locale, style.clone(), opts.clone()),
-            Case::Lower => lowercase(string, locale),
-            Case::Upper => uppercase(string, locale),
-            Case::Sentence => sentencecase(string, locale),
+            Case::Title => titlecase(string, locale, style.clone(), opts.clone())?,
+            Case::Lower => lowercase(string, locale)?,
+            Case::Upper => uppercase(string, locale)?,
+            Case::Sentence => sentencecase(string, locale)?,
             _ => unreachable!(),
         };
-        println!("{output}")
+        println!("{output}");
     }
+    Ok(())
 }

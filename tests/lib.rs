@@ -5,11 +5,11 @@ use decasify::*;
 
 #[test]
 fn cast_from_str() {
-    let res = titlecase("FIST", "en", "gruber", "default");
+    let res = titlecase("FIST", "en", "gruber", "default").unwrap();
     assert_eq!(res, "Fist");
-    let res = titlecase("FIST", "tr", "", "default");
+    let res = titlecase("FIST", "tr", "", "default").unwrap();
     assert_eq!(res, "Fıst");
-    let res = titlecase("FIST", "tr", "default", "default");
+    let res = titlecase("FIST", "tr", "default", "default").unwrap();
     assert_eq!(res, "Fıst");
 }
 
@@ -20,16 +20,17 @@ fn cast_from_legacy_option() {
         "en",
         Some(StyleGuide::DaringFireball),
         StyleOptions::default(),
-    );
+    )
+    .unwrap();
     assert_eq!(res, "Fist");
-    let res = titlecase("FIST", "en", None, StyleOptions::default());
+    let res = titlecase("FIST", "en", None, StyleOptions::default()).unwrap();
     assert_eq!(res, "Fist");
 }
 
 #[test]
 fn custom_style_guide() {
     let options: StyleOptions = StyleOptionsBuilder::new().overrides(vec!["fOO"]).build();
-    let res = titlecase("foo bar", "tr", StyleGuide::LanguageDefault, options);
+    let res = titlecase("foo bar", "tr", StyleGuide::LanguageDefault, options).unwrap();
     assert_eq!(res, "fOO Bar");
 }
 
@@ -53,7 +54,7 @@ macro_rules! case {
     ($name:ident, $case:expr, $locale:expr, $style:expr, $opts:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = case($input, $case, $locale, $style, $opts);
+            let actual = case($input, $case, $locale, $style, $opts).unwrap();
             assert_eq!(actual, $expected);
         }
     };
@@ -103,7 +104,7 @@ macro_rules! titlecase {
     ($name:ident, $locale:expr, $style:expr, $opts:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = titlecase($input, $locale, $style, $opts);
+            let actual = titlecase($input, $locale, $style, $opts).unwrap();
             assert_eq!(actual, $expected);
         }
     };
@@ -247,7 +248,7 @@ macro_rules! lowercase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = lowercase($input, $locale);
+            let actual = lowercase($input, $locale).unwrap();
             assert_eq!(actual, $expected);
         }
     };
@@ -266,7 +267,7 @@ macro_rules! uppercase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = uppercase($input, $locale);
+            let actual = uppercase($input, $locale).unwrap();
             assert_eq!(actual, $expected);
         }
     };
@@ -285,7 +286,7 @@ macro_rules! sentencecase {
     ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
         #[test]
         fn $name() {
-            let actual = sentencecase($input, $locale);
+            let actual = sentencecase($input, $locale).unwrap();
             assert_eq!(actual, $expected);
         }
     };
