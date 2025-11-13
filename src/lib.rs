@@ -6,12 +6,13 @@
 
 mod content;
 mod traits;
-mod types;
+pub mod types;
 
 pub use content::Chunk;
 #[cfg(feature = "unstable-trait")]
 pub use traits::Decasify;
 pub use types::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder, Word};
+pub use types::{Error, Result};
 
 #[cfg(feature = "cli")]
 #[doc(hidden)]

@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use anyhow::Result;
-use decasify::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder};
 use wasm_minimal_protocol::{initiate_protocol, wasm_func};
+
+use decasify::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder};
 
 initiate_protocol!();
 

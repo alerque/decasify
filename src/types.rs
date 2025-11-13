@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
+use snafu::prelude::*;
+use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
 use strum_macros::{Display, VariantNames};
-
-use snafu::prelude::*;
 
 #[cfg(feature = "pythonmodule")]
 use pyo3::prelude::*;
@@ -13,25 +13,26 @@ use pyo3::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[derive(Snafu)]
+#[snafu(visibility(pub))]
 pub enum Error {
-    #[snafu(display("Invalid input language {}", input))]
+    #[snafu(display("Invalid input language '{input}'"))]
     Locale { input: String },
 
-    #[snafu(display("Invalid target case {}", input))]
+    #[snafu(display("Invalid target case '{input}'"))]
     Case { input: String },
 
-    #[snafu(display("Invalid preferred style guide {}", input))]
+    #[snafu(display("Invalid preferred style guide '{input}'"))]
     StyleGuide { input: String },
 
-    #[snafu(display("Invalid style options {}", input))]
+    #[snafu(display("Invalid style options '{input}'"))]
     StyleOptions { input: String },
 }
 
 // Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
 // So we delegate. c.f. https://github.com/shepmaster/snafu/issues/110
-impl std::fmt::Debug for Error {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, fmt)
+impl Debug for Error {
+    fn fmt(&self, fmt: &mut Formatter) -> std::fmt::Result {
+        Display::fmt(self, fmt)
     }
 }
 

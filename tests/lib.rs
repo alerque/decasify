@@ -36,7 +36,7 @@ fn custom_style_guide() {
 #[cfg(feature = "unstable-trait")]
 #[test]
 fn trait_chery() {
-    use decasify::Decasify;
+    use Decasify::Decasify;
     let s = "WHY THE LONG FACE?";
     assert_eq!(s.to_case("sentence", "en", None), "Why the long face?");
     assert_eq!(
