@@ -4,6 +4,12 @@
 use crate::types::*;
 use pyo3::prelude::*;
 
+impl From<crate::types::Error> for PyErr {
+    fn from(err: crate::types::Error) -> Self {
+        pyo3::exceptions::PyValueError::new_err(err.to_string())
+    }
+}
+
 #[pymodule]
 fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<Case>()?;
@@ -33,7 +39,7 @@ fn case(
         Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
         None => StyleOptions::default(),
     };
-    Ok(crate::case(&input, case, locale, style, opts))
+    Ok(crate::case(&input, case, locale, style, opts)?)
 }
 
 #[pyfunction]
@@ -48,23 +54,23 @@ fn titlecase(
         Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
         None => StyleOptions::default(),
     };
-    Ok(crate::titlecase(&input, locale, style, opts))
+    Ok(crate::titlecase(&input, locale, style, opts)?)
 }
 
 #[pyfunction]
 #[pyo3(signature = (input, locale))]
 fn lowercase(input: String, locale: Locale) -> PyResult<String> {
-    Ok(crate::lowercase(&input, locale))
+    Ok(crate::lowercase(&input, locale)?)
 }
 
 #[pyfunction]
 #[pyo3(signature = (input, locale))]
 fn uppercase(input: String, locale: Locale) -> PyResult<String> {
-    Ok(crate::uppercase(&input, locale))
+    Ok(crate::uppercase(&input, locale)?)
 }
 
 #[pyfunction]
 #[pyo3(signature = (input, locale))]
 fn sentencecase(input: String, locale: Locale) -> PyResult<String> {
-    Ok(crate::sentencecase(&input, locale))
+    Ok(crate::sentencecase(&input, locale)?)
 }

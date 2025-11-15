@@ -1,13 +1,11 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-pub use crate::types::Word;
-
 use regex::Regex;
 use std::{borrow::Cow, fmt, fmt::Display, str::FromStr};
 use unicode_titlecase::StrTitleCase;
 
-use snafu::prelude::*;
+use crate::types::{Error, Result, Word};
 
 #[derive(Clone, Debug)]
 #[non_exhaustive]
@@ -21,22 +19,6 @@ pub enum Segment {
     Separator(String),
     Word(Word),
 }
-
-#[derive(Snafu)]
-pub enum Error {
-    #[snafu(display("Unable to cast str to Chunk"))]
-    StrToChunk {},
-}
-
-// Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
-// So we delegate. c.f. https://github.com/shepmaster/snafu/issues/110
-impl std::fmt::Debug for Error {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, fmt)
-    }
-}
-
-pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 fn split_chunk(s: &str) -> Chunk {
     let mut segments: Vec<Segment> = Vec::new();
