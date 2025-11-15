@@ -168,6 +168,7 @@ extend-ignore-identifiers-re = ["[bB][aA][zZ]"]
 
 [package.metadata.typos.default.extend-words]
 runing = "running"
+walm = "wasm"
 
 [package.metadata.typos.files]
 ignore-hidden = false
