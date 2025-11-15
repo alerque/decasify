@@ -31,7 +31,7 @@ jobs:
               JUST=: \
               LUAROCKS=: \
               MATURIN=: \
-              NPM: \
+              NPM=: \
               PANDOC=: \
               PDF2SVG=: \
               PYTEST=: \
