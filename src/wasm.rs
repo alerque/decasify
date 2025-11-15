@@ -15,7 +15,7 @@ pub fn case(
     opts: Option<StyleOptions>,
 ) -> Result<String, JsError> {
     let opts = opts.unwrap_or_default();
-    Ok(crate::case(input, case, locale, style, opts))
+    Ok(crate::case(input, case, locale, style, opts)?)
 }
 
 #[wasm_bindgen]
@@ -26,20 +26,20 @@ pub fn titlecase(
     opts: Option<StyleOptions>,
 ) -> Result<String, JsError> {
     let opts = opts.unwrap_or_default();
-    Ok(crate::titlecase(input, locale, style, opts))
+    Ok(crate::titlecase(input, locale, style, opts)?)
 }
 
 #[wasm_bindgen]
 pub fn lowercase(input: &str, locale: Locale) -> Result<String, JsError> {
-    Ok(crate::lowercase(input, locale))
+    Ok(crate::lowercase(input, locale)?)
 }
 
 #[wasm_bindgen]
 pub fn uppercase(input: &str, locale: Locale) -> Result<String, JsError> {
-    Ok(crate::uppercase(input, locale))
+    Ok(crate::uppercase(input, locale)?)
 }
 
 #[wasm_bindgen]
 pub fn sentencecase(input: &str, locale: Locale) -> Result<String, JsError> {
-    Ok(crate::sentencecase(input, locale))
+    Ok(crate::sentencecase(input, locale)?)
 }

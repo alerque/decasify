@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
+use snafu::prelude::*;
+use std::convert::{Infallible, TryFrom};
+use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
 use strum_macros::{Display, VariantNames};
-
-use snafu::prelude::*;
 
 #[cfg(feature = "pythonmodule")]
 use pyo3::prelude::*;
@@ -13,25 +14,32 @@ use pyo3::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[derive(Snafu)]
+#[snafu(visibility(pub))]
 pub enum Error {
-    #[snafu(display("Invalid input language {}", input))]
+    #[snafu(display("Invalid input language '{input}'"))]
     Locale { input: String },
 
-    #[snafu(display("Invalid target case {}", input))]
+    #[snafu(display("Invalid target case '{input}'"))]
     Case { input: String },
 
-    #[snafu(display("Invalid preferred style guide {}", input))]
+    #[snafu(display("Invalid preferred style guide '{input}'"))]
     StyleGuide { input: String },
 
-    #[snafu(display("Invalid style options {}", input))]
+    #[snafu(display("Invalid style options '{input}'"))]
     StyleOptions { input: String },
 }
 
 // Clap CLI errors are reported using the Debug trait, but Snafu sets up the Display trait.
 // So we delegate. c.f. https://github.com/shepmaster/snafu/issues/110
-impl std::fmt::Debug for Error {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, fmt)
+impl Debug for Error {
+    fn fmt(&self, fmt: &mut Formatter) -> std::fmt::Result {
+        Display::fmt(self, fmt)
+    }
+}
+
+impl From<Infallible> for Error {
+    fn from(_: Infallible) -> Self {
+        unreachable!()
     }
 }
 
@@ -99,12 +107,6 @@ pub struct StyleOptions {
     pub overrides: Option<Vec<Word>>,
 }
 
-impl From<&str> for StyleOptions {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
-    }
-}
-
 impl FromStr for StyleOptions {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
@@ -112,6 +114,35 @@ impl FromStr for StyleOptions {
             "default" | "none" | "" => Ok(StyleOptions::default()),
             input => StyleOptionsSnafu { input }.fail()?,
         }
+    }
+}
+
+impl TryFrom<&str> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
+    }
+}
+
+impl TryFrom<String> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
+    }
+}
+
+impl TryFrom<&String> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
+    }
+}
+
+impl TryFrom<&[u8]> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }
 
@@ -155,28 +186,33 @@ impl FromStr for Locale {
     }
 }
 
-impl From<&str> for Locale {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
+impl TryFrom<&str> for Locale {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<String> for Locale {
-    fn from(s: String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<String> for Locale {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
     }
 }
 
-impl From<&String> for Locale {
-    fn from(s: &String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&String> for Locale {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<&[u8]> for Locale {
-    fn from(s: &[u8]) -> Self {
-        let s = String::from_utf8(s.to_vec()).unwrap();
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&[u8]> for Locale {
+    type Error = Error;
+
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }
 
@@ -193,28 +229,33 @@ impl FromStr for Case {
     }
 }
 
-impl From<&str> for Case {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
+impl TryFrom<&str> for Case {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<String> for Case {
-    fn from(s: String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<String> for Case {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
     }
 }
 
-impl From<&String> for Case {
-    fn from(s: &String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&String> for Case {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<&[u8]> for Case {
-    fn from(s: &[u8]) -> Self {
-        let s = String::from_utf8(s.to_vec()).unwrap();
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&[u8]> for Case {
+    type Error = Error;
+
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }
 
@@ -234,28 +275,24 @@ impl FromStr for StyleGuide {
     }
 }
 
-impl From<&str> for StyleGuide {
-    fn from(s: &str) -> Self {
-        Self::from_str(s).unwrap()
+impl TryFrom<&str> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
-impl From<String> for StyleGuide {
-    fn from(s: String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<String> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
     }
 }
 
-impl From<&String> for StyleGuide {
-    fn from(s: &String) -> Self {
-        Self::from_str(s.as_ref()).unwrap()
-    }
-}
-
-impl From<&[u8]> for StyleGuide {
-    fn from(s: &[u8]) -> Self {
-        let s = String::from_utf8(s.to_vec()).unwrap();
-        Self::from_str(s.as_ref()).unwrap()
+impl TryFrom<&String> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
     }
 }
 
@@ -265,5 +302,14 @@ impl From<Option<StyleGuide>> for StyleGuide {
             Some(style) => style,
             None => StyleGuide::LanguageDefault,
         }
+    }
+}
+
+impl TryFrom<&[u8]> for StyleGuide {
+    type Error = Error;
+
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
     }
 }

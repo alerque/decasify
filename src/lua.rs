@@ -4,33 +4,95 @@
 use crate::*;
 use mlua::prelude::*;
 
+use crate::types::{Error, Result};
+
+macro_rules! impl_into_luaresult {
+    ($($t:ty),*) => {
+        $(
+            impl Into<LuaResult<$t>> for $t {
+                fn into(self) -> LuaResult<$t> {
+                    Ok(self)
+                }
+            }
+        )*
+    };
+}
+
+impl_into_luaresult!(Locale, Case, StyleGuide, StyleOptions);
+
+impl From<Error> for LuaError {
+    fn from(err: Error) -> LuaError {
+        LuaError::RuntimeError(err.to_string())
+    }
+}
+
+impl TryFrom<LuaString> for Locale {
+    type Error = Error;
+    fn try_from(s: LuaString) -> Result<Self> {
+        s.to_string_lossy().try_into()
+    }
+}
+
+impl TryFrom<LuaString> for Case {
+    type Error = Error;
+    fn try_from(s: LuaString) -> Result<Self> {
+        s.to_string_lossy().try_into()
+    }
+}
+
+impl TryFrom<LuaString> for StyleGuide {
+    type Error = Error;
+    fn try_from(s: LuaString) -> Result<Self> {
+        s.to_string_lossy().try_into()
+    }
+}
+
 #[mlua::lua_module]
 fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table()?;
     exports.set(
         "case",
-        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide, StyleOptions)>(case),
+        lua.create_function(
+            |_,
+             (chunk, case_, locale, styleguide, styleoptions): (
+                Chunk,
+                Case,
+                Locale,
+                StyleGuide,
+                StyleOptions,
+            )| { Ok(case(chunk, case_, locale, styleguide, styleoptions)?) },
+        )?,
     )?;
     exports.set(
         "titlecase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide, StyleOptions)>(titlecase),
+        lua.create_function(
+            |_,
+             (chunk, locale, styleguide, styleoptions): (
+                Chunk,
+                Locale,
+                StyleGuide,
+                StyleOptions,
+            )| { Ok(titlecase(chunk, locale, styleguide, styleoptions)?) },
+        )?,
     )?;
     exports.set(
         "lowercase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(lowercase),
+        lua.create_function(|_, (chunk, locale): (Chunk, Locale)| Ok(lowercase(chunk, locale)?))?,
     )?;
     exports.set(
         "uppercase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(uppercase),
+        lua.create_function(|_, (chunk, locale): (Chunk, Locale)| Ok(uppercase(chunk, locale)?))?,
     )?;
     exports.set(
         "sentencecase",
-        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(sentencecase),
+        lua.create_function(|_, (chunk, locale): (Chunk, Locale)| {
+            Ok(sentencecase(chunk, locale)?)
+        })?,
     )?;
     let mt = lua.create_table()?;
     let decasify = lua.create_function(
         move |_,
-              (_, chunk, case_, locale, styleguide, opts): (
+              (_, chunk, case_, locale, styleguide, styleoptions): (
             LuaTable,
             Chunk,
             Case,
@@ -43,8 +105,8 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
                 case_,
                 locale,
                 styleguide,
-                opts.unwrap_or_default(),
-            ))
+                styleoptions.unwrap_or_default(),
+            )?)
         },
     )?;
     mt.set("__call", decasify)?;
@@ -58,10 +120,12 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
 #[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
 impl FromLua for Chunk {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
-        match value {
-            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
-            _ => Ok("".into()),
+        let chunk = match value {
+            LuaValue::String(s) => s.to_string_lossy(),
+            _ => String::from(""),
         }
+        .into();
+        Ok(chunk)
     }
 }
 
@@ -69,10 +133,11 @@ impl FromLua for Chunk {
 impl FromLua for Locale {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
         match value {
-            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
-            LuaValue::Nil => Ok(Self::default()),
-            _ => unimplemented!(),
+            LuaValue::String(s) => s.try_into()?,
+            LuaValue::Nil => Self::default(),
+            _ => value.to_string().unwrap_or_default().try_into()?,
         }
+        .into()
     }
 }
 
@@ -80,10 +145,11 @@ impl FromLua for Locale {
 impl FromLua for Case {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
         match value {
-            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
-            LuaValue::Nil => Ok(Self::default()),
-            _ => unimplemented!(),
+            LuaValue::String(s) => s.try_into()?,
+            LuaValue::Nil => Self::default(),
+            _ => value.to_string().unwrap_or_default().try_into()?,
         }
+        .into()
     }
 }
 
@@ -91,10 +157,11 @@ impl FromLua for Case {
 impl FromLua for StyleGuide {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
         match value {
-            LuaValue::String(s) => Ok(s.to_string_lossy().into()),
-            LuaValue::Nil => Ok(Self::default()),
-            _ => unimplemented!(),
+            LuaValue::String(s) => s.try_into()?,
+            LuaValue::Nil => Self::default(),
+            _ => value.to_string().unwrap_or_default().try_into()?,
         }
+        .into()
     }
 }
 
@@ -113,10 +180,11 @@ impl FromLua for StyleOptions {
                         .collect();
                     builder = builder.overrides(overrides);
                 }
-                Ok(builder.build())
+                builder.build()
             }
-            LuaValue::Nil => Ok(Self::default()),
-            _ => unimplemented!(),
+            LuaValue::Nil => Self::default(),
+            _ => value.to_string().unwrap_or_default().try_into()?,
         }
+        .into()
     }
 }
