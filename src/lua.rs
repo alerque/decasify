@@ -4,8 +4,21 @@
 use crate::*;
 use mlua::prelude::*;
 
-use crate::types::{CaseSnafu, LocaleSnafu, StyleGuideSnafu, StyleOptionsSnafu};
 use crate::types::{Error, Result};
+
+macro_rules! impl_into_luaresult {
+    ($($t:ty),*) => {
+        $(
+            impl Into<LuaResult<$t>> for $t {
+                fn into(self) -> LuaResult<$t> {
+                    Ok(self)
+                }
+            }
+        )*
+    };
+}
+
+impl_into_luaresult!(Locale, Case, StyleGuide, StyleOptions);
 
 impl From<Error> for LuaError {
     fn from(err: Error) -> LuaError {
@@ -107,59 +120,55 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
 #[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
 impl FromLua for Chunk {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
-        Ok(match value {
-            LuaValue::String(s) => s.to_string_lossy().into(),
-            _ => "".into(),
-        })
+        let chunk = match value {
+            LuaValue::String(s) => s.to_string_lossy(),
+            _ => String::from(""),
+        }
+        .into();
+        Ok(chunk)
     }
 }
 
 #[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
 impl FromLua for Locale {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
-        Ok(match value {
+        match value {
             LuaValue::String(s) => s.try_into()?,
             LuaValue::Nil => Self::default(),
-            _ => LocaleSnafu {
-                input: value.to_string().unwrap_or_default(),
-            }
-            .fail()?,
-        })
+            _ => value.to_string().unwrap_or_default().try_into()?,
+        }
+        .into()
     }
 }
 
 #[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
 impl FromLua for Case {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
-        Ok(match value {
+        match value {
             LuaValue::String(s) => s.try_into()?,
             LuaValue::Nil => Self::default(),
-            _ => CaseSnafu {
-                input: value.to_string().unwrap_or_default(),
-            }
-            .fail()?,
-        })
+            _ => value.to_string().unwrap_or_default().try_into()?,
+        }
+        .into()
     }
 }
 
 #[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
 impl FromLua for StyleGuide {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
-        Ok(match value {
+        match value {
             LuaValue::String(s) => s.try_into()?,
             LuaValue::Nil => Self::default(),
-            _ => StyleGuideSnafu {
-                input: value.to_string().unwrap_or_default(),
-            }
-            .fail()?,
-        })
+            _ => value.to_string().unwrap_or_default().try_into()?,
+        }
+        .into()
     }
 }
 
 #[cfg_attr(docsrs, doc(cfg(feature = "luamodule")))]
 impl FromLua for StyleOptions {
     fn from_lua(value: LuaValue, _: &Lua) -> LuaResult<Self> {
-        Ok(match value {
+        match value {
             LuaValue::Table(t) => {
                 let mut builder = StyleOptionsBuilder::new();
                 if let Ok(overrides_table) = t.get::<LuaTable>("overrides") {
@@ -174,10 +183,8 @@ impl FromLua for StyleOptions {
                 builder.build()
             }
             LuaValue::Nil => Self::default(),
-            _ => StyleOptionsSnafu {
-                input: value.to_string().unwrap_or_default(),
-            }
-            .fail()?,
-        })
+            _ => value.to_string().unwrap_or_default().try_into()?,
+        }
+        .into()
     }
 }

@@ -124,6 +124,28 @@ impl TryFrom<&str> for StyleOptions {
     }
 }
 
+impl TryFrom<String> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: String) -> Result<Self> {
+        Self::from_str(&s)
+    }
+}
+
+impl TryFrom<&String> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: &String) -> Result<Self> {
+        Self::from_str(s)
+    }
+}
+
+impl TryFrom<&[u8]> for StyleOptions {
+    type Error = Error;
+    fn try_from(s: &[u8]) -> Result<Self> {
+        let s = String::from_utf8_lossy(s);
+        Self::from_str(&s)
+    }
+}
+
 #[derive(Debug)]
 pub struct StyleOptionsBuilder {
     overrides: Option<Vec<Word>>,
