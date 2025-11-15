@@ -1,3 +1,20 @@
+## [0.11.0] - 2025-11-15
+
+### Features
+
+- *(typst)* Bubble up conversion errors as Typst panics avoiding WASM 'unimplemented' traps
+- *(lua)* Bubble up conversion errors from into Lua result types
+- *(lua)* Enable casting Table and other types to enums via __tostring()
+- *(python)* Bubble up conversion errors into Python result types
+- *(wasm)* Bubble up conversion errors into JS results
+
+### Bug Fixes
+
+- *(ci)* Keep release process from hanging up without cargo tooling
+
+### Refactor
+
+- *(crate)* [**breaking**] Implement TryFrom instead of From to avoid panics
 ## [0.10.2] - 2025-11-11
 
 ### Features
