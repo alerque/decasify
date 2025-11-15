@@ -1,3 +1,10 @@
+## [0.11.1] - 2025-11-15
+
+### Bug Fixes
+
+- *(ci)* Fix gremlins in the automated release process
+- *(tooling)* Protect targets from running `env :` in CI and failing instead of skipping
+- *(tooling)* Don't force build all targets for default make target
 ## [0.11.0] - 2025-11-15
 
 ### Features
