@@ -36,6 +36,9 @@ rel-conf: nuke-n-pave
     ./configure --enable-developer-mode
     {{ make }}
 
+build:
+    {{ make }} build
+
 check:
     {{ make }} check
 
@@ -43,7 +46,7 @@ lint:
     {{ make }} lint
 
 perfect:
-    {{ make }} check lint
+    {{ make }} build check lint
 
 restyle:
     {{ git }} ls-files '*.lua' '*.lua.in' '*.rockspec.in' .busted .luacov .luacheckrc build-aux/config.ld | xargs {{ stylua }} --respect-ignores

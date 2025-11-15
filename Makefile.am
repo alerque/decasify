@@ -36,6 +36,17 @@ DISTCLEANFILES = @AMINCLUDE@
 # functionality and hence can use conditionals in included makefile fragments.
 include $(top_srcdir)/aminclude.am
 
+all-local: build
+
+.PHONY: build
+build: typst-package sile-package wasm-pack
+
+.PHONY: wasm-pack
+wasm-pack: pkg/decasify_bg.wasm
+
+pkg/decasify_bg.wasm: src/wasm.rs
+	$(WASM_PACK) build --features wasm
+
 SEMVER := $(shell $(CARGO) read-manifest | $(JQ) -r .version)
 ROCKREV = 1
 TAG := v$(SEMVER)
