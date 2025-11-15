@@ -87,13 +87,13 @@ $(TYPSTDIR):
 CODEBLOCK_FILTER = build-aux/extract_codeblocks.lua
 EXTRA_DIST += $(CODEBLOCK_FILTER)
 
+typst/readme_%.typ: PANDOC_ENV := OUTPUT_PATTERN=typst/readme_%s.typ
 typst/readme_%.typ: typst/README.md $(CODEBLOCK_FILTER)
-	env 'OUTPUT_PATTERN=typst/readme_%s.typ' \
-		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
+	$(PANDOC_ENV) $(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
 
+sile/readme_%.sil: PANDOC_ENV := OUTPUT_PATTERN=sile/readme_%s.sil
 sile/readme_%.sil: sile/README.md $(CODEBLOCK_FILTER)
-	env 'OUTPUT_PATTERN=sile/readme_%s.sil' \
-		$(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
+	$(PANDOC_ENV) $(PANDOC) --lua-filter $(CODEBLOCK_FILTER) -t plain $< -o /dev/null
 
 TYPSTASSETS_TRACKED = typst/readme_1.svg typst/readme_2.svg typst/readme_3.svg
 TYPSTASSETS = typst/decasify.wasm $(TYPSTASSETS_TRACKED) typst/LICENSE
