@@ -17,13 +17,13 @@ rsync := require('rsync')
 rustfmt := require('rustfmt')
 stylua := require('stylua')
 taplo := require('taplo')
+vim := require('vim')
 wasm-pack := require('wasm-pack')
 wget := require('wget')
 
-alias list := _list
-
 [default]
-@_list:
+[private]
+@list:
     @{{ just }} --list --unsorted
 
 nuke-n-pave:
@@ -85,17 +85,20 @@ typst-package:
     {{ make }} typst-package
 
 [no-cd]
-preview-nvim *ARGS: (preview nvim + ' --clean' ARGS)
+preview-nvim *ARGS: (preview nvim + ' --clean' 'plugin/decasify.lua' ARGS)
+
+[no-cd]
+preview-vim *ARGS: (preview vim + ' --clean' 'plugin/decasify.vim' ARGS)
 
 [no-cd]
 [private]
-preview vimcmd *ARGS:
-    {{ make }} rockspecs
+preview vimcmd plugin *ARGS:
+    {{ make }} decasify rockspecs
     {{ luarocks }} --tree lua_modules --lua-version 5.1 make decasify-dev-1.rockspec
-    env $({{ luarocks }} --tree lua_modules --lua-version 5.1 path | sed -e 's/export //') \
+    env PATH=".:$PATH" $({{ luarocks }} --tree lua_modules --lua-version 5.1 path | sed -e 's/export //') \
     {{ vimcmd }} \
     	-c {{ quote("let &runtimepath=\"" + justfile_directory() + ",\" . &runtimepath") }} \
-    	-c 'source plugin/decasify.lua' \
+    	-c 'source {{ plugin }}' \
     	{{ ARGS }}
 
 [doc('Block execution if we don’t have access to private keys.')]
