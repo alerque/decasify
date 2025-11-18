@@ -31,6 +31,7 @@ pub mod python;
 pub mod wasm;
 
 mod en;
+mod es;
 mod tr;
 
 /// Convert a string to a specific case following typesetting conventions for a target locale
@@ -85,6 +86,7 @@ where
     let opts: StyleOptions = opts.try_into()?;
     Ok(match locale {
         Locale::EN => en::titlecase(chunk, style, opts),
+        Locale::ES => es::titlecase(chunk, style, opts),
         Locale::TR => tr::titlecase(chunk, style, opts),
     })
 }
@@ -99,6 +101,7 @@ where
     let locale: Locale = locale.try_into()?;
     Ok(match locale {
         Locale::EN => en::lowercase(chunk),
+        Locale::ES => es::lowercase(chunk),
         Locale::TR => tr::lowercase(chunk),
     })
 }
@@ -113,6 +116,7 @@ where
     let locale: Locale = locale.try_into()?;
     Ok(match locale {
         Locale::EN => en::uppercase(chunk),
+        Locale::ES => es::uppercase(chunk),
         Locale::TR => tr::uppercase(chunk),
     })
 }
@@ -127,6 +131,7 @@ where
     let locale: Locale = locale.try_into()?;
     Ok(match locale {
         Locale::EN => en::sentencecase(chunk),
+        Locale::ES => es::sentencecase(chunk),
         Locale::TR => tr::sentencecase(chunk),
     })
 }

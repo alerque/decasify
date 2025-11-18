@@ -79,9 +79,9 @@ end, {
       if arg_index == 1 then
          return filter({ "lower", "sentence", "title", "upper" })
       elseif arg_index == 2 then
-         return filter({ "en", "tr" })
+         return filter({ "en", "es", "tr" })
       elseif arg_index == 3 then
-         return filter({ "ap", "cmos", "default", "grubber", "tdk" })
+         return filter({ "ap", "cmos", "default", "grubber", "rae", "tdk" })
       else
          return {}
       end

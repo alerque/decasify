@@ -58,9 +58,9 @@ function! s:DecasifyComplete(arg_lead, cmd_line, _) abort
   if l:arg_index == 1
     let l:candidates = ['lower', 'sentence', 'title', 'upper']
   elseif l:arg_index == 2
-    let l:candidates = ['en', 'tr']
+    let l:candidates = ['en', 'es', 'tr']
   elseif l:arg_index == 3
-    let l:candidates = ['ap', 'cmos', 'default', 'grubber', 'tdk']
+    let l:candidates = ['ap', 'cmos', 'default', 'grubber', 'rae', 'tdk']
   else
     let l:candidates = []
   endif

@@ -62,6 +62,7 @@ pub struct Word {
 pub enum Locale {
     #[default]
     EN,
+    ES,
     TR,
 }
 
@@ -96,6 +97,8 @@ pub enum StyleGuide {
     #[strum(serialize = "default")]
     #[default]
     LanguageDefault,
+    #[strum(serialize = "rae")]
+    RealAcademiaEspanola,
     #[strum(serialize = "tdk")]
     TurkishLanguageInstitute,
 }
@@ -180,6 +183,7 @@ impl FromStr for Locale {
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "en" | "english" | "en_en" => Ok(Locale::EN),
+            "es" | "spanish" | "es_es" | "español" => Ok(Locale::ES),
             "tr" | "turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
             input => LocaleSnafu { input }.fail()?,
         }
@@ -266,6 +270,7 @@ impl FromStr for StyleGuide {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "rae" | "realacademiaespanola" => Ok(StyleGuide::RealAcademiaEspanola),
             "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
             "default" | "languagedefault" | "language" | "none" | "" => {
                 Ok(StyleGuide::LanguageDefault)
