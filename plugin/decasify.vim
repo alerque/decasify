@@ -42,10 +42,29 @@ function! s:Decasify(startln, endln, ...) range abort
   execute l:cmd
 endfunction
 
+function! s:DecasifyComplete(arg_lead, cmd_line, _) abort
+  let l:parts = split(a:cmd_line, '\s\+', 0)
+  if !empty(l:parts)
+    call remove(l:parts, 0)
+  endif
+  let l:trailing_space = a:cmd_line[-1:] =~# '\s'
+  let l:arg_index = len(l:parts) + (l:trailing_space ? 1 : 0)
+  if l:arg_index == 1
+    let l:candidates = ['lower', 'sentence', 'title', 'upper']
+  elseif l:arg_index == 2
+    let l:candidates = ['en', 'tr']
+  elseif l:arg_index == 3
+    let l:candidates = ['ap', 'cmos', 'default', 'grubber', 'tdk']
+  else
+    let l:candidates = []
+  endif
+  return filter(l:candidates, { _, v -> v =~? '^' . a:arg_lead })
+endfunction
+
 " :Decasify [args]            – current line
 " :<range>Decasify [args]     – explicit range
 " Visual-select then :Decasify [args]
 " (passes all [args] to `decasify`)
-command! -range -nargs=* Decasify call <SID>Decasify(<line1>, <line2>, <f-args>)
+command! -range -nargs=* -complete=customlist,<SID>DecasifyComplete Decasify call <SID>Decasify(<line1>, <line2>, <f-args>)
 
 let g:loaded_decasify = v:true
