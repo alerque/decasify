@@ -91,6 +91,16 @@ case!(
 );
 
 case!(
+    trivia_es,
+    Case::Title,
+    Locale::ES,
+    StyleGuide::LanguageDefault,
+    StyleOptions::default(),
+    "  foo  bar  ",
+    "  Foo  Bar  "
+);
+
+case!(
     trivia_tr,
     Case::Title,
     Locale::TR,
@@ -200,6 +210,42 @@ titlecase!(
 );
 
 titlecase!(
+    rae_articles,
+    Locale::ES,
+    StyleGuide::LanguageDefault,
+    StyleOptions::default(),
+    "el libro del autor",
+    "El Libro del Autor"
+);
+
+titlecase!(
+    rae_holiday,
+    Locale::ES,
+    StyleGuide::RealAcademiaEspanola,
+    StyleOptions::default(),
+    "DÍA DE los muertos",
+    "Día de los Muertos"
+);
+
+titlecase!(
+    rae_magazine,
+    Locale::ES,
+    StyleGuide::RealAcademiaEspanola,
+    StyleOptions::default(),
+    "cien años DE soledad",
+    "Cien Años de Soledad"
+);
+
+titlecase!(
+    rae_prepositions,
+    Locale::ES,
+    StyleGuide::LanguageDefault,
+    StyleOptions::default(),
+    "en la casa de mi madre",
+    "En la Casa de Mi Madre"
+);
+
+titlecase!(
     turkish_question,
     Locale::TR,
     StyleGuide::LanguageDefault,
@@ -256,6 +302,8 @@ macro_rules! lowercase {
 
 lowercase!(lower_en, Locale::EN, "foo BAR BaZ BIKE", "foo bar baz bike");
 
+lowercase!(lower_es, Locale::ES, "Hola MUNDO", "hola mundo");
+
 lowercase!(
     lower_tr,
     Locale::TR,
@@ -274,6 +322,8 @@ macro_rules! uppercase {
 }
 
 uppercase!(upper_en, Locale::EN, "foo BAR BaZ bike", "FOO BAR BAZ BIKE");
+
+uppercase!(upper_es, Locale::ES, "hola MUNDo", "HOLA MUNDO");
 
 uppercase!(
     upper_tr,
@@ -298,5 +348,7 @@ sentencecase!(
     "insert BIKE here",
     "Insert bike here"
 );
+
+sentencecase!(sentence_es, Locale::ES, "hola MUNDO", "Hola mundo");
 
 sentencecase!(sentence_tr, Locale::TR, "ilk DAVRANSIN", "İlk davransın");
