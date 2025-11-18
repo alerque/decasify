@@ -62,6 +62,30 @@ vim.api.nvim_create_user_command("Decasify", function (args)
    else
       replace_visual_selection(decase)
    end
-end, { desc = "Pass lines to decasify for recasing prose", nargs = "*", range = true })
+end, {
+   desc = "Pass lines to decasify for recasing prose",
+   nargs = "*",
+   range = true,
+   complete = function (arg_lead, cmd_line, _)
+      local parts = vim.split(cmd_line, "%s+", { trimempty = true })
+      table.remove(parts, 1)
+      local trailing_space = cmd_line:sub(-1):match("%s") ~= nil
+      local arg_index = #parts + (trailing_space and 1 or 0)
+      local function filter (list)
+         return vim.tbl_filter(function (item)
+            return item:find("^" .. arg_lead)
+         end, list)
+      end
+      if arg_index == 1 then
+         return filter({ "lower", "sentence", "title", "upper" })
+      elseif arg_index == 2 then
+         return filter({ "en", "tr" })
+      elseif arg_index == 3 then
+         return filter({ "ap", "cmos", "default", "grubber", "tdk" })
+      else
+         return {}
+      end
+   end,
+})
 
 vim.g.loaded_decasify = true
