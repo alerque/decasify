@@ -35,8 +35,14 @@ function! s:Decasify(startln, endln, ...) range abort
   endfor
 
   " append any extra args passed by the user
-  for l:arg in a:000
-    let l:cmd .= ' ' . shellescape(l:arg)
+  for idx in range(0, len(a:000)-1)
+    if l:idx == 0
+      let l:cmd .= ' --case ' . a:000[l:idx]
+    elseif l:idx == 1
+      let l:cmd .= ' --locale ' . a:000[l:idx]
+    elseif l:idx == 2
+      let l:cmd .= ' --style ' . a:000[l:idx]
+    endif
   endfor
 
   execute l:cmd
