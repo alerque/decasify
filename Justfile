@@ -9,8 +9,10 @@ gh := require('gh')
 git := require('git')
 gpg := require('gpg')
 just := just_executable()
+luarocks := require('luarocks')
 make := require('make')
 maturin := require('maturin')
+nvim := require('nvim')
 rsync := require('rsync')
 rustfmt := require('rustfmt')
 stylua := require('stylua')
@@ -81,6 +83,20 @@ sile-package:
 [private]
 typst-package:
     {{ make }} typst-package
+
+[no-cd]
+preview-nvim *ARGS: (preview nvim + ' --clean' ARGS)
+
+[no-cd]
+[private]
+preview vimcmd *ARGS:
+    {{ make }} rockspecs
+    {{ luarocks }} --tree lua_modules --lua-version 5.1 make decasify-dev-1.rockspec
+    env $({{ luarocks }} --tree lua_modules --lua-version 5.1 path | sed -e 's/export //') \
+    {{ vimcmd }} \
+    	-c {{ quote("let &runtimepath=\"" + justfile_directory() + ",\" . &runtimepath") }} \
+    	-c 'source plugin/decasify.lua' \
+    	{{ ARGS }}
 
 [doc('Block execution if we don’t have access to private keys.')]
 [private]
