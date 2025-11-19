@@ -23,6 +23,10 @@ The CLI defaults to titlecase and English, but lower, upper, and sentence case o
 The Rust, Lua, Python, and JavaScript library APIs have functions specific to each operation.
 Where possible the APIs currently default to English rules and (for English) the Gruber style guide, but others are available.
 
+The Spanish style roughly follows [optional stylistic exceptions](https://www.rae.es/dpd/may%C3%BAsculas) noted by Real Academia Española.
+Keep in mind most Spanish style guides eschew title casing and use sentence-case for many things that would traditionally be title-cased in English.
+This library implements a best-guess at title-casing when asked to, it does not help you understand when (not) to use it in the first place.
+
 The Turkish style follows the Turkish Language Institute's [guidelines][tdk].
 
 For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Gruber's Daring Fireball (Gruber).
