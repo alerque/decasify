@@ -21,9 +21,8 @@ pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String 
     }
 }
 
-fn titlecase_ap(chunk: Chunk, _opts: StyleOptions) -> String {
-    eprintln!("AP style guide not implemented, string returned as-is!");
-    chunk.into()
+fn titlecase_ap(_chunk: Chunk, _opts: StyleOptions) -> String {
+    todo!("AP style guide not implemented, string returned as-is!");
 }
 
 fn titlecase_cmos(chunk: Chunk, _opts: StyleOptions) -> String {
