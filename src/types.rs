@@ -183,8 +183,8 @@ impl FromStr for Locale {
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "en" | "english" | "en_en" => Ok(Locale::EN),
-            "es" | "spanish" | "es_es" | "español" => Ok(Locale::ES),
-            "tr" | "turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
+            "es" | "spanish" | "es_es" | "espanol" | "español" => Ok(Locale::ES),
+            "tr" | "turkish" | "tr_tr" | "turkce" | "türkçe" => Ok(Locale::TR),
             input => LocaleSnafu { input }.fail()?,
         }
     }
