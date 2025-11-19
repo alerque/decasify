@@ -53,6 +53,10 @@ pub struct Word {
     pub word: String,
 }
 
+// WARNING: These enums can't change order when adding new variants because some modules cast them
+// to integers, and that would make for ABI breakage. The variants can be re-sorted (alphabetically
+// or logically or whatever) when a major version with no ABI compatibility guarantees is okay.
+
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq))]
@@ -62,8 +66,8 @@ pub struct Word {
 pub enum Locale {
     #[default]
     EN,
-    ES,
     TR,
+    ES,
 }
 
 /// Target case selector.
@@ -97,10 +101,10 @@ pub enum StyleGuide {
     #[strum(serialize = "default")]
     #[default]
     LanguageDefault,
-    #[strum(serialize = "rae")]
-    RealAcademiaEspanola,
     #[strum(serialize = "tdk")]
     TurkishLanguageInstitute,
+    #[strum(serialize = "rae")]
+    RealAcademiaEspanola,
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
