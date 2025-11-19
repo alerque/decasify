@@ -7,6 +7,8 @@ use crate::types::{StyleGuide, StyleOptions, Word};
 
 use unicode_titlecase::StrTitleCase;
 
+pub use crate::generics::{lowercase, sentencecase, uppercase};
+
 pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String {
     let articles_prepositions_conjunctions = [
         "a", "al", "ante", "bajo", "con", "contra", "de", "del", "desde", "durante", "e", "el",
@@ -58,40 +60,4 @@ fn titlecase_spanish(chunk: Chunk, opts: StyleOptions, reserved_words: &[&str]) 
 
 fn is_reserved(word: &Word, reserved_words: &[&str]) -> bool {
     reserved_words.contains(&word.word.to_lowercase().as_str())
-}
-
-pub fn lowercase(chunk: Chunk) -> String {
-    let mut chunk = chunk.clone();
-    chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(word) = segment {
-            word.word = word.to_lowercase()
-        }
-    });
-    chunk.into()
-}
-
-pub fn uppercase(chunk: Chunk) -> String {
-    let mut chunk = chunk.clone();
-    chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(word) = segment {
-            word.word = word.to_uppercase()
-        }
-    });
-    chunk.into()
-}
-
-pub fn sentencecase(chunk: Chunk) -> String {
-    let mut chunk = chunk.clone();
-    let mut done_first = false;
-    chunk.segments.iter_mut().for_each(|segment| {
-        if let Segment::Word(word) = segment {
-            word.word = if !done_first {
-                done_first = true;
-                word.to_titlecase_lower_rest()
-            } else {
-                word.to_lowercase()
-            }
-        }
-    });
-    chunk.into()
 }

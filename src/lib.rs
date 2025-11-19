@@ -5,6 +5,7 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod content;
+mod generics;
 mod traits;
 pub mod types;
 
