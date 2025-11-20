@@ -2,41 +2,35 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 use crate::content::{Chunk, Segment};
+use crate::generics::{IsReserved, ReservedWords};
 use crate::get_override;
-use crate::types::{StyleGuide, StyleOptions, Word};
+use crate::types::{StyleGuide, StyleOptions};
 
 use unicode_titlecase::StrTitleCase;
 
 pub use crate::generics::{lowercase, sentencecase, uppercase};
 
 pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String {
-    let articles_prepositions_conjunctions = [
+    let rae_reserved = ReservedWords::from_slice(&[
         "a", "al", "ante", "bajo", "con", "contra", "de", "del", "desde", "durante", "e", "el",
         "en", "entre", "hacia", "hasta", "la", "las", "los", "mas", "mediante", "ni", "o", "para",
         "pero", "por", "que", "según", "si", "sin", "so", "sino", "sobre", "tras", "u", "un",
         "una", "unas", "unos", "y",
-    ];
-    let determiners = [
+    ]);
+    let mut fundeu_reserved = rae_reserved.clone();
+    fundeu_reserved.add_slice(&[
         "mi", "mis", "nuestro", "nuestra", "nuestros", "nuestras", "tu", "tus", "vuestro",
         "vuestra", "vuestros", "vuestras", "su", "sus",
-    ];
+    ]);
     match style {
-        StyleGuide::LanguageDefault => {
-            titlecase_spanish(chunk, opts, &articles_prepositions_conjunctions)
-        }
-        StyleGuide::RealAcademiaEspanola => {
-            titlecase_spanish(chunk, opts, &articles_prepositions_conjunctions)
-        }
-        StyleGuide::FundeuRealAcademiaEspanola => {
-            let mut combined = articles_prepositions_conjunctions.to_vec();
-            combined.extend_from_slice(&determiners);
-            titlecase_spanish(chunk, opts, &combined)
-        }
+        StyleGuide::LanguageDefault => titlecase_spanish(chunk, opts, rae_reserved),
+        StyleGuide::RealAcademiaEspanola => titlecase_spanish(chunk, opts, rae_reserved),
+        StyleGuide::FundeuRealAcademiaEspanola => titlecase_spanish(chunk, opts, fundeu_reserved),
         _ => todo!("Spanish implementation doesn't support this style guide."),
     }
 }
 
-fn titlecase_spanish(chunk: Chunk, opts: StyleOptions, reserved_words: &[&str]) -> String {
+fn titlecase_spanish(chunk: Chunk, opts: StyleOptions, reserved: ReservedWords) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
@@ -48,7 +42,7 @@ fn titlecase_spanish(chunk: Chunk, opts: StyleOptions, reserved_words: &[&str]) 
                     done_first = true;
                     word.to_titlecase_lower_rest()
                 } else {
-                    match is_reserved(word, reserved_words) {
+                    match word.is_reserved(&reserved) {
                         true => word.word.to_lowercase(),
                         false => word.word.to_titlecase_lower_rest(),
                     }
@@ -56,8 +50,4 @@ fn titlecase_spanish(chunk: Chunk, opts: StyleOptions, reserved_words: &[&str]) 
         }
     });
     chunk.into()
-}
-
-fn is_reserved(word: &Word, reserved_words: &[&str]) -> bool {
-    reserved_words.contains(&word.word.to_lowercase().as_str())
 }
