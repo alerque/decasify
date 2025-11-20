@@ -1,3 +1,17 @@
+## [0.11.2] - 2025-11-20
+
+### Features
+
+- *(nvim)* Add VIM command completions to :Decasify command
+- *(vim)* Add VIM command completions to :Decasify command
+- *(crate)* Implement rudimentary Spanish support following Real Academia Espanola
+- *(crate)* Enable recognition of ASCII variants of localized language names
+- *(crate)* Add second style guide for Spanish based on FundéuRAE
+
+### Bug Fixes
+
+- *(vim)* Correct detection of VIM user configs
+- *(vim)* Fix passing arguments to CLI used in vimscript plugin
 ## [0.11.1] - 2025-11-15
 
 ### Bug Fixes
