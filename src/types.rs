@@ -53,6 +53,10 @@ pub struct Word {
     pub word: String,
 }
 
+// WARNING: These enums can't change order when adding new variants because some modules cast them
+// to integers, and that would make for ABI breakage. The variants can be re-sorted (alphabetically
+// or logically or whatever) when a major version with no ABI compatibility guarantees is okay.
+
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "pythonmodule", pyclass(eq))]
@@ -63,6 +67,7 @@ pub enum Locale {
     #[default]
     EN,
     TR,
+    ES,
 }
 
 /// Target case selector.
@@ -98,6 +103,10 @@ pub enum StyleGuide {
     LanguageDefault,
     #[strum(serialize = "tdk")]
     TurkishLanguageInstitute,
+    #[strum(serialize = "rae")]
+    RealAcademiaEspanola,
+    #[strum(serialize = "fundeu")]
+    FundeuRealAcademiaEspanola,
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -180,7 +189,8 @@ impl FromStr for Locale {
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
             "en" | "english" | "en_en" => Ok(Locale::EN),
-            "tr" | "turkish" | "tr_tr" | "türkçe" => Ok(Locale::TR),
+            "es" | "spanish" | "es_es" | "espanol" | "español" => Ok(Locale::ES),
+            "tr" | "turkish" | "tr_tr" | "turkce" | "türkçe" => Ok(Locale::TR),
             input => LocaleSnafu { input }.fail()?,
         }
     }
@@ -266,6 +276,8 @@ impl FromStr for StyleGuide {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "fundeu" | "fundeurealacademiaespanola" => Ok(StyleGuide::FundeuRealAcademiaEspanola),
+            "rae" | "realacademiaespanola" => Ok(StyleGuide::RealAcademiaEspanola),
             "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
             "default" | "languagedefault" | "language" | "none" | "" => {
                 Ok(StyleGuide::LanguageDefault)
