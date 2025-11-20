@@ -81,7 +81,7 @@ end, {
       elseif arg_index == 2 then
          return filter({ "en", "es", "tr" })
       elseif arg_index == 3 then
-         return filter({ "ap", "cmos", "default", "grubber", "rae", "tdk" })
+         return filter({ "ap", "cmos", "default", "fundeu", "grubber", "rae", "tdk" })
       else
          return {}
       end

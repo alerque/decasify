@@ -246,6 +246,15 @@ titlecase!(
 );
 
 titlecase!(
+    fundu_prepositions,
+    Locale::ES,
+    StyleGuide::FundeuRealAcademiaEspanola,
+    StyleOptions::default(),
+    "en la casa de mi madre",
+    "En la Casa de mi Madre"
+);
+
+titlecase!(
     turkish_question,
     Locale::TR,
     StyleGuide::LanguageDefault,

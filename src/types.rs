@@ -105,6 +105,8 @@ pub enum StyleGuide {
     TurkishLanguageInstitute,
     #[strum(serialize = "rae")]
     RealAcademiaEspanola,
+    #[strum(serialize = "fundeu")]
+    FundeuRealAcademiaEspanola,
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -274,6 +276,7 @@ impl FromStr for StyleGuide {
             "daringfireball" | "gruber" | "fireball" => Ok(StyleGuide::DaringFireball),
             "associatedpress" | "ap" => Ok(StyleGuide::AssociatedPress),
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
+            "fundeu" | "fundeurealacademiaespanola" => Ok(StyleGuide::FundeuRealAcademiaEspanola),
             "rae" | "realacademiaespanola" => Ok(StyleGuide::RealAcademiaEspanola),
             "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
             "default" | "languagedefault" | "language" | "none" | "" => {

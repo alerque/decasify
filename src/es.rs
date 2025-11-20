@@ -8,14 +8,33 @@ use crate::types::{StyleGuide, StyleOptions, Word};
 use unicode_titlecase::StrTitleCase;
 
 pub fn titlecase(chunk: Chunk, style: StyleGuide, opts: StyleOptions) -> String {
+    let articles_prepositions_conjunctions = [
+        "a", "al", "ante", "bajo", "con", "contra", "de", "del", "desde", "durante", "e", "el",
+        "en", "entre", "hacia", "hasta", "la", "las", "los", "mas", "mediante", "ni", "o", "para",
+        "pero", "por", "que", "según", "si", "sin", "so", "sino", "sobre", "tras", "u", "un",
+        "una", "unas", "unos", "y",
+    ];
+    let determiners = [
+        "mi", "mis", "nuestro", "nuestra", "nuestros", "nuestras", "tu", "tus", "vuestro",
+        "vuestra", "vuestros", "vuestras", "su", "sus",
+    ];
     match style {
-        StyleGuide::LanguageDefault => titlecase_rae(chunk, opts),
-        StyleGuide::RealAcademiaEspanola => titlecase_rae(chunk, opts),
+        StyleGuide::LanguageDefault => {
+            titlecase_spanish(chunk, opts, &articles_prepositions_conjunctions)
+        }
+        StyleGuide::RealAcademiaEspanola => {
+            titlecase_spanish(chunk, opts, &articles_prepositions_conjunctions)
+        }
+        StyleGuide::FundeuRealAcademiaEspanola => {
+            let mut combined = articles_prepositions_conjunctions.to_vec();
+            combined.extend_from_slice(&determiners);
+            titlecase_spanish(chunk, opts, &combined)
+        }
         _ => todo!("Spanish implementation doesn't support this style guide."),
     }
 }
 
-fn titlecase_rae(chunk: Chunk, opts: StyleOptions) -> String {
+fn titlecase_spanish(chunk: Chunk, opts: StyleOptions, reserved_words: &[&str]) -> String {
     let mut chunk = chunk.clone();
     let mut done_first = false;
     chunk.segments.iter_mut().for_each(|segment| {
@@ -27,7 +46,7 @@ fn titlecase_rae(chunk: Chunk, opts: StyleOptions) -> String {
                     done_first = true;
                     word.to_titlecase_lower_rest()
                 } else {
-                    match is_reserved(word) {
+                    match is_reserved(word, reserved_words) {
                         true => word.word.to_lowercase(),
                         false => word.word.to_titlecase_lower_rest(),
                     }
@@ -37,13 +56,7 @@ fn titlecase_rae(chunk: Chunk, opts: StyleOptions) -> String {
     chunk.into()
 }
 
-fn is_reserved(word: &Word) -> bool {
-    let reserved_words = [
-        "a", "al", "ante", "bajo", "con", "contra", "de", "del", "desde", "durante", "e", "el",
-        "en", "entre", "hacia", "hasta", "la", "las", "los", "mas", "mediante", "ni", "o", "para",
-        "pero", "por", "que", "según", "si", "sin", "so", "sino", "sobre", "tras", "u", "un",
-        "una", "unas", "unos", "y",
-    ];
+fn is_reserved(word: &Word, reserved_words: &[&str]) -> bool {
     reserved_words.contains(&word.word.to_lowercase().as_str())
 }
 
