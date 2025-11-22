@@ -20,6 +20,12 @@ macro_rules! impl_into_luaresult {
 
 impl_into_luaresult!(Locale, Case, StyleGuide, StyleOptions);
 
+impl IntoLua for Error {
+    fn into_lua(self, _: &Lua) -> LuaResult<LuaValue> {
+        Ok(LuaValue::Error(Box::new(LuaError::external(self))))
+    }
+}
+
 impl From<Error> for LuaError {
     fn from(err: Error) -> LuaError {
         LuaError::RuntimeError(err.to_string())
@@ -52,42 +58,23 @@ fn decasify(lua: &Lua) -> LuaResult<LuaTable> {
     let exports = lua.create_table()?;
     exports.set(
         "case",
-        lua.create_function(
-            |_,
-             (chunk, case_, locale, styleguide, styleoptions): (
-                Chunk,
-                Case,
-                Locale,
-                StyleGuide,
-                StyleOptions,
-            )| { Ok(case(chunk, case_, locale, styleguide, styleoptions)?) },
-        )?,
+        LuaFunction::wrap_raw::<_, (Chunk, Case, Locale, StyleGuide, StyleOptions)>(case),
     )?;
     exports.set(
         "titlecase",
-        lua.create_function(
-            |_,
-             (chunk, locale, styleguide, styleoptions): (
-                Chunk,
-                Locale,
-                StyleGuide,
-                StyleOptions,
-            )| { Ok(titlecase(chunk, locale, styleguide, styleoptions)?) },
-        )?,
+        LuaFunction::wrap_raw::<_, (Chunk, Locale, StyleGuide, StyleOptions)>(titlecase),
     )?;
     exports.set(
         "lowercase",
-        lua.create_function(|_, (chunk, locale): (Chunk, Locale)| Ok(lowercase(chunk, locale)?))?,
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(lowercase),
     )?;
     exports.set(
         "uppercase",
-        lua.create_function(|_, (chunk, locale): (Chunk, Locale)| Ok(uppercase(chunk, locale)?))?,
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(uppercase),
     )?;
     exports.set(
         "sentencecase",
-        lua.create_function(|_, (chunk, locale): (Chunk, Locale)| {
-            Ok(sentencecase(chunk, locale)?)
-        })?,
+        LuaFunction::wrap_raw::<_, (Chunk, Locale)>(sentencecase),
     )?;
     let mt = lua.create_table()?;
     let decasify = lua.create_function(
