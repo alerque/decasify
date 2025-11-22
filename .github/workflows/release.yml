@@ -50,6 +50,9 @@ jobs:
       - name: Build source package
         run: |
           make dist
+      - name: Build binary
+        run: |
+          make binstall
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
@@ -57,3 +60,4 @@ jobs:
             decasify-${{ env.VERSION }}.zip
             decasify-${{ env.VERSION }}.tar.zst
             decasify-${{ env.VERSION }}.sha256.txt
+            decasify-${{ env.VERSION }}-x86_64-unknown-linux-gnu
