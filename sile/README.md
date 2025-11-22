@@ -2,7 +2,7 @@
 
 A thin wrapper around the [decasify](https://github.com/alerque/decasify) library providing SILE functions for locale and style guide aware text casing functions.
 Provides functions for title-case (and other cases) that adapt to the language of the current document context.
-Includes support for Turkish and multiple style guides.
+Includes support for English, Spanish, and Turkish as well as multiple style guides.
 
 ## Example One
 
@@ -11,7 +11,7 @@ Includes support for Turkish and multiple style guides.
 * Changing the text language, we show using the functions again will follow the new language rules.
 
 ```sile
-\begin[papersize=148mm x 4cm]{document}
+\begin[papersize=148mm x 5cm]{document}
 \nofolios
 \neverindent
 \language[main=en]
@@ -27,7 +27,12 @@ Includes support for Turkish and multiple style guides.
 
 \decasify[case=sentence]{a manually sentence-cased phrase.}
 
-Now switch languages and show Turkish titlecasing:
+Now switch to Spanish and a non-default style guide:
+
+\language[main=es]
+\decasify[case=title,style=fundeu]{EL SEÑOR DE LOS ANILLOS}
+
+Observe that the notorious Turkish-İ problem is handled during titlecasing:
 
 \language[main=tr]
 

@@ -2,7 +2,7 @@
 
 A thin wrapper around the [decasify](https://github.com/alerque/decasify) library providing Typst functions for locale and style guide aware text casing functions.
 Provides functions for title-case (and other cases) that adapt to the language of the current document context.
-Includes support for Turkish and multiple style guides.
+Includes support for English, Spanish, and Turkish as well as multiple style guides.
 
 ## Example One
 
@@ -15,20 +15,25 @@ Includes support for Turkish and multiple style guides.
 
 #set page(width: 148mm, height: auto, margin: 1cm)
 
-#set text(lang: "en")
-
 #show heading: it => [
   #titlecase(it.body)
 ]
 
+#set text(lang: "en")
+
 = all headings will be titlecase
 
-#sentencecase("a manually sentence-cased phrase")
+#sentencecase("a manually sentence-cased phrase.")
 
-Now switch languages and show Turkish titlecasing:
+Now switch to Spanish and a non-default style guide:
+
+#set text(lang: "es")
+#titlecase("EL SEÑOR DE LOS ANILLOS", style: "fundeu")
+
+#set text(lang: "en")
+Observe that the notorious Turkish-İ problem is handled during titlecasing:
 
 #set text(lang: "tr")
-
 #titlecase("ilk ışıltı")
 ```
 
