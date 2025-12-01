@@ -5,14 +5,14 @@ use clap::CommandFactory;
 use std::io;
 use std::io::BufRead;
 
-use decasify::cli::Cli;
+use decasify::cli::{Cli, STYLES};
 use decasify::types::Result;
 use decasify::{lowercase, sentencecase, titlecase, uppercase};
 use decasify::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder};
 
 fn main() -> Result<()> {
     let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
-    let app = Cli::command().version(version);
+    let app = Cli::command().version(version).styles(STYLES);
     let matches = app.get_matches();
     let locale = matches
         .get_one::<Locale>("locale")
