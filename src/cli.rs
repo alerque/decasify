@@ -33,8 +33,8 @@ pub struct Cli {
     /// The desired output case
     ///
     /// What case to convert to. Note the output *can* be affected by the input case, so in some
-    /// cases (pun intended) you may need to to either process twice or avoid doing so depending on
-    /// the expected result. For example title-casing in some English styles tries to preserve
+    /// cases (pun intended) you may need to either process twice or avoid doing so depending on
+    /// the expected result. For example, title-casing in some English styles tries to preserve
     /// capitalized acronyms, but lower-casing does not. First converting to lower-case then to
     /// title-case would give a different result than directly to title-case.
     #[clap(short, long, default_value_t, ignore_case = true, value_parser = clap_enum_variants!(Case))]
@@ -59,7 +59,7 @@ pub struct Cli {
     /// The input string or strings (note STDIN also accepted)
     ///
     /// Note that all input arguments are processed together joined with a space, and STDIN streams
-    /// are processed line by line. This can effect the output, for example if using sentence case
+    /// are processed line by line. This can affect the output, for example if using sentence case
     /// the input should be on a single line, not broken across several.
     pub input: Vec<String>,
 }
