@@ -173,3 +173,6 @@ walm = "wasm"
 [package.metadata.typos.files]
 ignore-hidden = false
 extend-exclude = ["/.git"]
+
+[package.metadata.binstall]
+pkg-fmt = "bin"
