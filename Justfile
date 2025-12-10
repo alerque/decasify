@@ -24,7 +24,7 @@ wget := require('wget')
 [default]
 [private]
 @list:
-    @{{ just }} --list --unsorted
+    {{ just }} --list --unsorted
 
 nuke-n-pave:
     {{ git }} clean -dxff -e .husky -e .fonts -e .sources -e node_modules -e target -e completions
