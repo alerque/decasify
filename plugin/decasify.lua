@@ -20,12 +20,12 @@ local function replace_visual_selection (buffer, callback)
    for i, line in ipairs(lines) do
       if #lines == 1 then
          local recased = callback(line:sub(lpos[3], rpos[3]))
-         lines[i] = line:sub(buffer, lpos[3] - 1) .. recased .. line:sub(rpos[3] + 1)
+         lines[i] = line:sub(0, lpos[3] - 1) .. recased .. line:sub(rpos[3] + 1)
       elseif i == 1 then
          local recased = callback(line:sub(lpos[3]))
-         lines[i] = line:sub(buffer, lpos[3] - 1) .. recased
+         lines[i] = line:sub(0, lpos[3] - 1) .. recased
       elseif i == #lines then
-         local recased = callback(line:sub(buffer, rpos[3]))
+         local recased = callback(line:sub(0, rpos[3]))
          lines[i] = recased .. line:sub(rpos[3] + 1)
       else
          lines[i] = callback(line)
@@ -43,7 +43,17 @@ local function replace_line_range (buffer, args, callback)
    vim.api.nvim_buf_set_lines(buffer, first - 1, last, true, lines)
 end
 
-local function nvim_decasify (args, preview_ns, preview_buffer)
+local function replace_preview_buffer (buffer, args, preview_buf, callback)
+   local first, last = args.line1, args.line2
+   local src_lines = vim.api.nvim_buf_get_lines(buffer, first - 1, last, false)
+   local preview_lines = {}
+   for _, line in ipairs(src_lines) do
+      table.insert(preview_lines, callback(line))
+   end
+   vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, preview_lines)
+end
+
+local function nvim_decasify (args, _, preview_buf)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
    local locale = args.fargs[2] or vim.b.decasify_locale or vim.g.decasify_locale or nil
    local style = args.fargs[3] or vim.b.decasify_style or vim.g.decasify_style or nil
@@ -51,18 +61,27 @@ local function nvim_decasify (args, preview_ns, preview_buffer)
    local opts = {
       overrides = args.fargs[4] and vim.split(args.fargs[4], ",") or overrides,
    }
-   local buffer = preview_ns and preview_buffer or vim.api.nvim_get_current_buf()
-   local decase = function (input)
+   local function decase (input)
       return decasify.case(input, case, locale, style, opts)
    end
-   -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
-   local smark = vim.api.nvim_buf_get_mark(buffer, "<")[2]
-   local emark = vim.api.nvim_buf_get_mark(buffer, ">")[2]
-   if args.count == -1 or smark > 1000000 or emark > 1000000 then
-      replace_line_range(buffer, args, decase)
+   local buffer = args.buf or vim.api.nvim_get_current_buf()
+   if not preview_buf then
+      -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
+      local smark = vim.api.nvim_buf_get_mark(buffer, "<")[2]
+      local emark = vim.api.nvim_buf_get_mark(buffer, ">")[2]
+      if args.count == -1 or smark > 1000000 or emark > 1000000 then
+         replace_line_range(buffer, args, decase)
+      else
+         replace_visual_selection(buffer, decase)
+      end
    else
-      replace_visual_selection(buffer, decase)
+      replace_preview_buffer(buffer, args, preview_buf, decase)
    end
+end
+
+local function nvim_decasify_preview (args, _, preview_buf)
+   nvim_decasify(args, _, preview_buf)
+   return 1
 end
 
 local function nvim_decasify_complete (arg_lead, cmd_line, _)
@@ -90,7 +109,7 @@ vim.api.nvim_create_user_command("Decasify", nvim_decasify, {
    desc = "Pass lines to decasify for recasing prose",
    nargs = "*",
    range = true,
-   preview = nvim_decasify,
+   preview = nvim_decasify_preview,
    complete = nvim_decasify_complete,
 })
 
