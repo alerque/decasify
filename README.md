@@ -212,6 +212,8 @@ vim.g.decasify_style = "gruber"
 vim.g.decasify_overrides = { "NASA", "SpaceX" }
 ```
 
+A live preview of changes will show as you adjust the command line options.
+
 ## Use as a VIM plugin
 
 The VIM plugin depends on having the `decasify` CLI tool available in your system $PATH.
@@ -240,6 +242,8 @@ let g:decasify_style = "gruber"
 " Override casing of specific words
 let g:decasify_overrides = ['NASA', 'SpaceX']
 ```
+
+Unlike NeoVIM, vanilla VIM does not support live previews of user defined command operations.
 
 ## Use as a SILE package
 
