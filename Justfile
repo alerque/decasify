@@ -1,8 +1,3 @@
-set ignore-comments := true
-set shell := ['zsh', '+o', 'nomatch', '-ecu']
-set unstable := true
-set script-interpreter := ['zsh', '+o', 'nomatch', '-eu']
-
 cargo := require('cargo')
 cargo-set-version := require('cargo-set-version')
 gh := require('gh')
@@ -20,6 +15,10 @@ taplo := require('taplo')
 vim := require('vim')
 wasm-pack := require('wasm-pack')
 wget := require('wget')
+
+set script-interpreter := ['zsh', '+o', 'nomatch', '-eu']
+set shell := ['zsh', '+o', 'nomatch', '-ecu']
+set unstable := true
 
 [default]
 [private]
@@ -92,10 +91,11 @@ preview-vim *ARGS: (preview vim + ' --clean' 'plugin/decasify.vim' ARGS)
 
 [no-cd]
 [private]
+[script]
 preview vimcmd plugin *ARGS:
     {{ make }} decasify rockspecs
     {{ luarocks }} --tree lua_modules --lua-version 5.1 make decasify-dev-1.rockspec
-    env PATH=".:$PATH" $({{ luarocks }} --tree lua_modules --lua-version 5.1 path | sed -e 's/export //') \
+    eval $({{ luarocks }} --tree lua_modules --lua-version 5.1 path)
     {{ vimcmd }} \
     	-c {{ quote("let &runtimepath=\"" + justfile_directory() + ",\" . &runtimepath") }} \
     	-c 'source {{ plugin }}' \
