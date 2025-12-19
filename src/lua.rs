@@ -6,19 +6,19 @@ use mlua::prelude::*;
 
 use crate::types::{Error, Result};
 
-macro_rules! impl_into_luaresult {
+macro_rules! impl_from_luaresult {
     ($($t:ty),*) => {
         $(
-            impl Into<LuaResult<$t>> for $t {
-                fn into(self) -> LuaResult<$t> {
-                    Ok(self)
+            impl From<$t> for LuaResult<$t> {
+                fn from(val: $t) -> LuaResult<$t> {
+                    Ok(val)
                 }
             }
         )*
     };
 }
 
-impl_into_luaresult!(Locale, Case, StyleGuide, StyleOptions);
+impl_from_luaresult!(Locale, Case, StyleGuide, StyleOptions);
 
 impl IntoLua for Error {
     fn into_lua(self, _: &Lua) -> LuaResult<LuaValue> {
