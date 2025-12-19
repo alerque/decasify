@@ -37,6 +37,7 @@ rel-conf: nuke-n-pave
     ./configure --enable-developer-mode
     {{ make }}
 
+[parallel]
 build:
     {{ make }} build
 
@@ -56,7 +57,7 @@ restyle:
 
 [doc('Block execution if Git working tree isn’t pristine.')]
 [private]
-pristine: sile-package typst-package
+pristine: typst-pristine
     # Make sure Git's status cache is warmed up
     {{ git }} diff --shortstat
     # Ensure there are no changes in staging
@@ -72,6 +73,16 @@ typst-pristine:
     {{ git }} diff-index --quiet --cached HEAD || exit 1
     # Ensure there are no changes in the working tree
     {{ git }} diff-files --quiet || exit 1
+
+[parallel]
+packages:
+    {{ make }} packages
+
+node-package:
+    {{ make }} node-package
+
+python-package:
+    {{ make }} python-package
 
 [doc('Rebuild SILE package (makes sure tracked documentation is up to date).')]
 [private]
@@ -116,12 +127,9 @@ release semver: pristine keys
     {{ git }} add -f Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim,.sile}-{{ semver }}-1.rockspec
     {{ git }} commit -m 'chore: Release v{{ semver }}'
     {{ git }} tag -s v{{ semver }} -F decasify-{{ semver }}.md
-    {{ cargo }} build
+    {{ just }} build packages
     {{ git }} diff-files --quiet || exit 1
     ./config.status && {{ make }}
-    {{ make }} typst-package
-    {{ maturin }} build --frozen
-    {{ wasm-pack }} build --features wasm
     {{ git }} push --atomic origin master v{{ semver }}
     {{ maturin }} publish --locked
     {{ cargo }} publish --locked
@@ -135,7 +143,7 @@ post-release semver: keys (release-typst semver)
     {{ gh }} release upload v{{ semver }} decasify-{{ semver }}-cp313-cp313-manylinux_2_34_x86_64.whl{,.asc} decasify{,.nvim,.sile}-{{ semver }}-1.src.rock{,.asc} decasify-{{ semver }}.{tar.zst,zip}.asc
 
 [private]
-typst-release semver: pristine keys
+typst-release semver: pristine keys typst-package
     {{ make }} SEMVER={{ semver }} typst-release
 
 [working-directory('../typst/packages/packages/')]

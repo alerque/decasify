@@ -37,10 +37,17 @@ DISTCLEANFILES = @AMINCLUDE@
 include $(top_srcdir)/aminclude.am
 
 .PHONY: build
-build: typst-package sile-package wasm-pack
+build: $(bin_PROGRAMS) packages
 
-.PHONY: wasm-pack
-wasm-pack: pkg/decasify_bg.wasm
+.PHONY: packages
+packages:  python-package node-package sile-package typst-package
+
+.PHONY: node-package
+node-package: pkg/decasify_bg.wasm
+
+.PHONY: python-package
+python-package:
+	$(MATURIN) build --frozen
 
 pkg/decasify_bg.wasm: src/wasm.rs
 	$(WASM_PACK) build --features wasm
