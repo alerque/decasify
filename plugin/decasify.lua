@@ -13,10 +13,10 @@ end
 
 local decasify = require("decasify")
 
-local function replace_visual_selection (callback)
+local function replace_visual_selection (buffer, callback)
    local lpos = vim.fn.getpos("'<")
    local rpos = vim.fn.getpos("'>")
-   local lines = vim.api.nvim_buf_get_lines(0, lpos[2] - 1, rpos[2], true)
+   local lines = vim.api.nvim_buf_get_lines(buffer, lpos[2] - 1, rpos[2], true)
    for i, line in ipairs(lines) do
       if #lines == 1 then
          local recased = callback(line:sub(lpos[3], rpos[3]))
@@ -31,19 +31,29 @@ local function replace_visual_selection (callback)
          lines[i] = callback(line)
       end
    end
-   vim.api.nvim_buf_set_lines(0, lpos[2] - 1, rpos[2], true, lines)
+   vim.api.nvim_buf_set_lines(buffer, lpos[2] - 1, rpos[2], true, lines)
 end
 
-local function replace_line_range (args, callback)
+local function replace_line_range (buffer, args, callback)
    local first, last = args.line1, args.line2
-   local lines = vim.api.nvim_buf_get_lines(0, first - 1, last, true)
+   local lines = vim.api.nvim_buf_get_lines(buffer, first - 1, last, true)
    for i, line in ipairs(lines) do
       lines[i] = callback(line)
    end
-   vim.api.nvim_buf_set_lines(0, first - 1, last, true, lines)
+   vim.api.nvim_buf_set_lines(buffer, first - 1, last, true, lines)
 end
 
-vim.api.nvim_create_user_command("Decasify", function (args)
+local function replace_preview_buffer (buffer, args, preview_buf, callback)
+   local first, last = args.line1, args.line2
+   local src_lines = vim.api.nvim_buf_get_lines(buffer, first - 1, last, false)
+   local preview_lines = {}
+   for _, line in ipairs(src_lines) do
+      table.insert(preview_lines, callback(line))
+   end
+   vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, preview_lines)
+end
+
+local function nvim_decasify (args, _, preview_buf)
    local case = args.fargs[1] or vim.b.decasify_case or vim.g.decasify_case or nil
    local locale = args.fargs[2] or vim.b.decasify_locale or vim.g.decasify_locale or nil
    local style = args.fargs[3] or vim.b.decasify_style or vim.g.decasify_style or nil
@@ -51,41 +61,56 @@ vim.api.nvim_create_user_command("Decasify", function (args)
    local opts = {
       overrides = args.fargs[4] and vim.split(args.fargs[4], ",") or overrides,
    }
-   local decase = function (input)
+   local function decase (input)
       return decasify.case(input, case, locale, style, opts)
    end
-   -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
-   local smark = vim.api.nvim_buf_get_mark(0, "<")[2]
-   local emark = vim.api.nvim_buf_get_mark(0, ">")[2]
-   if args.count == -1 or smark > 1000000 or emark > 1000000 then
-      replace_line_range(args, decase)
+   local buffer = args.buf or vim.api.nvim_get_current_buf()
+   if not preview_buf then
+      -- https://www.petergundel.de/neovim/lua/hack/2023/12/17/get-neovim-mode-when-executing-a-command.html
+      local smark = vim.api.nvim_buf_get_mark(buffer, "<")[2]
+      local emark = vim.api.nvim_buf_get_mark(buffer, ">")[2]
+      if args.count == -1 or smark > 1000000 or emark > 1000000 then
+         replace_line_range(buffer, args, decase)
+      else
+         replace_visual_selection(buffer, decase)
+      end
    else
-      replace_visual_selection(decase)
+      replace_preview_buffer(buffer, args, preview_buf, decase)
    end
-end, {
+end
+
+local function nvim_decasify_preview (args, _, preview_buf)
+   nvim_decasify(args, _, preview_buf)
+   return 1
+end
+
+local function nvim_decasify_complete (arg_lead, cmd_line, _)
+   local parts = vim.split(cmd_line, "%s+", { trimempty = true })
+   table.remove(parts, 1)
+   local trailing_space = cmd_line:sub(-1):match("%s") ~= nil
+   local arg_index = #parts + (trailing_space and 1 or 0)
+   local function filter (list)
+      return vim.tbl_filter(function (item)
+         return item:find("^" .. arg_lead)
+      end, list)
+   end
+   if arg_index == 1 then
+      return filter({ "lower", "sentence", "title", "upper" })
+   elseif arg_index == 2 then
+      return filter({ "en", "es", "tr" })
+   elseif arg_index == 3 then
+      return filter({ "ap", "cmos", "default", "fundeu", "grubber", "rae", "tdk" })
+   else
+      return {}
+   end
+end
+
+vim.api.nvim_create_user_command("Decasify", nvim_decasify, {
    desc = "Pass lines to decasify for recasing prose",
    nargs = "*",
    range = true,
-   complete = function (arg_lead, cmd_line, _)
-      local parts = vim.split(cmd_line, "%s+", { trimempty = true })
-      table.remove(parts, 1)
-      local trailing_space = cmd_line:sub(-1):match("%s") ~= nil
-      local arg_index = #parts + (trailing_space and 1 or 0)
-      local function filter (list)
-         return vim.tbl_filter(function (item)
-            return item:find("^" .. arg_lead)
-         end, list)
-      end
-      if arg_index == 1 then
-         return filter({ "lower", "sentence", "title", "upper" })
-      elseif arg_index == 2 then
-         return filter({ "en", "es", "tr" })
-      elseif arg_index == 3 then
-         return filter({ "ap", "cmos", "default", "fundeu", "grubber", "rae", "tdk" })
-      else
-         return {}
-      end
-   end,
+   preview = nvim_decasify_preview,
+   complete = nvim_decasify_complete,
 })
 
 vim.g.loaded_decasify = true
