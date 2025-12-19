@@ -1,46 +1,76 @@
 // SPDX-FileCopyrightText: © 2023 Caleb Maclennan <caleb@alerque.com>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-use crate::*;
+use crate::types::*;
 use pyo3::prelude::*;
 
-pub use crate::types::{InputLocale, Result, StyleGuide};
+impl From<crate::types::Error> for PyErr {
+    fn from(err: crate::types::Error) -> Self {
+        pyo3::exceptions::PyValueError::new_err(err.to_string())
+    }
+}
 
 #[pymodule]
 fn decasify(module: &Bound<'_, PyModule>) -> PyResult<()> {
-    module.add_class::<InputLocale>()?;
+    module.add_class::<Case>()?;
+    module.add_class::<Locale>()?;
     module.add_class::<StyleGuide>()?;
-    module.add_function(wrap_pyfunction!(py_titlecase, module)?)?;
-    module.add_function(wrap_pyfunction!(py_lowercase, module)?)?;
-    module.add_function(wrap_pyfunction!(py_uppercase, module)?)?;
-    module.add_function(wrap_pyfunction!(py_sentencecase, module)?)?;
+    module.add_class::<StyleOptions>()?;
+    module.add_function(wrap_pyfunction!(self::case, module)?)?;
+    module.add_function(wrap_pyfunction!(self::titlecase, module)?)?;
+    module.add_function(wrap_pyfunction!(self::lowercase, module)?)?;
+    module.add_function(wrap_pyfunction!(self::uppercase, module)?)?;
+    module.add_function(wrap_pyfunction!(self::sentencecase, module)?)?;
+    let version = option_env!("VERGEN_GIT_DESCRIBE").unwrap_or_else(|| env!("CARGO_PKG_VERSION"));
+    module.add::<&str, &str>("version", version)?;
     Ok(())
 }
 
 #[pyfunction]
-#[pyo3(name = "titlecase")]
-#[pyo3(signature = (input, locale, style=None))]
-fn py_titlecase(input: String, locale: InputLocale, style: Option<StyleGuide>) -> PyResult<String> {
-    Ok(to_titlecase(&input, locale, style))
+#[pyo3(signature = (input, case, locale, style=StyleGuide::LanguageDefault, overrides=None))]
+fn case(
+    input: String,
+    case: Case,
+    locale: Locale,
+    style: StyleGuide,
+    overrides: Option<Vec<String>>,
+) -> PyResult<String> {
+    let opts = match overrides {
+        Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
+        None => StyleOptions::default(),
+    };
+    Ok(crate::case(&input, case, locale, style, opts)?)
 }
 
 #[pyfunction]
-#[pyo3(name = "lowercase")]
-#[pyo3(signature = (input, locale))]
-fn py_lowercase(input: String, locale: InputLocale) -> PyResult<String> {
-    Ok(to_lowercase(&input, locale))
+#[pyo3(signature = (input, locale, style=StyleGuide::LanguageDefault, overrides=None))]
+fn titlecase(
+    input: String,
+    locale: Locale,
+    style: StyleGuide,
+    overrides: Option<Vec<String>>,
+) -> PyResult<String> {
+    let opts = match overrides {
+        Some(words) => StyleOptionsBuilder::new().overrides(words).build(),
+        None => StyleOptions::default(),
+    };
+    Ok(crate::titlecase(&input, locale, style, opts)?)
 }
 
 #[pyfunction]
-#[pyo3(name = "uppercase")]
 #[pyo3(signature = (input, locale))]
-fn py_uppercase(input: String, locale: InputLocale) -> PyResult<String> {
-    Ok(to_uppercase(&input, locale))
+fn lowercase(input: String, locale: Locale) -> PyResult<String> {
+    Ok(crate::lowercase(&input, locale)?)
 }
 
 #[pyfunction]
-#[pyo3(name = "sentencecase")]
 #[pyo3(signature = (input, locale))]
-fn py_sentencecase(input: String, locale: InputLocale) -> PyResult<String> {
-    Ok(to_sentencecase(&input, locale))
+fn uppercase(input: String, locale: Locale) -> PyResult<String> {
+    Ok(crate::uppercase(&input, locale)?)
+}
+
+#[pyfunction]
+#[pyo3(signature = (input, locale))]
+fn sentencecase(input: String, locale: Locale) -> PyResult<String> {
+    Ok(crate::sentencecase(&input, locale)?)
 }

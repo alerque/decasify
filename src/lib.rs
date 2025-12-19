@@ -2,378 +2,150 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #![doc = include_str!("../README.md")]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
-use regex::Regex;
-use titlecase::titlecase as gruber_titlecase;
-use unicode_titlecase::tr_az::StrTrAzCasing;
-use unicode_titlecase::StrTitleCase;
-
+mod content;
+mod generics;
+mod traits;
 pub mod types;
 
-pub use types::{InputLocale, Result, StyleGuide, TargetCase};
+pub use content::Chunk;
+#[cfg(feature = "unstable-trait")]
+pub use traits::Decasify;
+pub use types::{Case, Locale, StyleGuide, StyleOptions, StyleOptionsBuilder, Word};
+pub use types::{Error, Result};
 
 #[cfg(feature = "cli")]
+#[doc(hidden)]
 pub mod cli;
 
 #[cfg(feature = "luamodule")]
+#[doc(hidden)]
 pub mod lua;
 
 #[cfg(feature = "pythonmodule")]
+#[doc(hidden)]
 pub mod python;
 
 #[cfg(feature = "wasm")]
+#[doc(hidden)]
 pub mod wasm;
 
-/// Convert a string to title case following typesetting conventions for a target locale
-pub fn to_titlecase(string: &str, locale: InputLocale, style: Option<StyleGuide>) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
-    match locale {
-        InputLocale::EN => to_titlecase_en(words, style),
-        InputLocale::TR => to_titlecase_tr(words, style),
+mod en;
+mod es;
+mod tr;
+
+/// Convert a string to a specific case following typesetting conventions for a target locale
+pub fn case<TC, TL, TS, TO>(
+    chunk: impl Into<Chunk>,
+    case: TC,
+    locale: TL,
+    style: TS,
+    opts: TO,
+) -> Result<String>
+where
+    TC: TryInto<Case>,
+    TL: TryInto<Locale>,
+    TS: TryInto<StyleGuide>,
+    TO: TryInto<StyleOptions>,
+    Error: From<TC::Error>,
+    Error: From<TL::Error>,
+    Error: From<TS::Error>,
+    Error: From<TO::Error>,
+{
+    let chunk: Chunk = chunk.into();
+    let case: Case = case.try_into()?;
+    let locale: Locale = locale.try_into()?;
+    let style: StyleGuide = style.try_into()?;
+    let opts: StyleOptions = opts.try_into()?;
+    match case {
+        Case::Lower => lowercase(chunk, locale),
+        Case::Upper => uppercase(chunk, locale),
+        Case::Sentence => sentencecase(chunk, locale),
+        Case::Title => titlecase(chunk, locale, style, opts),
     }
+}
+
+/// Convert a string to title case following typesetting conventions for a target locale
+pub fn titlecase<TL, TS, TO>(
+    chunk: impl Into<Chunk>,
+    locale: TL,
+    style: TS,
+    opts: TO,
+) -> Result<String>
+where
+    TL: TryInto<Locale>,
+    TS: TryInto<StyleGuide>,
+    TO: TryInto<StyleOptions>,
+    Error: From<TL::Error>,
+    Error: From<TS::Error>,
+    Error: From<TO::Error>,
+{
+    let chunk: Chunk = chunk.into();
+    let locale: Locale = locale.try_into()?;
+    let style: StyleGuide = style.try_into()?;
+    let opts: StyleOptions = opts.try_into()?;
+    Ok(match locale {
+        Locale::EN => en::titlecase(chunk, style, opts),
+        Locale::ES => es::titlecase(chunk, style, opts),
+        Locale::TR => tr::titlecase(chunk, style, opts),
+    })
 }
 
 /// Convert a string to lower case following typesetting conventions for a target locale
-pub fn to_lowercase(string: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
-    match locale {
-        InputLocale::EN => to_lowercase_en(words),
-        InputLocale::TR => to_lowercase_tr(words),
-    }
+pub fn lowercase<TL>(chunk: impl Into<Chunk>, locale: TL) -> Result<String>
+where
+    TL: TryInto<Locale>,
+    Error: From<TL::Error>,
+{
+    let chunk: Chunk = chunk.into();
+    let locale: Locale = locale.try_into()?;
+    Ok(match locale {
+        Locale::EN => en::lowercase(chunk),
+        Locale::ES => es::lowercase(chunk),
+        Locale::TR => tr::lowercase(chunk),
+    })
 }
 
 /// Convert a string to upper case following typesetting conventions for a target locale
-pub fn to_uppercase(string: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
-    match locale {
-        InputLocale::EN => to_uppercase_en(words),
-        InputLocale::TR => to_uppercase_tr(words),
-    }
+pub fn uppercase<TL>(chunk: impl Into<Chunk>, locale: TL) -> Result<String>
+where
+    TL: TryInto<Locale>,
+    Error: From<TL::Error>,
+{
+    let chunk: Chunk = chunk.into();
+    let locale: Locale = locale.try_into()?;
+    Ok(match locale {
+        Locale::EN => en::uppercase(chunk),
+        Locale::ES => es::uppercase(chunk),
+        Locale::TR => tr::uppercase(chunk),
+    })
 }
 
 /// Convert a string to sentence case following typesetting conventions for a target locale
-pub fn to_sentencecase(string: &str, locale: InputLocale) -> String {
-    let words: Vec<&str> = string.split_whitespace().collect();
-    match locale {
-        InputLocale::EN => to_sentencecase_en(words),
-        InputLocale::TR => to_sentencecase_tr(words),
-    }
+pub fn sentencecase<TL>(chunk: impl Into<Chunk>, locale: TL) -> Result<String>
+where
+    TL: TryInto<Locale>,
+    Error: From<TL::Error>,
+{
+    let chunk: Chunk = chunk.into();
+    let locale: Locale = locale.try_into()?;
+    Ok(match locale {
+        Locale::EN => en::sentencecase(chunk),
+        Locale::ES => es::sentencecase(chunk),
+        Locale::TR => tr::sentencecase(chunk),
+    })
 }
 
-fn to_titlecase_en(words: Vec<&str>, style: Option<StyleGuide>) -> String {
-    match style {
-        Some(StyleGuide::AssociatedPress) => to_titlecase_ap(words),
-        Some(StyleGuide::ChicagoManualOfStyle) => to_titlecase_cmos(words),
-        Some(StyleGuide::DaringFireball) => to_titlecase_gruber(words),
-        None => to_titlecase_gruber(words),
-    }
-}
-
-fn to_titlecase_ap(words: Vec<&str>) -> String {
-    eprintln!("AP style guide not implemented, string returned as-is!");
-    words.join(" ")
-}
-
-fn to_titlecase_cmos(words: Vec<&str>) -> String {
-    let mut words = words.iter().peekable();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(first.to_titlecase_lower_rest());
-    while let Some(word) = words.next() {
-        if words.peek().is_none() {
-            output.push(word.to_titlecase_lower_rest());
-        } else {
-            match is_reserved_en(word.to_string()) {
-                true => output.push(word.to_string().to_lowercase()),
-                false => {
-                    output.push(word.to_titlecase_lower_rest());
-                }
-            }
-        }
-    }
-    output.join(" ")
-}
-
-fn to_titlecase_gruber(words: Vec<&str>) -> String {
-    let text = words.join(" ");
-    gruber_titlecase(&text)
-}
-
-fn to_titlecase_tr(words: Vec<&str>, style: Option<StyleGuide>) -> String {
-    match style {
-        Some(_) => panic!("Turkish implementation doesn't support different style guides."),
-        None => {
-            let mut words = words.iter();
-            let mut output: Vec<String> = Vec::new();
-            let first = words.next().unwrap();
-            output.push(first.to_titlecase_tr_or_az_lower_rest());
-            for word in words {
-                match is_reserved_tr(word.to_string()) {
-                    true => output.push(word.to_string().to_lowercase_tr_az()),
-                    false => {
-                        output.push(word.to_titlecase_tr_or_az_lower_rest());
-                    }
-                }
-            }
-            output.join(" ")
-        }
-    }
-}
-
-fn is_reserved_en(word: String) -> bool {
-    let word = word.to_lowercase();
-    let word = word.as_str();
-    let article = Regex::new(r"^(a|an|the)$").unwrap();
-    let congunction = Regex::new(r"^(for|and|nor|but|or|yet|so|both|either|neither|not only|whether|after|although|as|as if|as long as|as much as|as soon as|as though|because|before|by the time|even if|even though|if|in order that|in case|in the event that|lest|now that|once|only|only if|provided that|since|so|supposing|that|than|though|till|unless|until|when|whenever|where|whereas|wherever|whether or not|while)$").unwrap();
-    let preposition = Regex::new(r"^(about|above|across|after|against|along|among|around|at|before|behind|between|beyond|but|by|concerning|despite|down|during|except|following|for|from|in|including|into|like|near|of|off|on|onto|out|over|past|plus|since|throughout|to|towards|under|until|up|upon|up|to|with|within|without)$").unwrap();
-    article.is_match(word) || congunction.is_match(word) || preposition.is_match(word)
-}
-
-fn is_reserved_tr(word: String) -> bool {
-    let baglac = Regex::new(
-        r"^([Vv][Ee]|[İi][Ll][Ee]|[Yy][Aa]|[Vv][Ee]|[Yy][Aa][Hh][Uu][Tt]|[Kk][İi]|[Dd][AaEe])$",
-    )
-    .unwrap();
-    let soruek = Regex::new(r"^([Mm][İiIıUuÜü])([Dd][İiIıUuÜü][Rr]([Ll][AaEe][Rr])?|[Ss][İiIıUuÜü][Nn]|[Yy][İiIıUuÜü][Zz]|[Ss][İiIıUuÜü][Nn][İiIıUuÜü][Zz]|[Ll][AaEe][Rr])?$").unwrap();
-    let word = word.as_str();
-    baglac.is_match(word) || soruek.is_match(word)
-}
-
-fn to_lowercase_en(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_lowercase());
-    }
-    output.join(" ")
-}
-
-fn to_lowercase_tr(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_lowercase_tr_az());
-    }
-    output.join(" ")
-}
-
-fn to_uppercase_en(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_uppercase());
-    }
-    output.join(" ")
-}
-
-fn to_uppercase_tr(words: Vec<&str>) -> String {
-    let mut output: Vec<String> = Vec::new();
-    for word in words {
-        output.push(word.to_uppercase_tr_az());
-    }
-    output.join(" ")
-}
-
-fn to_sentencecase_en(words: Vec<&str>) -> String {
-    let mut words = words.iter().peekable();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(gruber_titlecase(first));
-    for word in words {
-        output.push(word.to_lowercase());
-    }
-    output.join(" ")
-}
-
-fn to_sentencecase_tr(words: Vec<&str>) -> String {
-    let mut words = words.iter().peekable();
-    let mut output: Vec<String> = Vec::new();
-    let first = words.next().unwrap();
-    output.push(first.to_titlecase_tr_or_az());
-    for word in words {
-        output.push(word.to_lowercase_tr_az());
-    }
-    output.join(" ")
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    macro_rules! titlecase {
-        ($name:ident, $locale:expr, $style:expr, $input:expr, $expected:expr) => {
-            #[test]
-            fn $name() {
-                let actual = to_titlecase($input, $locale, $style);
-                assert_eq!(actual, $expected);
-            }
-        };
-    }
-
-    titlecase!(abc_none, InputLocale::EN, None, "a b c", "A B C");
-
-    titlecase!(
-        abc_cmos,
-        InputLocale::EN,
-        Some(StyleGuide::ChicagoManualOfStyle),
-        "a b c",
-        "A B C"
-    );
-
-    titlecase!(
-        abc_gruber,
-        InputLocale::EN,
-        Some(StyleGuide::DaringFireball),
-        "a b c",
-        "A B C"
-    );
-
-    titlecase!(
-        simple_cmos,
-        InputLocale::EN,
-        Some(StyleGuide::ChicagoManualOfStyle),
-        "Once UPON A time",
-        "Once upon a Time"
-    );
-
-    titlecase!(
-        simple_gruber,
-        InputLocale::EN,
-        Some(StyleGuide::DaringFireball),
-        "Once UPON A time",
-        "Once UPON a Time"
-    );
-
-    titlecase!(
-        colon_cmos,
-        InputLocale::EN,
-        Some(StyleGuide::ChicagoManualOfStyle),
-        "foo: a baz",
-        "Foo: a Baz"
-    );
-
-    titlecase!(
-        colon_gruber,
-        InputLocale::EN,
-        Some(StyleGuide::DaringFireball),
-        "foo: a baz",
-        "Foo: A Baz"
-    );
-
-    // titlecase!(
-    //     qna_cmos,
-    //     InputLocale::EN,
-    //     Some(StyleGuide::ChicagoManualOfStyle),
-    //     "Q&A with Steve Jobs: 'That's what happens in technology'",
-    //     "Q&a with Steve Jobs: 'that's What Happens in Technology'"
-    // );
-
-    titlecase!(
-        qna_gruber,
-        InputLocale::EN,
-        Some(StyleGuide::DaringFireball),
-        "Q&A with Steve Jobs: 'That's what happens in technology'",
-        "Q&A With Steve Jobs: 'That's What Happens in Technology'"
-    );
-
-    titlecase!(
-        turkish_question,
-        InputLocale::TR,
-        None,
-        "aç mısın",
-        "Aç mısın"
-    );
-
-    titlecase!(
-        turkish_question_false,
-        InputLocale::TR,
-        None,
-        "dualarımızda minnettarlık",
-        "Dualarımızda Minnettarlık"
-    );
-
-    titlecase!(
-        turkish_chars,
-        InputLocale::TR,
-        None,
-        "İLKİ ILIK ÖĞLEN",
-        "İlki Ilık Öğlen"
-    );
-
-    titlecase!(
-        turkish_blockwords,
-        InputLocale::TR,
-        None,
-        "Sen VE ben ile o",
-        "Sen ve Ben ile O"
-    );
-
-    macro_rules! lowercase {
-        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
-            #[test]
-            fn $name() {
-                let actual = to_lowercase($input, $locale);
-                assert_eq!(actual, $expected);
-            }
-        };
-    }
-
-    lowercase!(
-        lower_en,
-        InputLocale::EN,
-        "foo BAR BaZ BIKE",
-        "foo bar baz bike"
-    );
-
-    lowercase!(
-        lower_tr,
-        InputLocale::TR,
-        "foo BAR BaZ ILIK İLE",
-        "foo bar baz ılık ile"
-    );
-
-    macro_rules! uppercase {
-        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
-            #[test]
-            fn $name() {
-                let actual = to_uppercase($input, $locale);
-                assert_eq!(actual, $expected);
-            }
-        };
-    }
-
-    uppercase!(
-        upper_en,
-        InputLocale::EN,
-        "foo BAR BaZ bike",
-        "FOO BAR BAZ BIKE"
-    );
-
-    uppercase!(
-        upper_tr,
-        InputLocale::TR,
-        "foo BAR BaZ ILIK İLE",
-        "FOO BAR BAZ ILIK İLE"
-    );
-
-    macro_rules! sentencecase {
-        ($name:ident, $locale:expr, $input:expr, $expected:expr) => {
-            #[test]
-            fn $name() {
-                let actual = to_sentencecase($input, $locale);
-                assert_eq!(actual, $expected);
-            }
-        };
-    }
-
-    sentencecase!(
-        sentence_en,
-        InputLocale::EN,
-        "insert BIKE here",
-        "Insert bike here"
-    );
-
-    sentencecase!(
-        sentence_tr,
-        InputLocale::TR,
-        "ilk DAVRANSIN",
-        "İlk davransın"
-    );
+fn get_override<F>(word: &Word, overrides: &Option<Vec<Word>>, case_fn: F) -> Option<Word>
+where
+    F: Fn(&String) -> String,
+{
+    let word_lower = case_fn(&word.word);
+    overrides.as_ref().and_then(|words| {
+        words
+            .iter()
+            .find(|w| case_fn(&w.word) == word_lower)
+            .cloned()
+    })
 }

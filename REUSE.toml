@@ -1,0 +1,46 @@
+version = 1
+
+[[annotations]]
+path = [
+  "rockspecs/*.rockspec",
+  "*.rockspec",
+  "*.rockspec.in",
+  "CHANGELOG.md",
+  "README.md",
+  "sile/**",
+  "typst/**",
+]
+SPDX-FileCopyrightText = "© 2023 Caleb Maclennan <caleb@alerque.com>"
+SPDX-License-Identifier = "LGPL-3.0-only"
+
+[[annotations]]
+path = [
+  "build-aux/*.am",
+  "build-aux/*.m4",
+  "build-aux/git-version-gen",
+  "Makefile.am",
+  "bootstrap.sh",
+  "configure.ac",
+]
+SPDX-FileCopyrightText = "© 2023 Caleb Maclennan <caleb@alerque.com>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [
+  ".cargo/config.toml",
+  ".editorconfig",
+  ".github/**.yml",
+  ".gitignore",
+  ".luacheckrc",
+  ".luacov",
+  ".luarc.json",
+  "Cargo.lock",
+  "Cargo.toml",
+  "Justfile",
+  "deny.toml",
+  "flake.lock",
+  "pyproject.toml",
+  "rust-toolchain",
+]
+SPDX-FileCopyrightText = "© 2023 Caleb Maclennan <caleb@alerque.com>"
+SPDX-License-Identifier = "0BSD"

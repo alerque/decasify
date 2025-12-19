@@ -1,98 +1,127 @@
 [package]
 name = "decasify"
-version = "0.6.0"
-authors = ["Caleb Maclennan <caleb@alerque.com>"]
-edition = "2021"
-rust-version = "1.73.0"
+version = "0.11.2"
 description = "A CLI utility and library to cast strings to title-case according to locale specific style guides including Turkish support"
 readme = "README.md"
+build = "build-aux/build.rs"
+include = ["*.rs"]
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[workspace.package]
+version = "0.11.2"
+authors = ["Caleb Maclennan <caleb@alerque.com>"]
 homepage = "https://github.com/alerque/decasify"
 repository = "https://github.com/alerque/decasify"
 license = "LGPL-3.0-only"
-build = "build-aux/build.rs"
-include = ["*.rs"]
+edition = "2021"
+rust-version = "1.80.1"
 
-[lib]
-name = "decasify"
-crate-type = ["rlib", "cdylib"]
+[workspace]
+resolver = "2"
+members = [".", "typst"]
 
 [[bin]]
 name = "decasify"
 required-features = ["cli"]
 
+[lib]
+name = "decasify"
+crate-type = ["rlib", "cdylib"]
+
+[profile.release]
+lto = true
+
+[profile.typst]
+inherits = "release"
+opt-level = "z"
+strip = true
+
 [features]
 default = []
 full = ["cli", "bash", "elvish", "fish", "manpage", "powershell", "zsh"]
-completions = ["cli", "clap_complete"]
-cli = ["clap"]
+modules = ["luamodule", "pythonmodule", "wasm"]
+completions = ["cli", "dep:clap_complete"]
+cli = ["dep:clap"]
 bash = ["completions"]
 elvish = ["completions"]
 fish = ["completions"]
-manpage = ["clap_mangen"]
+manpage = ["dep:clap_mangen"]
 powershell = ["completions"]
 zsh = ["completions"]
-luamodule = []
+luamodule = ["dep:mlua"]
 lua54 = ["luamodule", "mlua/lua54"]
 lua53 = ["luamodule", "mlua/lua53"]
 lua52 = ["luamodule", "mlua/lua52"]
 lua51 = ["luamodule", "mlua/lua51"]
 luajit = ["luamodule", "mlua/luajit"]
-pythonmodule = ["pyo3"]
-wasm = ["wasm-bindgen"]
+pythonmodule = ["dep:pyo3"]
+unstable-trait = []
+wasm = ["dep:wasm-bindgen"]
 
-[profile.release]
-lto = true
+[workspace.dependencies.decasify]
+path = "."
+version = "0.11.2"
 
 [dependencies]
-regex = "1.10"
-strum = "0.26"
-strum_macros = "0.26"
-unicode_titlecase = "2.3"
+regex = "1.11"
+snafu = "0.8"
+strum = "0.27"
+strum_macros = "0.27"
+unicode_titlecase = "2.4"
 
-  [dependencies.clap]
-  version = "4.5"
-  optional = true
-  features = ["derive", "wrap_help"]
+[dependencies.clap]
+version = "4.5"
+optional = true
+features = ["derive", "color", "wrap_help"]
 
-  [dependencies.mlua]
-  version = "0.9"
-  optional = true
-  features = ["module"]
+[dependencies.mlua]
+version = "0.11"
+optional = true
+features = ["module"]
 
-  [dependencies.pyo3]
-  version = "0.22"
-  optional = true
-  features = [ "extension-module" ]
+[dependencies.pyo3]
+version = "0.27"
+optional = true
+features = ["extension-module"]
 
-  [dependencies.titlecase]
-  version = "3.3"
-  features = [ "perf" ]
+[dependencies.titlecase]
+version = "3.3"
+features = ["perf"]
 
-  [dependencies.wasm-bindgen]
-  version = "0.2"
-  optional = true
+[dependencies.wasm-bindgen]
+version = "0.2"
+optional = true
 
 [build-dependencies]
-strum = "0.26"
-strum_macros = "0.26"
+snafu = "0.8"
+strum = "0.27"
+strum_macros = "0.27"
 
-  [build-dependencies.clap_complete]
-  version = "4.5"
-  optional = true
+[build-dependencies.clap_complete]
+version = "4.5"
+optional = true
 
-  [build-dependencies.clap_mangen]
-  version = "0.2"
-  optional = true
+[build-dependencies.clap_mangen]
+version = "0.2"
+optional = true
 
-  [build-dependencies.clap]
-  version = "4.5"
-  optional = true
-  features = ["derive"]
+[build-dependencies.clap]
+version = "4.5"
+optional = true
+features = ["derive"]
 
-  [build-dependencies.vergen]
-  version = "8.3"
-  default-features = false
-  features = ["build", "cargo", "git", "gitoxide"]
+[build-dependencies.anyhow]
+version = "1.0"
+
+[build-dependencies.vergen-gix]
+version = "1.0"
+default-features = false
+features = ["build", "cargo", "rustc"]
 
 [dev-dependencies]
 assert_cmd = "2.0"
@@ -101,13 +130,33 @@ predicates = "3.1"
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
 
+[package.metadata.bacon]
+default_job = "build"
+
+[package.metadata.bacon.jobs.build]
+command = ["cargo", "build", "--features", "full", "--color", "always"]
+
+[package.metadata.bacon.jobs.build-modules]
+command = [
+  "cargo",
+  "build",
+  "--features",
+  "modules,luajit",
+  "--color",
+  "always",
+]
+
+[package.metadata.docs.rs]
+features = ["luamodule", "luajit", "pythonmodule", "wasm", "unstable-trait"]
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.git-cliff.git]
 protect_breaking_commits = true
 commit_parsers = [
-    { message = "^feat", group = "<!-- 0 -->Features" },
-    { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
-    { message = "^perf", group = "<!-- 2 -->Performance" },
-    { message = ".*", skip = true },
+  { message = "^feat", group = "<!-- 0 -->Features" },
+  { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
+  { message = "^perf", group = "<!-- 2 -->Performance" },
+  { message = ".*", skip = true },
 ]
 commit_preprocessors = [
   { pattern = '.*', replace_command = 'typos --quiet --write-changes -' },
@@ -115,12 +164,11 @@ commit_preprocessors = [
 
 [package.metadata.typos.default]
 locale = "en-us"
-extend-ignore-identifiers-re = [
-  "[bB][aA][zZ]"
-]
+extend-ignore-identifiers-re = ["[bB][aA][zZ]"]
 
 [package.metadata.typos.default.extend-words]
 runing = "running"
+walm = "wasm"
 
 [package.metadata.typos.files]
 ignore-hidden = false

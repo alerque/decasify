@@ -7,22 +7,96 @@
 local decasify = require("decasify")
 
 describe("decasify", function ()
+   local case = decasify.case
    local titlecase = decasify.titlecase
    local lowercase = decasify.lowercase
    local uppercase = decasify.uppercase
    local sentencecase = decasify.sentencecase
 
+   it("should identify its version", function ()
+      local build_env_version
+      local version_file = io.open(".version", "r")
+      if version_file then
+         build_env_version = version_file:read("*all")
+         version_file:close()
+      else
+         local which = require("luarocks.loader").which
+         local _, _, rock_version = which("decasify")
+         build_env_version = rock_version:gsub("-.*", "")
+      end
+      assert.is.equal(build_env_version, decasify.version:sub(2, #build_env_version + 1))
+   end)
+
    it("should provide the casing functions", function ()
+      assert.is_function(case)
       assert.is_function(titlecase)
       assert.is_function(lowercase)
       assert.is_function(uppercase)
       assert.is_function(sentencecase)
    end)
 
+   describe("module", function ()
+      it("is callable", function ()
+         assert.no.error(function ()
+            decasify("foo")
+         end)
+      end)
+
+      it("should not balk at passing all options through", function ()
+         local text = "foo: a baz"
+         assert.equal("Foo: A Baz", decasify(text, "title", "en", "gruber"))
+         assert.equal("FOO: A BAZ", decasify(text, "upper", "en", "gruber"))
+      end)
+   end)
+
+   describe("case", function ()
+      it("should not balk at nil values for optional args", function ()
+         assert.no.error(function ()
+            case("foo", nil, "en", "cmos")
+         end)
+         assert.no.error(function ()
+            case("foo", nil, "tr")
+         end)
+         assert.no.error(function ()
+            case("foo")
+         end)
+      end)
+
+      it("should balk at unparsable values", function ()
+         assert.error(function ()
+            case("foo", nil, "foo")
+         end)
+         assert.error(function ()
+            case("foo", nil, 1)
+         end)
+      end)
+
+      it("should not balk at passing all options through", function ()
+         local text = "foo: a baz"
+         assert.equal("Foo: A Baz", case(text, "title", "en", "gruber"))
+         assert.equal("FOO: A BAZ", case(text, "upper", "en", "gruber"))
+      end)
+
+      it("should correctly handle passing style options", function ()
+         local text = "foo bar"
+         local opts = {
+            overrides = { "fOO" },
+         }
+         assert.equal("fOO Bar", case(text, "title", "en", "gruber", opts))
+         assert.equal("fOO Bar", case(text, "title", "tr", "default", opts))
+      end)
+   end)
+
    describe("titlecase", function ()
       it("should not balk at nil values for optional args", function ()
          assert.no.error(function ()
+            titlecase("foo", nil, "cmos")
+         end)
+         assert.no.error(function ()
             titlecase("foo", "en", "cmos")
+         end)
+         assert.no.error(function ()
+            titlecase("foo", "tr")
          end)
          assert.no.error(function ()
             titlecase("foo", "tr")
@@ -32,22 +106,40 @@ describe("decasify", function ()
          end)
       end)
 
+      it("should balk at unparsable values", function ()
+         assert.error(function ()
+            titlecase("foo", "foo")
+         end)
+         assert.error(function ()
+            titlecase("foo", 1)
+         end)
+      end)
+
       it("should cooperate with English style guides", function ()
          local text = "foo: a baz"
          local cmos = "Foo: a Baz"
          local grub = "Foo: A Baz"
-         assert.equals(cmos, titlecase(text, "en", "cmos"))
-         assert.equals(grub, titlecase(text, "en", "gruber"))
+         assert.equal(cmos, titlecase(text, "en", "cmos"))
+         assert.equal(grub, titlecase(text, "en", "gruber"))
+      end)
+
+      it("should correctly handle passing style options", function ()
+         local text = "foo bar"
+         local opts = {
+            overrides = { "fOO" },
+         }
+         assert.equal("fOO Bar", titlecase(text, "en", "gruber", opts))
+         assert.equal("fOO Bar", titlecase(text, "tr", "default", opts))
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = titlecase("İLKİ ILIK ÖĞLEN", "tr")
-         assert.equals("İlki Ilık Öğlen", result)
+         assert.equal("İlki Ilık Öğlen", result)
       end)
 
       it("should be nice about Turish words", function ()
          local result = titlecase("Sen VE ben ile o", "tr")
-         assert.equals("Sen ve Ben ile O", result)
+         assert.equal("Sen ve Ben ile O", result)
       end)
    end)
 
@@ -61,14 +153,23 @@ describe("decasify", function ()
          end)
       end)
 
+      it("should balk at unparsable values", function ()
+         assert.error(function ()
+            lowercase("foo", "foo")
+         end)
+         assert.error(function ()
+            lowercase("foo", 1)
+         end)
+      end)
+
       it("should default to handling string as English", function ()
          local result = lowercase("IBUPROFIN")
-         assert.equals("ibuprofin", result)
+         assert.equal("ibuprofin", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = lowercase("İLKİ ILIK ÖĞLEN", "tr")
-         assert.equals("ilki ılık öğlen", result)
+         assert.equal("ilki ılık öğlen", result)
       end)
    end)
 
@@ -82,14 +183,23 @@ describe("decasify", function ()
          end)
       end)
 
+      it("should balk at unparsable values", function ()
+         assert.error(function ()
+            uppercase("foo", "foo")
+         end)
+         assert.error(function ()
+            uppercase("foo", 1)
+         end)
+      end)
+
       it("should default to handling string as English", function ()
          local result = uppercase("ibuprofin")
-         assert.equals("IBUPROFIN", result)
+         assert.equal("IBUPROFIN", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = uppercase("ilki ılık öğlen", "tr")
-         assert.equals("İLKİ ILIK ÖĞLEN", result)
+         assert.equal("İLKİ ILIK ÖĞLEN", result)
       end)
    end)
 
@@ -103,14 +213,23 @@ describe("decasify", function ()
          end)
       end)
 
+      it("should balk at unparsable values", function ()
+         assert.error(function ()
+            sentencecase("foo", "foo")
+         end)
+         assert.error(function ()
+            sentencecase("foo", 1)
+         end)
+      end)
+
       it("should default to handling string as English", function ()
          local result = sentencecase("insert BIKE here")
-         assert.equals("Insert bike here", result)
+         assert.equal("Insert bike here", result)
       end)
 
       it("should be at peace with Turkish characters", function ()
          local result = sentencecase("ilk DAVRANSIN", "tr")
-         assert.equals("İlk davransın", result)
+         assert.equal("İlk davransın", result)
       end)
    end)
 end)

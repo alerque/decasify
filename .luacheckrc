@@ -19,4 +19,7 @@ files["plugin/*.lua"] = {
       "vim",
    }
 }
+files["sile/*/*.lua"] = {
+   std = "+sile",
+}
 max_line_length = false

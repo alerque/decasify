@@ -1,3 +1,207 @@
+## [0.11.2] - 2025-11-20
+
+### Features
+
+- *(nvim)* Add VIM command completions to :Decasify command
+- *(vim)* Add VIM command completions to :Decasify command
+- *(crate)* Implement rudimentary Spanish support following Real Academia Espanola
+- *(crate)* Enable recognition of ASCII variants of localized language names
+- *(crate)* Add second style guide for Spanish based on FundéuRAE
+
+### Bug Fixes
+
+- *(vim)* Correct detection of VIM user configs
+- *(vim)* Fix passing arguments to CLI used in vimscript plugin
+## [0.11.1] - 2025-11-15
+
+### Bug Fixes
+
+- *(ci)* Fix gremlins in the automated release process
+- *(tooling)* Protect targets from running `env :` in CI and failing instead of skipping
+- *(tooling)* Don't force build all targets for default make target
+## [0.11.0] - 2025-11-15
+
+### Features
+
+- *(typst)* Bubble up conversion errors as Typst panics avoiding WASM 'unimplemented' traps
+- *(lua)* Bubble up conversion errors from into Lua result types
+- *(lua)* Enable casting Table and other types to enums via __tostring()
+- *(python)* Bubble up conversion errors into Python result types
+- *(wasm)* Bubble up conversion errors into JS results
+
+### Bug Fixes
+
+- *(ci)* Keep release process from hanging up without cargo tooling
+
+### Refactor
+
+- *(crate)* [**breaking**] Implement TryFrom instead of From to avoid panics
+## [0.10.2] - 2025-11-11
+
+### Features
+
+- *(nvim)* Allow override words table to be set ahead of time
+- *(vim)* Initialize non-Lua plugin for plain VIM users
+- *(vim)* Allow override of default options using VIM globals
+- *(nvim)* Allow forcing NeoVIM to load the vimscript plugin and depend on the CLI
+
+### Bug Fixes
+
+- *(tooling)* Fix `uv` usage to allow rebuilds without interactive prompt
+## [0.10.1] - 2025-03-15
+
+### Bug Fixes
+
+- *(tooling)* Package image assets used in READMEs
+- *(tooling)* Don't force rebuild of SILE and Typst packages when building default target
+
+## [0.10.0] - 2025-03-15
+
+### Features
+
+- *(lua)* Make Lua module callable for more idiomatic usage
+- *(crate)* Implement builder pattern for style options
+- *(crate)* Implement overriding case output for specific words
+- *(cli)* Implement word override as new option flag
+- *(python)* Bring casing override options to Python module
+- *(lua)* Bring casing override options to Lua module
+- *(typst)* Bring casing override options to Typst package
+- *(wasm)* Bring casing override options to JavaScript module
+- *(sile)* Bring casing override options to SILE package
+- *(nvim)* Bring casing override options to NeoVIM plugin
+
+## [0.9.1] - 2025-03-01
+
+### Bug Fixes
+
+- *(build)* Package Typst sources in source dist so Rust workspace is complete
+- *(sile)* Correctly pass desired case to generic conversion function
+
+## [0.9.0] - 2025-02-25
+
+### Features
+
+- *(crate)* Impl From<Chunk> for String
+- *(typst)* Setup Typst package manifest
+- *(typst)* Introduce Cargo workspace to split out Typst crate
+
+### Bug Fixes
+
+- *(crate)* Accept input languages as string in any case
+- *(build)* Correct semver derivation to avoid autotools race
+- *(build)* Set correct final permissions on intermediary shell completion artifacts (#37)
+
+## [0.8.0] - 2024-10-26
+
+### Features
+
+- *(crate)* Implement `From<String>` for option types
+- Promote only TR implementation to 'TDK' style guide
+- *(crate)* Specify new `Decasify` trait
+- *(crate)* Implement `Decasify` trait for commonn types
+- *(lua)* Implement `FromLua` for relevant crate types
+- *(cli)* Improve console error message output with Snafu
+
+### Bug Fixes
+
+- *(lua)* Make sure LuaRock identifies its version even when sideloaded
+
+### Chore
+
+- *(crate)* [**breaking**] Stop exporting `Segment` type
+
+### Refactor
+
+- *(crate)* [**breaking**] Change out anyhow for snafu errors in library
+- *(crate)* [**breaking**] Flatten modules to simplify public API
+
+### Refator
+
+- [**breaking**] Rename `to_*()` functions as just `*()`
+
+## [0.7.6] - 2024-10-22
+
+### Bug Fixes
+
+- Make sure distributed rockspecs include version
+
+## [0.7.5] - 2024-10-22
+
+### Bug Fixes
+
+- Make sure lock file is updated before release tag
+
+## [0.7.4] - 2024-10-22
+
+### Bug Fixes
+
+- *(sile)* Make sure SILE module is in release package
+
+## [0.7.3] - 2024-10-21
+
+### Features
+
+- *(python)* Export module version number for debug convenience
+- *(sile)* Add SILE package with document command for recasing
+- *(sile)* Setup to publish SILE package via LuaRocks
+
+### Bug Fixes
+
+- *(nvim)* Correct regeneration of nvim dev rockspec
+
+## [0.7.2] - 2024-10-21
+
+### Bug Fixes
+
+- *(build)* Remove unused developer tooling requirement
+- *(nvim)* Require matching version of module for editor plugin
+
+## [0.7.1] - 2024-10-21
+
+### Features
+
+- *(crate)* Add `impl From<&str>` for case variants
+- *(crate)* Provide all-purpose casing function with target case as argument
+- *(lua)* Provide all-purpose casing function with target case as argument
+- *(python)* Provide all-purpose casing function with target case as argument
+- *(wasm)* Provide all-purpose casing function with target case as argument
+- *(nvim)* Allow overriding locale & style per Decasify command invocation
+
+### Bug Fixes
+
+- Package Lua plugin in source dist
+- *(nvim)* Correctly handle buffer-local default overrides
+
+## [0.7.0] - 2024-10-19
+
+### Features
+
+- *(crate)* Be flexible on types by accepting `impl Into<T>`
+- Allow Lua/Python/JS to pass similar to 'titlecase' instead of 'title'
+
+### Bug Fixes
+
+- *(nvim)* Correct rockspec_format, NeoVIM plugin only compatible with LuaRocks 3+
+
+### Refator
+
+- [**breaking**] Simplify type names
+- [**breaking**] Change Option<StyleGuide> argument to StyleGuide
+
+## [0.6.1] - 2024-10-18
+
+### Features
+
+- Preserve whitespace from inputs
+- *(crate)* Be flexible on accepted types and Implement From trait on common possibilities
+- *(nvim)* Add a rockspec for installation with rocks.nvim
+- *(nvim)* Add a new command that runs decasify titlecasing on input range
+- *(nvim)* Add a subcommand to access all casing options
+- *(nvim)* Add global default case
+- *(nvim)* Add global settings for locale and style guide
+- *(nvim)* Allow and prioritize buffer local settings
+- *(nvim)* Accept visual input range for partial line transformations
+
 ## [0.6.0] - 2024-08-13
 
 ### Chore

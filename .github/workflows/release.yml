@@ -14,17 +14,36 @@ jobs:
   ghrelase:
     strategy:
       fail-fast: false
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Configure
         run: |
           ./bootstrap.sh
           ./configure \
-            BUSTED=: LUAROCKS=: MATURIN=: PYTEST=: UV=: GITCLIFF=: TYPOS=: NPM=: WASMPACK=:\
+              BUSTED=: \
+              CARGO_DENY=: \
+              CARGO_SET_VERSION=: \
+              GIT_CLIFF=: \
+              JUST=: \
+              LUAROCKS=: \
+              MATURIN=: \
+              NPM=: \
+              PANDOC=: \
+              PDF2SVG=: \
+              PYTEST=: \
+              REUSE=: \
+              SILE=: \
+              SVGO=: \
+              TAPLO=: \
+              TYPOS=: \
+              TYPST=: \
+              UV=: \
+              WASM_OPT=: \
+              WASM_PACK=: \
             --enable-developer-mode \
             --without-{bash,fish,zsh}-completion-dir
           echo "VERSION=$(./build-aux/git-version-gen .tarball-version)" >> $GITHUB_ENV

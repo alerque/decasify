@@ -7,36 +7,34 @@
 [![Lua Test Status](https://img.shields.io/github/actions/workflow/status/alerque/decasify/busted.yml?branch=master&label=Busted&logo=Lua)](https://github.com/alerque/decasify/actions/workflows/busted.yml)  
 [![GitHub tag (latest)](https://img.shields.io/github/v/tag/alerque/decasify?logo=github&color=blue)](https://github.com/alerque/decasify/releases)
 [![Crates.io (latest)](https://img.shields.io/crates/v/decasify?logo=rust&color=blue)](https://crates.io/crates/decasify)
-[![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify?logo=lua&color=blue)](https://luarocks.org/modules/alerque/decasify)
+[![LuaRocks (latest)](https://img.shields.io/luarocks/v/alerque/decasify?logo=lua&color=blue)][rock]
 [![PyPi (latest)](https://img.shields.io/pypi/v/decasify?logo=python&color=blue)](https://pypi.org/project/decasify)
 [![NPM Version](https://img.shields.io/npm/v/decasify?logo=npm&color=blue)](https://www.npmjs.com/package/decasify)
 
-A CLI utility, Rust crate, Lua Rock, Python module, JavaScript module, and Neovim plugin to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
+A CLI utility, Rust crate, Lua rock, Python module, JavaScript module, Neovim or VIM plugin, SILE package, and Typst package to cast strings to title-case (and other cases) according to locale specific style guides including Turkish support.
 
-This project was born out of frustration with ALL CAPS TITLES in Markdown that no tooling seemed to properly support casting to title-cased strings, particularly coming from Turkish.
-Many tools can handle casing single words, some programmer specific tools can recaseing tokens and identifiers, and yet a few others can handle *English* strings, but nothing seemed to be out there for changing the case of full Turkish strings.
+This project was born out of frustration with authors and editors leaving ALL CAPS TITLES in Markdown sources.
+No tooling I could find properly supported casting these to title-cased strings (which are more versatile for typesetting purposes).
+The problem was doubly hard because most of my work is adjacent to Turkish, and even less tooling was available and has special issues with case conversions.
+Many tools can handle casing single words, some programmer specific tools handle re-casing tokens and identifiers, and yet a few others can handle *English* strings.
+But *nothing* seemed to be out there for changing the case of Turkish prose.
 
 The CLI defaults to titlecase and English, but lower, upper, and sentence case options are also available.
 The Rust, Lua, Python, and JavaScript library APIs have functions specific to each operation.
 Where possible the APIs currently default to English rules and (for English) the Gruber style guide, but others are available.
 
+The Spanish style roughly follows [optional stylistic exceptions](https://www.rae.es/dpd/may%C3%BAsculas) noted by Real Academia Española.
+Keep in mind most Spanish style guides eschew title casing and use sentence-case for many things that would traditionally be title-cased in English.
+This library implements a best-guess at title-casing when asked to, it does not help you understand when (not) to use it in the first place.
+
 The Turkish style follows the Turkish Language Institute's [guidelines][tdk].
 
-For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Grubber's Daring Fireball (Gruber).
+For English, three style guides are known: Associated Press (AP), Chicago Manual of Style (CMOS), and John Gruber's Daring Fireball (Gruber).
 The Gruber style is by far the most complete, being implemented by the [titlecase crate][titlecase_crate].
 The CMOS style handles a number of parts of speech but has punctuation related issues.
 The AP style is largely unimplemented.
 
 Contributions are welcome for better style guide support or further languages.
-
-``` console
-$ decasify -l tr ILIK SU VE İTEN RÜZGARLAR
-Ilık Su ve İten Rüzgarlar
-$ echo ILIK SU VE İTEN RÜZGARLAR | decasify -l tr
-Ilık Su ve İten Rüzgarlar
-$ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
-Foo BAR and Baz: An Alter Ego
-```
 
 [tdk]: https://tdk.gov.tr/icerik/yazim-kurallari/buyuk-harflerin-kullanildigi-yerler/
 [titlecase_crate]: https://crates.io/crates/titlecase
@@ -45,27 +43,24 @@ Foo BAR and Baz: An Alter Ego
 
 Use of the CLI is pretty simple.
 Input may be either shell arguments or STDIN.
+Arguments can control the various options.
+For full usage information check `decasify --help` or `man decasify`.
 
-```console
-$ decasify --help
-A CLI tool to convert all-caps strings to title-case or other less aggressive tones that supports
-Turkish input
+``` console
+$ decasify -l tr ILIK SU VE İTEN RÜZGARLAR
+Ilık Su ve İten Rüzgarlar
 
-Usage: decasify [OPTIONS] [INPUT]...
+$ echo ILIK SU VE İTEN RÜZGARLAR | decasify -l tr
+Ilık Su ve İten Rüzgarlar
 
-Arguments:
-  [INPUT]...  Input string
-
-Options:
-  -l, --locale <LOCALE>  Locale [default: EN] [possible values: EN, TR]
-  -c, --case <CASE>      Target case [default: Title] [possible values: Lower, Sentence, Title,
-                         Upper]
-  -s, --style <STYLE>    Style Guide [possible values: ap, cmos, gruber]
-  -h, --help             Print help
-  -V, --version          Print version
+$ echo foo BAR AND baz: an alter ego | decasify -l en -s gruber
+Foo BAR and Baz: An Alter Ego
 ```
 
-First, check your distro for packages, e.g. for Arch Linux get it [from the AUR](https://aur.archlinux.org/packages/decasify).
+### Installation
+
+<a href="https://repology.org/project/decasify/versions"><img src="https://repology.org/badge/vertical-allrepos/decasify.svg" align="right" alt="Packaging status"></a>
+To install, first check your distro for packages, e.g. for [Arch Linux](https://archlinux.org/packages/extra/x86_64/decasify/) just install via `pacman -S decasify` or for [Homebrew](https://formulae.brew.sh/formula/decasify) via `brew install decasify`.
 
 Otherwise for many platforms you can run it directly or install it to a shell using Nix Flakes:
 
@@ -95,34 +90,34 @@ Of course the bare binary can also be installed directly with Cargo:
 $ cargo install --features cli decasify
 ```
 
-## Use as Rust crate
+## Use as a Rust crate
 
 In your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-decasify = "0.5"
+decasify = "0.11"
 ```
 
 Then use the crate functions and types in your project something like this:
 
 ```rust
-use decasify::to_titlecase;
-use decasify::{InputLocale, StyleGuide};
+use decasify::titlecase;
+use decasify::{Locale, StyleGuide, StyleOptions};
 
 fn demo() {
     let input = "ILIK SU VE İTEN RÜZGARLAR";
-    let output = to_titlecase(input, InputLocale::TR, None);
+    let output = titlecase(input, Locale::TR, StyleGuide::LanguageDefault, StyleOptions::default()).unwrap();
     eprintln! {"{output}"};
     let input = "title with a twist: a colon";
-    let output = to_titlecase(input, InputLocale::EN, Some(StyleGuide::DaringFireball));
+    let output = titlecase(input, Locale::EN, StyleGuide::DaringFireball, StyleOptions::default()).unwrap();
     eprintln! {"{output}"};
 }
 ```
 
-## Use as Lua Rock
+## Use as a Lua Rock
 
-Depend on the LuaRock in your project or install with `luarocks install decasify`:
+Depend on [the LuaRock][rock] in your project or install with `luarocks install decasify`:
 
 ```lua
 dependencies = {
@@ -142,7 +137,7 @@ output  = decasify.titlecase(input, "en", "gruber")
 print(output)
 ```
 
-## Use as Python Module
+## Use as a Python Module
 
 Depend on the Python module in your project or install with `pip install decasify`:
 
@@ -159,36 +154,49 @@ Then import and use the provided functions and type classes:
 from decasify import *
 
 input = "ILIK SU VE İTEN RÜZGARLAR"
-output = titlecase(input, InputLocale.TR)
+output = titlecase(input, Locale.TR)
 print(output)
 input = "title with a twist: a colon"
-output  = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
+output  = titlecase(input, Locale.EN, StyleGuide.DaringFireball)
 print(output)
 ```
 
-## Use as JavaScript (WASM) Module
+## Use as a JavaScript (WASM) Module
 
 Depend on the WASM based JavaScript module in your project with `npm add decasify`:
 
 Then import and use the provided functions and classes:
 
 ```javascript
-import { titlecase, uppercase, lowercase, InputLocale, StyleGuide } from 'decasify';
+import { titlecase, uppercase, lowercase, Locale, StyleGuide } from 'decasify';
 
 var input = "ILIK SU VE İTEN RÜZGARLAR"
-var output = titlecase(input, InputLocale.TR)
+var output = titlecase(input, Locale.TR)
 console.log(output)
 
 var input = "title with a twist: a colon"
-var output = titlecase(input, InputLocale.EN, StyleGuide.DaringFireball)
+var output = titlecase(input, Locale.EN, StyleGuide.DaringFireball)
 console.log(output)
 ```
 
 ## Use as a Neovim plugin
 
-Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim dev`.
+* Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), simply run `:Rocks install decasify.nvim`.
 
-Using other plugin managers you will need to make sure the Lua Rock for [decasify](https://luarocks.org/modules/alerque/decasify) is available as a dependency, then use this repository as a plugin however your plugin manager handles that.
+* Using [lazy.nvim](https://lazy.folke.io/), simply add `{ "alerque/decasify" }`
+
+* Using other plugin managers that don't automatically detect dependencies, you will need to manually specify the dependency and/or make sure the Lua Rock for [decasify](https://luarocks.org/modules/alerque/decasify) is available, then use this repository as a plugin however your plugin manager handles that.
+
+    ```lua
+    -- for packer.nvim
+    use {
+       "alerque/decasify",
+       rocks = { "decasify" },
+    }
+    ```
+
+* Using no plugin manager, make sure the [decasify Rock][rock] is installed matching the version of Lua NeoVIM is built with, then copy `plugin/decasify.lua` to wherever your user's plugin directory is.
+  As an alternative to installing the LuaRock, you can also force NeoVIM to use the vimscript plugin that uses the CLI command, in which case you will need to install the CLI tool separately, then `vim.g.decasify_force_cli = true` in your `init.lua`.
 
 A new command `:Decasify` will become available (with optional subcommands for cases other than title case) that transforms the current line or any range of lines.
 The default case, locale, and style guide can be changed (before or after loading) with global or buffer local variables:
@@ -200,4 +208,66 @@ vim.g.decasify_case = "title"
 vim.b.decasify_locale = "tr"
 -- Change the default style guide globally
 vim.g.decasify_style = "gruber"
+-- Override casing of specific words
+vim.g.decasify_overrides = { "NASA", "SpaceX" }
 ```
+
+## Use as a VIM plugin
+
+The VIM plugin depends on having the `decasify` CLI tool available in your system $PATH.
+This is in contrast to the NeoVIM plugin which loads the Lua Rock directly as a library and never needs to spawn a shell process.
+This does mean you must install the CLI separately on your own.
+
+* Using a plugin manager such as [vim-plug](https://github.com/junegunn/vim-plug) to enable this repository.
+
+```vim
+" for vim-plug
+Plug 'alerque/decasify'
+```
+
+A new command `:Decasify` will become available that transforms the current line or any range of lines.
+Any arguments passed to the command will be passed through to the CLI tool.
+
+The default case, locale, and style guide can be changed (before or after loading) with global or buffer local variables:
+
+```vim
+" Set the default target case globally
+let g:decasify_case = "title"
+" Change the locale for the current buffer
+let g:decasify_locale = "tr"
+" Change the default style guide globally
+let g:decasify_style = "gruber"
+" Override casing of specific words
+let g:decasify_overrides = ['NASA', 'SpaceX']
+```
+
+## Use as a SILE package
+
+[The SILE Typesetter](https://sile-typesetter.org/) leverages LuaRocks to manage 3rd party packages.
+The [decasify.sile][rock.sile] rock can be installed with `luarocks install decasify.sile`.
+Typically you'll want to adjust the Lua version to match your SILE installation, something like:
+
+```console
+$ luarocks --lua $(sile -q <<< SILE.lua_version) install decasify.sile
+```
+
+Additionally you may want to use `--local` to install to your user account instead of the system root, or `--tree lua_modules` to install locally inside a single project.
+Loading the package in a SILE document uses the usual `\use[module=package.decasify]` (see notes in the SILE manual about setting package paths if you installed via `--local`).
+Once loaded, the package exposes a `\decasify{}` function that can take any combination of `case`, `locale`, and `style` settings and applies the appropriate transformation to the content.
+By default it will track the language of the document content.
+
+## Use as a Typst package
+
+[Typst](https://typst.app/) has its own [package registry](https://typst.app/universe/).
+The [decasify](https://typst.app/universe/package/decasify) package can be added to your project with an import line.
+The exact version must be specified explicitly:
+
+```typst
+#import "@preview/decasify:0.11.2": *
+```
+
+Specific functions for each case should be available throughout the document.
+See the Typst package [readme](typst/README.md) or the [package listing on Typst universe](https://typst.app/universe/package/decasify) for more details.
+
+[rock]: http://luarocks.org/modules/alerque/decasify
+[rock.sile]: http://luarocks.org/modules/alerque/decasify.sile

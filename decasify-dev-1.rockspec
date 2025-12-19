@@ -6,7 +6,7 @@ version = "dev-1"
 
 source = {
    url = "git+https://github.com/alerque/decasify.git",
-   branch = "master"
+   branch = "master",
 }
 
 description = {
@@ -20,17 +20,17 @@ description = {
    homepage = "https://github.com/alerque/decasify",
    issues_url = "https://github.com/alerque/decasify/issues",
    maintainer = "Caleb Maclennan <caleb@alerque.com>",
-   labels = { "i18n" }
+   labels = { "i18n" },
 }
 
 dependencies = {
    "lua >= 5.1",
-   "luarocks-build-rust-mlua >= 0.2.2-1"
+   "luarocks-build-rust-mlua >= 0.2.5-1",
 }
 
 build = {
    type = "rust-mlua",
    modules = {
-      "decasify"
-   }
+      "decasify",
+   },
 }

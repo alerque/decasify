@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #[cfg(feature = "cli")]
-use {assert_cmd::Command, predicates::prelude::*};
+use {assert_cmd::cargo::cargo_bin_cmd, predicates::prelude::*};
 
 #[cfg(feature = "cli")]
 #[test]
 fn main() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
     cmd.args(["foo"])
         .assert()
         .success()
@@ -18,7 +18,7 @@ fn main() {
 #[cfg(feature = "cli")]
 #[test]
 fn main_stdin() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
     cmd.write_stdin("foo")
         .assert()
         .success()
@@ -29,7 +29,7 @@ fn main_stdin() {
 #[cfg(feature = "cli")]
 #[test]
 fn main_help() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
     cmd.args(["--help"])
         .assert()
         .success()
@@ -39,15 +39,26 @@ fn main_help() {
 
 #[cfg(feature = "cli")]
 #[test]
+fn main_overrides() {
+    let mut cmd = cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
+    cmd.args(["-l", "en", "-O", "fOO", "--", "foo bar"])
+        .assert()
+        .success()
+        .stdout("fOO Bar\n")
+        .stderr("");
+}
+
+#[cfg(feature = "cli")]
+#[test]
 fn main_lang() {
-    let mut en_cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut en_cmd = cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
     en_cmd
         .args(["-l", "en", "ide"])
         .assert()
         .success()
         .stdout("Ide\n")
         .stderr("");
-    let mut tr_cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut tr_cmd = cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
     tr_cmd
         .args(["-l", "tr", "ilk"])
         .assert()
