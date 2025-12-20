@@ -9,7 +9,13 @@
 }
 
 #let decasify(body, case, style: "default", overrides: none) = {
-  show regex(".+"): it => decasify-string(it.text, case, text.lang, style, overrides: overrides)
+  show regex(".+"): it => {
+    if it.func() == text {
+      decasify-string(it.text, case, text.lang, style, overrides: overrides)
+    } else {
+      it
+    }
+  }
   body
 }
 
@@ -19,7 +25,13 @@
 }
 
 #let titlecase(body, style: "default", overrides: none) = {
-  show regex(".+"): it => titlecase-string(it.text, text.lang, style, overrides: overrides)
+  show regex(".+"): it => {
+    if it.func() == text {
+      titlecase-string(it.text, text.lang, style, overrides: overrides)
+    } else {
+      it
+    }
+  }
   body
 }
 
@@ -28,7 +40,13 @@
 }
 
 #let lowercase(body) = {
-  show regex(".+"): it => lowercase-string(it.text, text.lang)
+  show regex(".+"): it => {
+    if it.func() == text {
+      lowercase-string(it.text, text.lang)
+    } else {
+      it
+    }
+  }
   body
 }
 
@@ -37,7 +55,13 @@
 }
 
 #let uppercase(body) = {
-  show regex(".+"): it => uppercase-string(it.text, text.lang)
+  show regex(".+"): it => {
+    if it.func() == text {
+      uppercase-string(it.text, text.lang)
+    } else {
+      it
+    }
+  }
   body
 }
 
@@ -46,6 +70,12 @@
 }
 
 #let sentencecase(body) = {
-  show regex(".+"): it => sentencecase-string(it.text, text.lang)
+  show regex(".+"): it => {
+    if it.func() == text {
+      sentencecase-string(it.text, text.lang)
+    } else {
+      it
+    }
+  }
   body
 }
