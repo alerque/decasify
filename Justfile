@@ -18,6 +18,7 @@ wget := require('wget')
 
 set script-interpreter := ['zsh', '+o', 'nomatch', '-eu']
 set shell := ['zsh', '+o', 'nomatch', '-ecu']
+set positional-arguments := true
 set unstable := true
 
 [default]
@@ -39,13 +40,13 @@ rel-conf: nuke-n-pave
 
 [parallel]
 build:
-    {{ make }} build
+    {{ make }} $0
 
 check:
-    {{ make }} check
+    {{ make }} $0
 
 lint:
-    {{ make }} lint
+    {{ make }} $0
 
 perfect:
     {{ make }} build check lint
@@ -76,23 +77,23 @@ typst-pristine:
 
 [parallel]
 packages:
-    {{ make }} packages
+    {{ make }} $0
 
 node-package:
-    {{ make }} node-package
+    {{ make }} $0
 
 python-package:
-    {{ make }} python-package
+    {{ make }} $0
 
 [doc('Rebuild SILE package (makes sure tracked documentation is up to date).')]
 [private]
 sile-package:
-    {{ make }} sile-package
+    {{ make }} $0
 
 [doc('Rebuild Typst package (makes sure tracked documentation is up to date).')]
 [private]
 typst-package:
-    {{ make }} typst-package
+    {{ make }} $0
 
 [no-cd]
 preview-nvim *ARGS: (preview nvim + ' --clean' 'plugin/decasify.lua' ARGS)
@@ -144,7 +145,7 @@ post-release semver: keys (release-typst semver)
 
 [private]
 typst-release semver: pristine keys typst-package
-    {{ make }} SEMVER={{ semver }} typst-release
+    {{ make }} SEMVER={{ semver }} $0
 
 [working-directory('../typst/packages/packages/')]
 release-typst semver: typst-pristine keys (typst-release semver)
