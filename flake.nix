@@ -4,7 +4,7 @@
   description = "A CLI utility to cast strings to title-case according to locale specific style guides including Turkish support";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    naersk.url = "github:nmattia/naersk";
+    naersk.url = "github:nix-community/naersk";
     naersk.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = { self, nixpkgs, naersk }:
