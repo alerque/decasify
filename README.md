@@ -90,6 +90,15 @@ Of course the bare binary can also be installed directly with Cargo:
 $ cargo install --features cli decasify
 ```
 
+If you want to save the trouble of building, you can also install a pre-built binary:
+
+```console
+$ cargo binstall decasify
+```
+
+Note the binary that installs can be directly downloaded by hand from the [latest release](https://github.com/alerque/decasify/releases/latest).
+Set the executable bit and copy it to somewhere in your `$PATH` to use.
+
 ## Use as a Rust crate
 
 In your `Cargo.toml` file.
