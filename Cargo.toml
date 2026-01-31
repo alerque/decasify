@@ -119,7 +119,7 @@ features = ["derive"]
 version = "1.0"
 
 [build-dependencies.vergen-gix]
-version = "1.0"
+version = "9.1"
 default-features = false
 features = ["build", "cargo", "rustc"]
 
