@@ -146,10 +146,13 @@ sile-package: $(SILEASSETS)
 
 check-local: busted pytest
 
-PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview reuse-lint
+PHONY_DEVELOPER_TARGETS = rockspecs srcrocks rocks install-luarock busted pytest release-preview reuse-lint binstall
 .PHONY: $(PHONY_DEVELOPER_TARGETS)
 
 if DEVELOPER_MODE
+
+binstall: @PACKAGE_NAME@$(EXEEXT)
+	cp $< $(<)-v$(VERSION)-$(CARGO_TARGET_TRIPLE)
 
 lint: reuse-lint
 
