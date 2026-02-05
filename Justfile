@@ -10,6 +10,7 @@ maturin := require('maturin')
 nvim := require('nvim')
 rsync := require('rsync')
 rustfmt := require('rustfmt')
+sed := require('sed')
 stylua := require('stylua')
 taplo := require('taplo')
 vim := require('vim')
@@ -125,8 +126,8 @@ keys:
 release semver: pristine keys
     {{ cargo-set-version }} set-version {{ semver }}
     {{ taplo }} format Cargo.toml
-    sed -i -e '/^decasify =/s#".*"#"${${:-{{ semver }}}%\.*}"#' README.md
-    sed -i -e '/^#import/s#".*"#"@preview/decasify:{{ semver }}"#' README.md
+    {{ sed }} -i -e "/^decasify =/s#\".*\"#\"${${:-{{ semver }}}%\.*}\"#" README.md
+    {{ sed }} -i -e '/^#import/s#".*"#"@preview/decasify:{{ semver }}"#' README.md
     {{ make }} SEMVER={{ semver }} rockspecs CHANGELOG.md decasify-{{ semver }}.md -B
     {{ git }} add -f Cargo.{toml,lock} README.md CHANGELOG.md rockspecs/decasify{,.nvim,.sile}-{{ semver }}-1.rockspec
     {{ git }} commit -m 'chore: Release v{{ semver }}'

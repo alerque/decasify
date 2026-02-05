@@ -105,7 +105,7 @@ In your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-decasify = "${${:-0.11.3}%.*}"
+decasify = "0.11"
 ```
 
 Then use the crate functions and types in your project something like this:
