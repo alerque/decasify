@@ -163,6 +163,7 @@ release-preview:
 	$(GIT_CLIFF) --unreleased
 
 CHANGELOG.md:
+	$(SED) -i '1 i\\' $@
 	$(GIT_CLIFF) -p $@ --unreleased -t $(TAG)
 
 decasify-%.md: CHANGELOG.md
