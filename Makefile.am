@@ -49,7 +49,7 @@ node-package: pkg/decasify_bg.wasm
 python-package:
 	$(MATURIN) build --frozen
 
-pkg/decasify_bg.wasm: src/wasm.rs
+pkg/decasify_bg.wasm: src/wasm.rs Cargo.lock
 	$(WASM_PACK) build --features wasm
 
 SEMVER := $(shell $(CARGO) read-manifest | $(JQ) -r .version)
