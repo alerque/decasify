@@ -1,3 +1,18 @@
+## [0.11.3] - 2026-02-05
+
+### Features
+
+- *(nvim)* Preview changes before accepting
+- *(cli)* Add colors to CLI help outputs
+- *(tooling)* Build and post binary that can be installed with `cargo binstall`
+- *(lua)* Add Lua 5.5 support
+
+### Bug Fixes
+
+- *(cli)* Cleanup typos in help outputs
+- *(tooling)* Avoid double-suppression of Justfile job verbosity which flipped it on
+- *(typst)* Avoid recursing into math or non-text contexts
+
 ## [0.11.2] - 2025-11-20
 
 ### Features
