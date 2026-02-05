@@ -12,6 +12,7 @@
 
 - *(vim)* Correct detection of VIM user configs
 - *(vim)* Fix passing arguments to CLI used in vimscript plugin
+
 ## [0.11.1] - 2025-11-15
 
 ### Bug Fixes
@@ -19,6 +20,7 @@
 - *(ci)* Fix gremlins in the automated release process
 - *(tooling)* Protect targets from running `env :` in CI and failing instead of skipping
 - *(tooling)* Don't force build all targets for default make target
+
 ## [0.11.0] - 2025-11-15
 
 ### Features
@@ -36,6 +38,7 @@
 ### Refactor
 
 - *(crate)* [**breaking**] Implement TryFrom instead of From to avoid panics
+
 ## [0.10.2] - 2025-11-11
 
 ### Features
@@ -48,6 +51,7 @@
 ### Bug Fixes
 
 - *(tooling)* Fix `uv` usage to allow rebuilds without interactive prompt
+
 ## [0.10.1] - 2025-03-15
 
 ### Bug Fixes
