@@ -1,3 +1,14 @@
+## [0.11.4] - 2026-08-19
+
+### Features
+
+- *(crate)* Add naive Unicode title casing style with no grammar features
+
+### Bug Fixes
+
+- *(tooling)* Make sure WASM package is up to date if meta data changes
+- *(tooling)* Correct version bump string replacement in nested quotes
+
 ## [0.11.3] - 2026-02-05
 
 ### Features
