@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0"
-wasm-minimal-protocol = "0.1"
+wasm-minimal-protocol = "0.2"
 
 [dependencies.decasify]
 workspace = true

@@ -70,9 +70,9 @@ version = "0.11.3"
 
 [dependencies]
 regex = "1"
-snafu = "0.8"
-strum = "0.27"
-strum_macros = "0.27"
+snafu = "0.9"
+strum = "0.28"
+strum_macros = "0.28"
 unicode_titlecase = "2"
 
 [dependencies.clap]
@@ -81,12 +81,12 @@ optional = true
 features = ["derive", "color", "wrap_help"]
 
 [dependencies.mlua]
-version = "0.11"
+version = "0.12"
 optional = true
 features = ["module"]
 
 [dependencies.pyo3]
-version = "0.27"
+version = "0.29"
 optional = true
 features = ["extension-module"]
 
@@ -99,16 +99,16 @@ version = "0.2"
 optional = true
 
 [build-dependencies]
-snafu = "0.8"
-strum = "0.27"
-strum_macros = "0.27"
+snafu = "0.9"
+strum = "0.28"
+strum_macros = "0.28"
 
 [build-dependencies.clap_complete]
 version = "4"
 optional = true
 
 [build-dependencies.clap_mangen]
-version = "0.2"
+version = "0.3"
 optional = true
 
 [build-dependencies.clap]
