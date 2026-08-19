@@ -34,6 +34,7 @@ pub mod wasm;
 mod en;
 mod es;
 mod tr;
+mod unicode;
 
 /// Convert a string to a specific case following typesetting conventions for a target locale
 pub fn case<TC, TL, TS, TO>(
@@ -85,6 +86,9 @@ where
     let locale: Locale = locale.try_into()?;
     let style: StyleGuide = style.try_into()?;
     let opts: StyleOptions = opts.try_into()?;
+    if style == StyleGuide::NaiveUnicode {
+        return Ok(unicode::titlecase(chunk, locale, opts));
+    }
     Ok(match locale {
         Locale::EN => en::titlecase(chunk, style, opts),
         Locale::ES => es::titlecase(chunk, style, opts),

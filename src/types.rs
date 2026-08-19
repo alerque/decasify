@@ -101,6 +101,8 @@ pub enum StyleGuide {
     #[strum(serialize = "default")]
     #[default]
     LanguageDefault,
+    #[strum(serialize = "naive")]
+    NaiveUnicode,
     #[strum(serialize = "tdk")]
     TurkishLanguageInstitute,
     #[strum(serialize = "rae")]
@@ -278,6 +280,7 @@ impl FromStr for StyleGuide {
             "chicagoManualofstyle" | "chicago" | "cmos" => Ok(StyleGuide::ChicagoManualOfStyle),
             "fundeu" | "fundeurealacademiaespanola" => Ok(StyleGuide::FundeuRealAcademiaEspanola),
             "rae" | "realacademiaespanola" => Ok(StyleGuide::RealAcademiaEspanola),
+            "naive" | "naiveunicode" => Ok(StyleGuide::NaiveUnicode),
             "tdk" | "turkishlanguageinstitute" => Ok(StyleGuide::TurkishLanguageInstitute),
             "default" | "languagedefault" | "language" | "none" | "" => {
                 Ok(StyleGuide::LanguageDefault)
