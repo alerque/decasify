@@ -22,7 +22,7 @@ edition = "2024"
 rust-version = "1.85"
 
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [".", "typst"]
 
 [[bin]]
