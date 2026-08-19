@@ -34,6 +34,26 @@ fn custom_style_guide() {
     assert_eq!(res, "fOO Bar");
 }
 
+#[test]
+fn naive_titlecasing() {
+    let res_en = titlecase(
+        "in the den",
+        "en",
+        StyleGuide::NaiveUnicode,
+        StyleOptions::default(),
+    )
+    .unwrap();
+    assert_eq!(res_en, "In The Den");
+    let res_tr = titlecase(
+        "in the den",
+        "tr",
+        StyleGuide::NaiveUnicode,
+        StyleOptions::default(),
+    )
+    .unwrap();
+    assert_eq!(res_tr, "İn The Den");
+}
+
 #[cfg(feature = "unstable-trait")]
 #[test]
 fn trait_chery() {
