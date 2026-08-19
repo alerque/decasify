@@ -47,7 +47,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 /// Just a single word
 #[derive(Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "pythonmodule", pyclass(from_py_object))]
 #[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
 pub struct Word {
     pub word: String,
@@ -59,7 +59,7 @@ pub struct Word {
 
 /// Locale selector to change language support rules of case functions.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "pythonmodule", pyclass(from_py_object))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
@@ -72,7 +72,7 @@ pub enum Locale {
 
 /// Target case selector.
 #[derive(Default, Display, VariantNames, Debug, Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "pythonmodule", pyclass(from_py_object))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
@@ -86,7 +86,7 @@ pub enum Case {
 
 /// Style guide selector to change grammar and context rules used for title casing.
 #[derive(Display, VariantNames, Debug, Clone, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "pythonmodule", pyclass(from_py_object))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[strum(serialize_all = "lowercase")]
 #[non_exhaustive]
@@ -110,7 +110,7 @@ pub enum StyleGuide {
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
-#[cfg_attr(feature = "pythonmodule", pyclass(eq))]
+#[cfg_attr(feature = "pythonmodule", pyclass(from_py_object))]
 #[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
 pub struct StyleOptions {
     pub overrides: Option<Vec<Word>>,
