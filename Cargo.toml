@@ -69,14 +69,14 @@ path = "."
 version = "0.11.3"
 
 [dependencies]
-regex = "1.11"
+regex = "1"
 snafu = "0.8"
 strum = "0.27"
 strum_macros = "0.27"
-unicode_titlecase = "2.4"
+unicode_titlecase = "2"
 
 [dependencies.clap]
-version = "4.5"
+version = "4"
 optional = true
 features = ["derive", "color", "wrap_help"]
 
@@ -91,7 +91,7 @@ optional = true
 features = ["extension-module"]
 
 [dependencies.titlecase]
-version = "3.3"
+version = "3"
 features = ["perf"]
 
 [dependencies.wasm-bindgen]
@@ -104,7 +104,7 @@ strum = "0.27"
 strum_macros = "0.27"
 
 [build-dependencies.clap_complete]
-version = "4.5"
+version = "4"
 optional = true
 
 [build-dependencies.clap_mangen]
@@ -112,21 +112,21 @@ version = "0.2"
 optional = true
 
 [build-dependencies.clap]
-version = "4.5"
+version = "4"
 optional = true
 features = ["derive"]
 
 [build-dependencies.anyhow]
-version = "1.0"
+version = "1"
 
 [build-dependencies.vergen-gix]
-version = "9.1"
+version = "9"
 default-features = false
 features = ["build", "cargo", "rustc"]
 
 [dev-dependencies]
-assert_cmd = "2.0"
-predicates = "3.1"
+assert_cmd = "2"
+predicates = "3"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(build)'] }
