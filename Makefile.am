@@ -189,7 +189,7 @@ busted: install-luarock
 	packagecpath=($${LUA_CPATH})
 	$(BUSTED) -v --lpath="$${packagepath[*]};;" --cpath="$${packagecpath[*]};;" $(BUSTEDFLAGS) .
 
-pytest: export UV_PYTHON ?= 3.14.2
+pytest: export UV_PYTHON ?= 3.14.7
 pytest:
 	$(UV) venv --clear
 	source .venv/bin/activate
